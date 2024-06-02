@@ -1,0 +1,13 @@
+.custom-title {
+    color: #FF6347; /* Màu đỏ cam (Tomato) */
+}
+.swal2-input:focus {
+    border: 2px solid #FF6347;
+    outline: none;
+    box-shadow: 0 0 3px #FF6347;
+}
+
+.custom-confirm-button {
+    background-color: #4755b8 !important; /* Màu xanh lá cây */
+    color: white; /* Màu chữ trắng */
+}
