@@ -11,17 +11,22 @@ class UserServiceImplement implements UserServiceInterface {
         $this->userRepositoryInterface = $userRepositoryInterface;
     }
 
-    public function create(array $array){
-        return $this->userRepositoryInterface->create($array);
+    public function create(array $arrayCheck, array $arrayInsert){
+        return $this->userRepositoryInterface->create($arrayCheck, $arrayInsert);
     }
 
-    public function getUserById($id){
-        return $this->userRepositoryInterface->getUserById($id);
+    public function findByUsername($username){
+        return $this->userRepositoryInterface->findByUsername($username);
     }
 
-    public function getAllUser()
+    public function login($username, $password)
     {
-        return $this->userRepositoryInterface->getAllUser();
+        return $this->userRepositoryInterface->login($username, $password);
+    }
+
+    public function getPasswordByUsername($username)
+    {
+        return $this->userRepositoryInterface->getPasswordByUsername($username);
     }
 }
 ?>

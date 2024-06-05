@@ -8,7 +8,7 @@ $capsule->addConnection([
     'host'      => 'localhost',
     'username'  => 'root',
     'password' => '',
-    'database'  => 'sport-court-rental-system',
+    'database'  => 'sportdb',
     'charset' => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix'    => '',

@@ -1,16 +1,13 @@
 <?php
 session_start();
+
 use App\Services\UserServiceInterface;
 use App\Utils\sendOTPViaSMS;
-use Infobip\Configuration;
-use Infobip\Api\SmsApi;
-use Infobip\Model\SmsTextualMessage;
-use Infobip\Model\SmsAdvancedTextualRequest;
-use Infobip\Model\SmsDestination;
+
 
 class UserController extends Controller
 {
-    private const ROLES = ['CUSTOMER', 'VenueOwner', "SystemAdmin"];
+    private const ROLES = ["CUSTOMER", "OWNER" ,"SYSTEMADMIN"];
 
     protected $userServiceInterface;
 
@@ -22,128 +19,90 @@ class UserController extends Controller
         $this->sendOTPViaSMS = $sendOTPViaSMS;
     }
 
-
-    public function index()
-    {
-        $data = $this->userServiceInterface->getAllUser();
-        $this->view('user/index', $data);
-    }
-
-    public function userDetail($id)
-    {
-        $user = $this->userServiceInterface->getUserById($id);
-        if ($user) {
-            $this->view('user/index', $user->toArray());
-        } else
-            echo "Not found user with id: $id";
-    }
-
-
-    // function sendSMS($number, $message)
-    // {
-    //     $baseUrl = "https://qyxygw.api.infobip.com";
-    //     $apiKey = "bef7a48e44e9c8eb23e0a27ebd211784-3175224a-3d8d-42c5-bd4b-bf4fc4b02d64";
-
-    //     $configuration = new Configuration(host: $baseUrl, apiKey: $apiKey);
-
-    //     $api = new SmsApi(config: $configuration);
-
-    //     $destination = new SmsDestination(to: $number);
-
-    //     $message = new SmsTextualMessage(
-    //         destinations: [$destination],
-    //         text: $message
-    //     );
-
-    //     $request = new SmsAdvancedTextualRequest(
-    //         messages: [$message]
-    //     );
-
-    //     $response = $api->sendSmsMessage($request);
-    // }
-
-    // Hàm lưu mã OTP vào cơ sở dữ liệu
-    // function saveOTP($phoneNumber, $otp)
-    // {
-    //     $_SESSION[$phoneNumber] = $otp;
-    // }
-
-    // function getOTP($phoneNumber)
-    // {
-    //     return $_SESSION[$phoneNumber];
-    // }
-
-    // function verifyOTP($phoneNumber, $otp)
-    // {
-    //     $otpSaved = $this->getOTP($phoneNumber);
-    //     return $otpSaved == $otp;
-    // }
-
     function verifyOTPandSaveData()
     {
         if (isset($_POST['action']) && $_POST['action'] == 'getOTP') {
+
+            // if username already exits, prevent create
+            if (isset($_POST['username'])) {
+                $user = $this->userServiceInterface->findByUsername($_POST['username']);
+                if ($user) {
+                    echo json_encode([
+                        "statusCode" => 409,
+                        "usernameExisted" => $_POST['username'],
+                        "message" => "Username already exists"
+                    ]);
+                    return;
+                }
+            }
 
             $otp = $this->sendOTPViaSMS->generateOTP();
             $this->sendOTPViaSMS->saveOTP($_POST['phoneNumber'], $otp); // tương ứng mỗi sdt sẽ có otp, được lưu trong session
 
             //save data for next request
-            $_SESSION['username'] = $_POST['username'] ?? null;
-            $_SESSION['password'] = $_POST['password'] ?? null;
-            $_SESSION['fullname'] = $_POST['fullname'] ?? null;
-            $_SESSION['phoneNumber'] = $_POST['phoneNumber'] ?? null;
-
-            
+            $_SESSION['fullname'] = $_POST['fullname'];
+            $_SESSION['username'] = $_POST['username'];
+            $_SESSION['password'] = $_POST['password'];
+            $_SESSION['phoneNumber'] = $_POST['phoneNumber'];
+            $_SESSION['address'] = $_POST['address'];
 
             $receiveNumber = $_POST['phoneNumber'];
             $message = "Your OTP code is: " .  $otp;
-            $this->sendOTPViaSMS->sendSMS($receiveNumber, $message);
+            $isPending = $this->sendOTPViaSMS->sendSMS($receiveNumber, $message);
 
-            echo json_encode([
-                "status" => 'success',
-            ]);
-
+            if ($isPending)
+                echo json_encode([
+                    "status" => 'success',
+                    "session" => $_SESSION
+                ]);
+            else
+                echo json_encode([
+                    "status" => 'failed',
+                ]);
             return;
         }
 
         if (isset($_POST['action']) && $_POST['action'] == 'verifyOTP') {
 
             $otp = $_POST['otp'] ?? null;
-            
+
             if ($this->sendOTPViaSMS->verifyOTP($_SESSION['phoneNumber'], $otp)) {
 
-                $this->create();
-
-                echo json_encode([
-                    "statusCode" => 201,
-                    "message" => "User Created Successfully"
-                ]);
-    
-                return;
+                $user = $this->create();
+                if ($user->wasRecentlyCreated) {
+                    echo json_encode([
+                        "statusCode" => 201,
+                        "message" => "User Created Successfully"
+                    ]);
+                    return;
+                } else {
+                    echo json_encode([
+                        "statusCode" => 409,
+                        "message" => "Resource with username:" . $_SESSION['username'] .  " already exists"
+                    ]);
+                    return;
+                }
             }
 
             echo json_encode([
                 "statusCode" => 500,
-                "message" => "User failed"
+                "message" => "Server Internal Error"
             ]);
         }
     }
-
-    // function generateOTP($length = 6)
-    // {
-    //     $otp = '';
-    //     for ($i = 0; $i < $length; $i++) {
-    //         $otp .= mt_rand(0, 9); // Tạo ngẫu nhiên một chữ số từ 0 đến 9 và thêm vào chuỗi OTP
-    //     }
-    //     return $otp;
-    // }
 
     public function create()
     {
         $fullname = $_SESSION['fullname'] ?? null;
         $username = $_SESSION['username'] ?? null;
         $password = $_SESSION['password'] ?? null;
+        $phoneNumber = $_SESSION['phoneNumber'] ?? null;
+        $address = $_SESSION['address'] ?? null;
 
-        $isInvalidInfo = !empty($fullname) && !empty($username)  && !empty($password);
+        $isInvalidInfo = !empty($fullname) && !empty($username)
+            && !empty($password) && !empty($phoneNumber)
+            && !empty($address);
+
         if (!$isInvalidInfo) {
             echo json_encode([
                 "errorMessage" => "Please enter all information in the form!",
@@ -151,11 +110,59 @@ class UserController extends Controller
             return;
         }
 
-        return $this->userServiceInterface->create([
-            'fullname' => $fullname,
-            'username' => $username,
-            'password' =>  password_hash($password, PASSWORD_BCRYPT),
-            'role' => self::ROLES[0],
-        ]);
+        return $this->userServiceInterface->create(
+            ["Username" => $username], //if exits username throw exception
+            [
+                'Role' => self::ROLES[0],
+                'FullName' => $fullname,
+                'Username' => $username,
+                'Password' => password_hash($password, PASSWORD_BCRYPT),
+                'PhoneNumber' => $phoneNumber,
+                'Address' => $address,
+            ]
+        );
+    }
+
+    public function login()
+    {
+        if (isset($_POST['action']) && $_POST['action'] == 'login') {
+            $username = $_POST['username'] ?? null;
+            $password = $_POST['password'] ?? null;
+            
+            $isInvalidCredentials =  !empty($username) && !empty($password);
+
+            if (!$isInvalidCredentials) {
+                echo json_encode([
+                    "errorMessage" => "Please enter all information in the form!",
+                ]);
+                return;
+            }
+
+            $user = $this->userServiceInterface->findByUsername($username);
+
+            if ($user) {
+                if (password_verify($password, $user['Password'])) {
+                    echo json_encode([
+                        "statusCode" => 200,
+                        "user" => $user
+                    ]);
+                    return;
+                } else {
+                    echo json_encode([
+                        "1" => 1,
+                        "statusCode" => 401,
+                        "message" => "Invalid credentials"
+                    ]);
+                    return;
+                }
+            } else {
+                echo json_encode([
+                    "2" => 2,
+                    "statusCode" => 401,
+                    "message" => "Invalid credentials"
+                ]);
+                return;
+            }
+        }
     }
 }

@@ -1,6 +1,6 @@
+<?php session_start();?>
 <!DOCTYPE html>
 <html>
-
 <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -66,22 +66,41 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
                             </li>
-                            <li class="nav-item" onclick="handleLogin()">
-                                <a class="nav-link" href="#">
-                                    <i class="fa fa-user" aria-hidden="true"></i>
-                                    <span>
-                                        Đăng nhập
-                                    </span>
-                                </a>
-                            </li>
-                            <li class="nav-item" onclick="handleRegister()">
-                                <a class="nav-link" href="#">
-                                    <i class="fa-solid fa-user-plus"></i>
-                                    <span>
-                                        Đăng ký
-                                    </span>
-                                </a>
-                            </li>
+                            <?php if(!isset($_SESSION['user'])): ?>
+                                <li class="nav-item" onclick="handleLogin()">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa fa-user" aria-hidden="true"></i>
+                                        <span>
+                                            Đăng nhập
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" onclick="handleRegister()">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        <span>
+                                            Đăng ký
+                                        </span>
+                                    </a>
+                                </li>
+                            <?php else: ?>
+                                <li class="nav-item" onclick="handleRegister()">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        <span>
+                                            <?php echo $_SESSION['username'];?>
+                                        </span>
+                                    </a>
+                                </li>
+                                <li class="nav-item" onclick="handleRegister()">
+                                    <a class="nav-link" href="#">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                        <span>
+                                            Đăng Xuất
+                                        </span>
+                                    </a>
+                                </li>
+                            <?php endif; ?>
                             <form class="form-inline">
                                 <button class="btn   nav_search-btn" type="submit">
                                     <i class="fa fa-search" aria-hidden="true"></i>

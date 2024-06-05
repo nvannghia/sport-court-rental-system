@@ -36,7 +36,7 @@ class SendOTPViaSMS
         );
 
         $response = $this->api->sendSmsMessage($request);
-        return $response;
+        return $response->getMessages()[0]->getStatus()->getGroupName() === "PENDING";
     }
 
     public function saveOTP($phoneNumber, $otp)

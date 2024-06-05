@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Repositories\Implements;
 
 use App\Models\UserModel;
@@ -9,17 +10,23 @@ class UserRepositoryImplement implements UserRepositoryInterface
 {
     protected $user;
 
-    public function create( array $array)
+    public function create(array $arrayCheck, array $arrayInsert)
     {
-        return UserModel::create($array);
+        return UserModel::firstOrCreate($arrayCheck, $arrayInsert);
     }
 
-    public function getUserById($id)
+    public function findByUsername($username)
     {
-        return UserModel::find($id);
+        return UserModel::where('username', $username)->first();
     }
-    public function getAllUser()
+
+    public function login($username, $password)
     {
-        return UserModel::all();
+        return UserModel::where('username', $username)->where('password', $password)->first();
+    }
+
+    public function getPasswordByUsername($username)
+    {
+        return UserModel::select('password')->where('username', $username)->first();
     }
 }
