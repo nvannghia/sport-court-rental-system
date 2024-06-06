@@ -18,15 +18,5 @@ class UserServiceImplement implements UserServiceInterface {
     public function findByUsername($username){
         return $this->userRepositoryInterface->findByUsername($username);
     }
-
-    public function login($username, $password)
-    {
-        return $this->userRepositoryInterface->login($username, $password);
-    }
-
-    public function getPasswordByUsername($username)
-    {
-        return $this->userRepositoryInterface->getPasswordByUsername($username);
-    }
 }
 ?>
