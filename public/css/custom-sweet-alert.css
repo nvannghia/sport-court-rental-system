@@ -1,6 +1,8 @@
 .custom-title {
-    color: #FF6347; /* Màu đỏ cam (Tomato) */
+    color: #FF6347;
+    /* Màu đỏ cam (Tomato) */
 }
+
 .swal2-input:focus {
     border: 2px solid #FF6347;
     outline: none;
@@ -8,6 +10,25 @@
 }
 
 .custom-confirm-button {
-    background-color: #4755b8 !important; /* Màu xanh lá cây */
-    color: white; /* Màu chữ trắng */
+    background-color: #4755b8 !important;
+    /* Màu xanh lá cây */
+    color: white;
+    /* Màu chữ trắng */
+}
+
+.my-custom-popup {
+    width: 40% !important; /* Thay đổi kích thước theo ý muốn */
+}
+
+.my-custom-title-class {
+    font-size: 100%;
+}
+
+.my-custom-icon-class {
+    font-size: 60%;
+    /* Đặt kích thước biểu tượng tại đây */
+}
+
+.my-custom-small-confirm-cancel-button {
+    font-size: 70% !important;
 }

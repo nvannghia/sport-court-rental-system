@@ -1,6 +1,7 @@
-<?php session_start();?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -14,7 +15,8 @@
 
     <title>Sport Court Rental System</title>
 
-
+    <!-- bs 5 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <!-- bootstrap core css -->
     <link rel="stylesheet" type="text/css" href="../../public/css/bootstrap.css" />
 
@@ -33,6 +35,8 @@
     <link href="../../public/css/responsive.css" rel="stylesheet" />
     <!-- custom sweet alert css -->
     <link href="../../public/css/custom-sweet-alert.css" rel="stylesheet" />
+    <!-- header css -->
+    <link href="../../public/css/header.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -47,7 +51,6 @@
                             Sport Court Rental System
                         </span>
                     </a>
-
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class=""> </span>
                     </button>
@@ -66,7 +69,7 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
                             </li>
-                            <?php if(!isset($_SESSION['user'])): ?>
+                            <?php if (!isset($_SESSION['userInfo'])) : ?>
                                 <li class="nav-item" onclick="handleLogin()">
                                     <a class="nav-link" href="#">
                                         <i class="fa fa-user" aria-hidden="true"></i>
@@ -83,29 +86,36 @@
                                         </span>
                                     </a>
                                 </li>
-                            <?php else: ?>
-                                <li class="nav-item" onclick="handleRegister()">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa-solid fa-user-plus"></i>
-                                        <span>
-                                            <?php echo $_SESSION['username'];?>
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item" onclick="handleRegister()">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa-solid fa-user-plus"></i>
-                                        <span>
-                                            Đăng Xuất
-                                        </span>
-                                    </a>
+                            <?php else : ?>
+                                <li class="nav-item" style="margin-right: 25px;">
+
+                                    <div class="dropdown">
+                                        <button style="background-color: #E41A2B" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fa fa-user text-white" style="min-width: 15%;"></i>
+                                            <span class="text-white">
+                                                <?php echo $_SESSION['userInfo']['FullName']; ?>
+                                            </span>
+                                        </button>
+                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                            <div class="dropdown-item" href="#" onclick="getProfile()">
+                                                <i class="fa-solid fa-id-card" style="min-width: 20%;"></i>
+                                                <span>Hồ sơ</span>
+                                            </div>
+                                            <div class="dropdown-item" href="#">
+                                                <i class="fa-regular fa-building" style="min-width: 20%;"></i>
+                                                <span> Bạn là chủ sân?</span>
+                                            </div>
+                                            <hr>
+                                            <div class="dropdown-item" href="#" onclick="handleLogout()">
+                                                <i class="fa-solid fa-arrow-right-from-bracket" style="min-width: 20%;"></i>
+                                                <span>
+                                                    Đăng Xuất
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </li>
                             <?php endif; ?>
-                            <form class="form-inline">
-                                <button class="btn   nav_search-btn" type="submit">
-                                    <i class="fa fa-search" aria-hidden="true"></i>
-                                </button>
-                            </form>
                         </ul>
                     </div>
                 </nav>
@@ -119,6 +129,8 @@
                 <div class="row">
                     <div class="col-lg-7 col-md-8 mx-auto">
                         <div class="detail-box">
+                            <img src="../../public/images/soccer.gif" alt="gif" style="width: 25%;">
+
                             <h1>
                                 HỆ THỐNG HỖ TRỢ TÌM KIẾM SÂN BÃI NHANH
                             </h1>

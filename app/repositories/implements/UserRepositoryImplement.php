@@ -19,14 +19,4 @@ class UserRepositoryImplement implements UserRepositoryInterface
     {
         return UserModel::where('username', $username)->first();
     }
-
-    public function login($username, $password)
-    {
-        return UserModel::where('username', $username)->where('password', $password)->first();
-    }
-
-    public function getPasswordByUsername($username)
-    {
-        return UserModel::select('password')->where('username', $username)->first();
-    }
 }

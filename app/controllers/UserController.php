@@ -70,10 +70,13 @@ class UserController extends Controller
 
                 $user = $this->create();
                 if ($user->wasRecentlyCreated) {
+
                     echo json_encode([
                         "statusCode" => 201,
                         "message" => "User Created Successfully"
                     ]);
+                    //clear sesssion
+                    $_SESSION = array();
                     return;
                 } else {
                     echo json_encode([
@@ -129,9 +132,9 @@ class UserController extends Controller
             $username = $_POST['username'] ?? null;
             $password = $_POST['password'] ?? null;
             
-            $isInvalidCredentials =  !empty($username) && !empty($password);
+            $isValidCredentials =  !empty($username) && !empty($password);
 
-            if (!$isInvalidCredentials) {
+            if (!$isValidCredentials) {
                 echo json_encode([
                     "errorMessage" => "Please enter all information in the form!",
                 ]);
@@ -142,27 +145,51 @@ class UserController extends Controller
 
             if ($user) {
                 if (password_verify($password, $user['Password'])) {
+
+                    unset($user['Password']); // no return password
+
+                    $_SESSION['userInfo'] = $user; //save user logged to session
+
                     echo json_encode([
                         "statusCode" => 200,
                         "user" => $user
                     ]);
+
                     return;
                 } else {
+
                     echo json_encode([
-                        "1" => 1,
                         "statusCode" => 401,
                         "message" => "Invalid credentials"
                     ]);
+
                     return;
                 }
             } else {
                 echo json_encode([
-                    "2" => 2,
                     "statusCode" => 401,
                     "message" => "Invalid credentials"
                 ]);
                 return;
             }
         }
+    }
+
+    public function logout()
+    {
+        if (isset($_SESSION['userInfo'])){
+
+            session_destroy();
+
+            echo json_encode([
+                "statusCode" => 200,
+                "message" => "Logout Success"
+            ]);
+        }
+    }
+
+    public function getProfile()
+    {
+        return $this->view('profile/profile', $_SESSION['userInfo']);
     }
 }
