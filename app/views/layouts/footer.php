@@ -1,4 +1,4 @@
-    <!-- info section -->
+    info section
     <section class="info_section ">
       <div class="container">
         <div class="row">
@@ -108,8 +108,11 @@
     <!-- sweet alert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <!-- login -->
+    <!-- auth -->
     <script src="../../public/js/auth.js"></script>
+
+    <!-- owner -->
+     <script src="../../public/js/owner.js"></script>
     </body>
 
     </html>

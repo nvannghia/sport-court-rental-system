@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\UserServiceImplement;
 use App\Utils\sendOTPViaSMS;
 
@@ -17,11 +18,13 @@ class App
 
     protected $controllersWithDependencies = [
         'UserController' => [UserServiceImplement::class, SendOTPViaSMS::class],
+        'FieldOwnerController' => [FieldOwnerServiceImplement::class]
     ];
 
     protected $controllerMapping = [
         'user' => 'UserController',
         'home' => 'HomeController',
+        'fieldowner' => 'FieldOwnerController',
     ];
 
     /*

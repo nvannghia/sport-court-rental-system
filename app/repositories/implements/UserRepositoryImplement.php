@@ -15,8 +15,8 @@ class UserRepositoryImplement implements UserRepositoryInterface
         return UserModel::firstOrCreate($arrayCheck, $arrayInsert);
     }
 
-    public function findByUsername($username)
+    public function findByEmail($email)
     {
-        return UserModel::where('username', $username)->first();
+        return UserModel::where('Email', $email)->first();
     }
 }
