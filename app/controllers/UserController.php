@@ -1,13 +1,14 @@
 <?php
-session_start();
-
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 use App\Services\UserServiceInterface;
 use App\Utils\sendOTPViaSMS;
 
 
 class UserController extends Controller
 {
-    private const ROLES = ["CUSTOMER", "OWNER" ,"SYSTEMADMIN"];
+    private const ROLES = ["CUSTOMER", "OWNER", "SYSTEMADMIN"];
 
     protected $userServiceInterface;
 
@@ -23,14 +24,14 @@ class UserController extends Controller
     {
         if (isset($_POST['action']) && $_POST['action'] == 'getOTP') {
 
-            // if username already exits, prevent create
-            if (isset($_POST['username'])) {
-                $user = $this->userServiceInterface->findByUsername($_POST['username']);
+            // if email already exits, prevent create
+            if (isset($_POST['email'])) {
+                $user = $this->userServiceInterface->findByEmail($_POST['email']);
                 if ($user) {
                     echo json_encode([
                         "statusCode" => 409,
-                        "usernameExisted" => $_POST['username'],
-                        "message" => "Username already exists"
+                        "emailExisted" => $_POST['email'],
+                        "message" => "Email already exists"
                     ]);
                     return;
                 }
@@ -41,7 +42,7 @@ class UserController extends Controller
 
             //save data for next request
             $_SESSION['fullname'] = $_POST['fullname'];
-            $_SESSION['username'] = $_POST['username'];
+            $_SESSION['email'] = $_POST['email'];
             $_SESSION['password'] = $_POST['password'];
             $_SESSION['phoneNumber'] = $_POST['phoneNumber'];
             $_SESSION['address'] = $_POST['address'];
@@ -81,7 +82,7 @@ class UserController extends Controller
                 } else {
                     echo json_encode([
                         "statusCode" => 409,
-                        "message" => "Resource with username:" . $_SESSION['username'] .  " already exists"
+                        "message" => "Resource with email:" . $_SESSION['email'] .  " already exists"
                     ]);
                     return;
                 }
@@ -97,12 +98,12 @@ class UserController extends Controller
     public function create()
     {
         $fullname = $_SESSION['fullname'] ?? null;
-        $username = $_SESSION['username'] ?? null;
+        $email = $_SESSION['email'] ?? null;
         $password = $_SESSION['password'] ?? null;
         $phoneNumber = $_SESSION['phoneNumber'] ?? null;
         $address = $_SESSION['address'] ?? null;
 
-        $isInvalidInfo = !empty($fullname) && !empty($username)
+        $isInvalidInfo = !empty($fullname) && !empty($email)
             && !empty($password) && !empty($phoneNumber)
             && !empty($address);
 
@@ -114,11 +115,11 @@ class UserController extends Controller
         }
 
         return $this->userServiceInterface->create(
-            ["Username" => $username], //if exits username throw exception
+            ["Email" => $email], //if exits Email throw exception
             [
                 'Role' => self::ROLES[0],
                 'FullName' => $fullname,
-                'Username' => $username,
+                'Email' => $email,
                 'Password' => password_hash($password, PASSWORD_BCRYPT),
                 'PhoneNumber' => $phoneNumber,
                 'Address' => $address,
@@ -129,10 +130,10 @@ class UserController extends Controller
     public function login()
     {
         if (isset($_POST['action']) && $_POST['action'] == 'login') {
-            $username = $_POST['username'] ?? null;
+            $email = $_POST['email'] ?? null;
             $password = $_POST['password'] ?? null;
-            
-            $isValidCredentials =  !empty($username) && !empty($password);
+
+            $isValidCredentials =  !empty($email) && !empty($password);
 
             if (!$isValidCredentials) {
                 echo json_encode([
@@ -141,7 +142,7 @@ class UserController extends Controller
                 return;
             }
 
-            $user = $this->userServiceInterface->findByUsername($username);
+            $user = $this->userServiceInterface->findByEmail($email);
 
             if ($user) {
                 if (password_verify($password, $user['Password'])) {
@@ -177,7 +178,7 @@ class UserController extends Controller
 
     public function logout()
     {
-        if (isset($_SESSION['userInfo'])){
+        if (isset($_SESSION['userInfo'])) {
 
             session_destroy();
 
@@ -190,6 +191,9 @@ class UserController extends Controller
 
     public function getProfile()
     {
-        return $this->view('profile/profile', $_SESSION['userInfo']);
+        if (isset($_SESSION['userInfo']))
+            return $this->view('profile/profile', $_SESSION['userInfo']);
+
+        echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";
     }
 }

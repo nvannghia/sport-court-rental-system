@@ -4,9 +4,23 @@ const handleLogin = (evt) => {
 
   Swal.fire({
     title: "Đăng nhập",
+    showClass: {
+      popup: `
+        animate__animated
+        animate__fadeInUp
+        animate__faster
+      `
+    },
+    hideClass: {
+      popup: `
+        animate__animated
+        animate__fadeOutDown
+        animate__faster
+      `
+    },
     html: `
-        <input id="username" class="swal2-input" placeholder="Tên đăng nhập">
-        <input id="password" class="swal2-input" type="password" placeholder="Mật khẩu">
+        <input id="email" class="swal2-input" placeholder="Email...">
+        <input id="password" class="swal2-input" type="password" placeholder="Mật khẩu...">
       `,
     focusConfirm: false,
     showCancelButton: true,
@@ -18,10 +32,10 @@ const handleLogin = (evt) => {
       confirmButton: 'custom-confirm-button',
     },
     preConfirm: async () => {
-      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      if (!username || !password) {
+      if (!email || !password) {
         Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin.');
         return false;
       }
@@ -29,8 +43,8 @@ const handleLogin = (evt) => {
       try {
         const formData = new URLSearchParams();
         formData.append('action', 'login');
-        formData.append('username', username);
-        formData.append('password',  password);
+        formData.append('email', email);
+        formData.append('password', password);
 
         const loginUrl = `${urlRequest}/login`;
         const response = await fetch(`${loginUrl}/login`, {
@@ -45,12 +59,13 @@ const handleLogin = (evt) => {
 
         if (data.statusCode === 200) {
           window.location.reload();
-        }
-
-        if (data.statusCode === 401) {
+        } else {
           Swal.showValidationMessage('Tài khoản hoặc mật khẩu không chính xác!');
         }
-  
+
+
+
+
       } catch (error) {
         Swal.showValidationMessage(`Request failed: ${error}`);
       }
@@ -61,13 +76,27 @@ const handleLogin = (evt) => {
 
 
 const handleRegister = async () => {
-    customerRegister();
+  customerRegister();
 }
 
 
 const verifyOTP = () => {
   Swal.fire({
     title: "Nhập OTP . . .",
+    showClass: {
+      popup: `
+        animate__animated
+        animate__fadeInDown
+        animate__faster
+      `
+    },
+    hideClass: {
+      popup: `
+        animate__animated
+        animate__fadeOutUp
+        animate__faster
+      `
+    },
     html: `
       <input id="otp" class="swal2-input" placeholder="Nhập OTP . . ." required>
     `,
@@ -119,12 +148,32 @@ const verifyOTP = () => {
   })
 }
 
+function validateEmail(email) {
+  // Biểu thức chính quy để kiểm tra định dạng email
+  const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  return re.test(String(email).toLowerCase());
+}
+
 const customerRegister = () => {
   Swal.fire({
     title: "Khách hàng đăng ký",
+    showClass: {
+      popup: `
+        animate__animated
+        animate__fadeInLeft
+        animate__faster
+      `
+    },
+    hideClass: {
+      popup: `
+        animate__animated
+        animate__fadeOutRight
+        animate__faster
+      `
+    },
     html: `
         <input id="fullname" class="swal2-input" placeholder="Nhập tên đại diện . . .">
-        <input id="username" class="swal2-input"  placeholder="Nhập tên đăng nhập . . .">
+        <input id="email" class="swal2-input"  placeholder="Nhập Email . . .">
         <input id="password" class="swal2-input" type="password"  placeholder="Nhập mật khẩu . . .">
         <input id="retypePassword" class="swal2-input" type="password"  placeholder="Nhập lại mật khẩu . . .">
         <input id="address" class="swal2-input" type="text"  placeholder="Nhập địa chỉ . . .">
@@ -141,15 +190,20 @@ const customerRegister = () => {
     },
     preConfirm: async () => {
       const fullname = document.getElementById('fullname').value;
-      const username = document.getElementById('username').value;
+      const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
       const retypePassword = document.getElementById('retypePassword').value;
       const address = document.getElementById('address').value;
       let phoneNumber = document.getElementById('phoneNumber').value;
 
-      if (!fullname || !username || !password || !retypePassword || !address || !phoneNumber) {
+      if (!fullname || !email || !password || !retypePassword || !address || !phoneNumber) {
         Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin.');
         return false;
+      }
+
+      if (!validateEmail(email)) {
+        Swal.showValidationMessage('Email không hợp lệ!');
+        return;
       }
 
       if (password !== retypePassword) {
@@ -170,7 +224,7 @@ const customerRegister = () => {
 
         const formData = new URLSearchParams();
         formData.append('action', 'getOTP');
-        formData.append('username', username);
+        formData.append('email', email);
         formData.append('password', password);
         formData.append('fullname', fullname);
         formData.append('address', address);
@@ -190,7 +244,7 @@ const customerRegister = () => {
         const data = await response.json();
 
         if (data.statusCode === 409) {
-          Swal.showValidationMessage(`Tên đăng nhập: ${data.usernameExisted} đã tồn tại!`);
+          Swal.showValidationMessage(`Tên đăng nhập: ${data.emailExisted} đã tồn tại!`);
           return;
         }
 
@@ -219,9 +273,7 @@ const customerRegister = () => {
 }
 
 
-
-
-const handleLogout =  () => {
+const handleLogout = () => {
   Swal.fire({
     position: "top-right",
     title: 'Bạn có chắc chắn muốn đăng xuất?',
@@ -238,7 +290,7 @@ const handleLogout =  () => {
       confirmButton: 'my-custom-small-confirm-cancel-button',
       cancelButton: 'my-custom-small-confirm-cancel-button',
     }
-  }).then( async (result) => {
+  }).then(async (result) => {
     const logoutUrl = `${urlRequest}/logout`;
     if (result.isConfirmed) {
       const response = await fetch(logoutUrl);
@@ -246,7 +298,7 @@ const handleLogout =  () => {
       const data = await response.json();
 
       if (data.statusCode === 200) {
-        Swal.fire({
+        await Swal.fire({
           position: "top-right",
           icon: "success",
           title: "Đăng xuất thành công",
@@ -259,138 +311,15 @@ const handleLogout =  () => {
           }
         });
 
-        window.location.reload();
+        window.location.href = `../home/index`;
       }
     }
   })
 }
 
 
-const getProfile = () => {
-  window.location.href = `${urlRequest}/getProfile`;
-  return false;
-}
 
 
 
-// const handleRegister = async () => {
-  //   const { value: userType } = await Swal.fire({
-  //     title: "Bạn là ai?",
-  //     input: "select",
-  //     inputOptions: {
-  //       customer: "Khách hàng đặt sân",
-  //       owner: "Chủ sân",
-  //     },
-  //     inputPlaceholder: "Chọn vai trò của bạn trong hệ thống",
-  //     showCancelButton: true,
-  //     inputValidator: (value) => {
-  //       if (!value) {
-  //         return "Vui lòng chọn vai trò của bạn trong hệ thống!";
-  //       }
-  //     }
-  //   });
-  
-  //   if (userType === "customer") {
-  //     customerRegister();
-  //   }
-  
-  //   if (userType === "owner") {
-  //     ownerRegister();
-  //   }
-  
-  // }
-  
-
-// const ownerRegister = () => {
-//   Swal.fire({
-//     title: "Chủ sân đăng ký",
-//     html: `
-//         <input id="businessName" class="swal2-input" placeholder="Tên doanh nghiệp. . .">
-//         <input id="ownerName" class="swal2-input" type="input"  placeholder="Tên chủ doanh nghiệp. . .">
-//         <input id="businessAddress" class="swal2-input" type="input"  placeholder="Địa chỉ. . .">
-//         <input id="username" class="swal2-input"  placeholder="Tên đăng nhập . . .">
-//         <input id="password" class="swal2-input" type="password"  placeholder="Mật khẩu . . .">
-//         <input id="retypePassword" class="swal2-input" type="password"  placeholder="Nhập lại mật khẩu . . .">
-//         <input id="phoneNumber" class="swal2-input" type="text"  placeholder="SDT( nhận OTP) . . .">
-//       `,
-//     focusConfirm: false,
-//     showCancelButton: true,
-//     confirmButtonText: "Đăng ký",
-//     cancelButtonText: "Hủy",
-//     showLoaderOnConfirm: true,
-//     customClass: {
-//       title: 'custom-title',
-//       confirmButton: 'custom-confirm-button',
-//     },
-//     preConfirm: async () => {
-//       const businessName = document.getElementById('businessName').value;
-//       const ownerName = document.getElementById('ownerName').value;
-//       const businessAddress = document.getElementById('businessAddress').value;
-//       const username = document.getElementById('username').value;
-//       const password = document.getElementById('password').value;
-//       const retypePassword = document.getElementById('retypePassword').value;
-//       let phoneNumber = document.getElementById('phoneNumber').value;
-
-//       if (!businessName || !ownerName || !businessAddress || !username || !password || !retypePassword || !phoneNumber) {
-//         Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin.');
-//         return false;
-//       }
-
-//       if (password !== retypePassword) {
-//         Swal.showValidationMessage('Mật khẩu không khớp.');
-//         return false;
-//       }
-
-//       const phoneRegex = /^0[0-9]{9}$/;
-//       if (phoneRegex.test(phoneNumber) === false) {
-//         Swal.showValidationMessage('Số điện thoại không hợp lệ!');
-//         return;
-//       } else {
-//         phoneNumber = '+84' + parseInt(phoneNumber);
-//       }
-
-//       try {
-//         const registerUrl = '../../public/user/verifyOTPandSaveData';
-
-//         const formData = new URLSearchParams();
-//         formData.append('action', 'getOTP');
-//         formData.append('username', username);
-//         formData.append('password', password);
-//         formData.append('fullname', fullname);
-//         formData.append('phoneNumber', phoneNumber);
-
-//         const response = await fetch(registerUrl,
-//           {
-//             method: 'POST',
-//             headers: {
-//               "Content-Type": "application/x-www-form-urlencoded",
-//             },
-
-//             body: formData.toString(),
-
-//           });
-
-//         const data = await response.json();
-//         if (data.status === "success") { //send otp via sms success
-//           verifyOTP();
-//         } else {
-//           Swal.showValidationMessage('Gửi OTP qua sms không thành công!');
-//         }
-
-//         if (data.errorMessage) {
-//           const errorMessages = [];
-//           if (data.errorMessage) {
-//             errorMessages.push(`Error Message: ${data.errorMessage}`);
-//           }
-//           return Swal.showValidationMessage(errorMessages.join('<br>'));
-//         }
 
 
-
-//       } catch (error) {
-//         Swal.showValidationMessage(`Request failed: ${error}`);
-//       }
-//     },
-//     allowOutsideClick: () => !Swal.isLoading()
-//   })
-// }

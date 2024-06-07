@@ -15,8 +15,8 @@ class UserServiceImplement implements UserServiceInterface {
         return $this->userRepositoryInterface->create($arrayCheck, $arrayInsert);
     }
 
-    public function findByUsername($username){
-        return $this->userRepositoryInterface->findByUsername($username);
+    public function findByEmail($username){
+        return $this->userRepositoryInterface->findByEmail($username);
     }
 }
 ?>

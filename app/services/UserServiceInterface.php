@@ -6,5 +6,5 @@ interface UserServiceInterface
 {
     public function create(array $arrayCheck, array $arrayInsert);
 
-    public function findByUsername($username);
+    public function findByEmail($username);
 }
