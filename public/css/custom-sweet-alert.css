@@ -32,3 +32,7 @@
 .my-custom-small-confirm-cancel-button {
     font-size: 70% !important;
 }
+
+.my-custom-backdrop {
+    width: 150px;
+}

@@ -1,78 +1,91 @@
 <header class="header_section">
-            <div class="container-fluid">
-                <nav class="navbar navbar-expand-lg custom_nav-container ">
-                    <a class="navbar-brand" href="../home/">
-                        <span>
-                            Sport Court Rental System
-                        </span>
-                    </a>
-                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class=""> </span>
-                    </button>
+    <div class="container-fluid">
+        <nav class="navbar navbar-expand-lg custom_nav-container ">
+            <a class="navbar-brand" href="../home/">
+                <span>
+                    Sport Court Rental System
+                </span>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class=""> </span>
+            </button>
 
-                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                        <ul class="navbar-nav  ml-auto">
-                            <li class="nav-item active">
-                                <a class="nav-link" href="../home/">Trang chủ</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="about.html"> Về chúng tôi</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="job.html">Công việc</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
-                            </li>
-                            <?php if (!isset($_SESSION['userInfo'])) : ?>
-                                <li class="nav-item" onclick="handleLogin()">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa fa-user" aria-hidden="true"></i>
-                                        <span>
-                                            Đăng nhập
-                                        </span>
-                                    </a>
-                                </li>
-                                <li class="nav-item" onclick="handleRegister()">
-                                    <a class="nav-link" href="#">
-                                        <i class="fa-solid fa-user-plus"></i>
-                                        <span>
-                                            Đăng ký
-                                        </span>
-                                    </a>
-                                </li>
-                            <?php else : ?>
-                                <li class="nav-item" style="margin-right: 25px;">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav  ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="../home/">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="about.html"> Về chúng tôi</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="job.html">Công việc</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
+                    </li>
+                    <?php if (!isset($_SESSION['userInfo'])) : ?>
+                        <li class="nav-item" onclick="handleLogin()">
+                            <a class="nav-link" href="#">
+                                <i class="fa fa-user" aria-hidden="true"></i>
+                                <span>
+                                    Đăng nhập
+                                </span>
+                            </a>
+                        </li>
+                        <li class="nav-item" onclick="handleRegister()">
+                            <a class="nav-link" href="#">
+                                <i class="fa-solid fa-user-plus"></i>
+                                <span>
+                                    Đăng ký
+                                </span>
+                            </a>
+                        </li>
+                    <?php else : ?>
+                        <li class="nav-item" style="margin-right: 25px;">
 
-                                    <div class="dropdown">
-                                        <button style="background-color: #E41A2B" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="fa fa-user text-white" style="min-width: 15%;"></i>
-                                            <span class="text-white">
-                                                <?php echo $_SESSION['userInfo']['FullName']; ?>
-                                            </span>
-                                        </button>
-                                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="../user/getProfile">
-                                                <i class="fa-solid fa-id-card" style="min-width: 20%;"></i>
-                                                <span>Hồ sơ</span>
-                                            </a>
-                                            <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['ID']; ?>)">
-                                                <i class="fa-regular fa-building" style="min-width: 20%;"></i>
-                                                <span> Bạn là chủ sân?</span>
-                                            </div>
-                                            <hr>
-                                            <div class="dropdown-item" href="#" onclick="handleLogout()">
-                                                <i class="fa-solid fa-arrow-right-from-bracket" style="min-width: 20%;"></i>
-                                                <span>
-                                                    Đăng Xuất
-                                                </span>
-                                            </div>
+                            <div class="dropdown">
+                                <button style="background-color: #E41A2B; min-width: 220px" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-user text-white" style="min-width: 15%;"></i>
+                                    <span class="text-white">
+                                        <?php echo $_SESSION['userInfo']['FullName']; ?>
+                                    </span>
+                                </button>
+
+                                <div class="dropdown-menu" style="min-width: 220px" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="../user/getProfile">
+                                        <i class="fa-solid fa-id-card" style="min-width: 15%;"></i>
+                                        <span>Hồ Sơ</span>
+                                    </a>
+
+                                    <?php if ($_SESSION['userInfo']['Role'] != 'SYSTEMADMIN') : ?>
+                                        <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['ID']; ?>)">
+                                            <i class="fa-regular fa-building" style="min-width: 15%;"></i>
+                                            <span> Bạn Là Chủ Sân? </span>
                                         </div>
+
+                                    <?php else : ?>
+                                        <div class="dropdown-item" href="#" onclick="handleBusiness()">
+                                            <i class="fa-regular fa-building" style="min-width: 15%;"></i>
+                                            <span>Các Doanh Nghiệp</span>
+                                        </div>
+                                    <?php endif; ?>
+
+                                    <hr>
+
+                                    <div class="dropdown-item" href="#" onclick="handleLogout()">
+                                        <i class="fa-solid fa-arrow-right-from-bracket" style="min-width: 20%;"></i>
+                                        <span>
+                                            Đăng Xuất
+                                        </span>
                                     </div>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                </nav>
+                                </div>
+
+                            </div>
+                        </li>
+                    <?php endif; ?>
+                </ul>
             </div>
-        </header>
+        </nav>
+    </div>
+</header>

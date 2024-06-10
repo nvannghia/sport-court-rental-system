@@ -8,7 +8,7 @@ use Infobip\Model\SmsAdvancedTextualRequest;
 use Infobip\Model\SmsDestination;
 use Infobip\Model\SmsTextualMessage;
 
-class SendOTPViaSMS
+class SendMessageViaSMS
 {
     private $baseUrl;
     private $apiKey;

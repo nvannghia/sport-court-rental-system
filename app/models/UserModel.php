@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class UserModel extends Eloquent
 {
+    protected $primaryKey = "ID";
     protected $table = "users";
     protected $fillable = ["Role", "FullName", "Email", "Password", "PhoneNumber" , "Address"];
 }
