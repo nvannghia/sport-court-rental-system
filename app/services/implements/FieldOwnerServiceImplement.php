@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Services\Implements;
+
 use App\Repositories\FieldOwnerRepositoryInterface;
 use App\Services\FieldOwnerServiceInterface;
 
@@ -20,5 +22,15 @@ class FieldOwnerServiceImplement implements FieldOwnerServiceInterface
     public function isOwnerRegistered($id)
     {
         return $this->fieldOwnerRepositoryInterface->isOwnerRegistered($id);
+    }
+
+    public function getAllOwners()
+    {
+        return $this->fieldOwnerRepositoryInterface->getAllOwners();
+    }
+
+    public function updateOwnerStatus($ownerID)
+    {
+        return $this->fieldOwnerRepositoryInterface->updateOwnerStatus($ownerID);
     }
 }

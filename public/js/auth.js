@@ -14,7 +14,7 @@ const handleLogin = (evt) => {
     hideClass: {
       popup: `
         animate__animated
-        animate__fadeOutDown
+        animate__fadeOutUp
         animate__faster
       `
     },

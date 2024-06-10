@@ -7,7 +7,7 @@ use App\Repositories\UserRepositoryInterface as UserRepositoryInterface;
 use App\Repositories\Implements\UserRepositoryImplement as UserRepositoryImplement;
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\UserServiceImplement as UserServiceImplement;
-use App\Utils\sendOTPViaSMS;
+use App\Utils\SendMessageViaSMS;
 
 $containerBuilder = new ContainerBuilder();
 $containerBuilder->addDefinitions([
@@ -16,7 +16,7 @@ $containerBuilder->addDefinitions([
     // Khai báo UserServiceImplement và tự động wire các dependency
     UserServiceImplement::class => \DI\autowire(),
 
-    SendOTPViaSMS::class => DI\create(SendOTPViaSMS::class),
+    SendMessageViaSMS::class => DI\create(SendMessageViaSMS::class),
 
     // Khai báo UserRepository sẽ sử dụng UserRepositoryImplement
     FieldOwnerRepositoryInterface::class => \DI\create(FieldOwnerRepositoryImplement::class),

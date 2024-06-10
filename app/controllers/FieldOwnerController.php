@@ -4,24 +4,23 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Services\FieldOwnerServiceInterface;
+use App\Utils\SendMessageViaSMS;
 
 class FieldOwnerController extends Controller
 {
     protected $fieldOwnerServiceInterface;
 
+    protected $sendMessageViaSMS;
+
     const STATUS = ['ACTIVE', 'INACTIVE'];
 
-    public function __construct(FieldOwnerServiceInterface $fieldOwnerServiceInterface)
+    public function __construct(FieldOwnerServiceInterface $fieldOwnerServiceInterface, SendMessageViaSMS $sendMessageViaSMS)
     {
         $this->fieldOwnerServiceInterface = $fieldOwnerServiceInterface;
+        $this->sendMessageViaSMS = $sendMessageViaSMS;
     }
     public function createBusiness()
     {
-
-        if (!empty($_POST) && $_POST['action'] === 'checkOwnerRegisterd') {
-            $this->isOwnerRegistered();
-        }
-
         if (!empty($_POST) && $_POST['action'] === 'ownerRegister') {
             $businessName = $_POST['businessName'] ?? null;
             $businessAddress = $_POST['businessAddress'] ?? null;
@@ -61,15 +60,83 @@ class FieldOwnerController extends Controller
 
     public function isOwnerRegistered()
     {
-        //check if owner already registered
-        $ownerID = $_POST['ownerID'] ?? null;
 
-        if ($this->fieldOwnerServiceInterface->isOwnerRegistered($ownerID)) {
+        if (!empty($_POST) && $_POST['action'] === 'checkOwnerRegisterd') {
+            //check if owner already registered
+            $ownerID = $_POST['ownerID'] ?? null;
+
+            if ($this->fieldOwnerServiceInterface->isOwnerRegistered($ownerID)) {
+                echo json_encode([
+                    "statusCode" => 409,
+                    "message" => "You're already registered!"
+                ]);
+            } else
+                echo json_encode([
+                    "statusCode" => 404,
+                    "message" => "Unregistered business"
+                ]);
+        }
+    }
+
+    public function getAllOwners()
+    {
+        if (!empty($_POST) && $_POST['action'] === 'getAllOwners') {
+            $owners = $this->fieldOwnerServiceInterface->getAllOwners();
             echo json_encode([
-                "statusCode" => 409,
-                "message" => "You're already registered!"
+                'statusCode' => 200,
+                'owners' => $owners
             ]);
-            return;
+        }
+    }
+
+    public function updateOwnerStatus()
+    {
+        if (!empty($_POST) && $_POST['action'] === 'updateOwnerStatus') {
+            $ownerID = $_POST['ownerID'] ?? null;
+            if ($ownerID) {
+                $fieldOwner = $this->fieldOwnerServiceInterface->updateOwnerStatus($ownerID);
+                if ($fieldOwner) {
+
+                    $this->sendStatusUpdateMessage($fieldOwner);
+
+                    echo json_encode([
+                        "statusCode" => 200,
+                        "message" => "Owner Updated Successfully",
+                        "data" => $fieldOwner
+                    ]);
+                } else {
+                    echo json_encode([
+                        "statusCode" => 500,
+                        "message" => "Owner Update Failed"
+                    ]);
+                }
+            } else {
+                echo json_encode([
+                    "statusCode" => 404,
+                    "message" => "Owner Not Found"
+                ]);
+            }
+        }
+    }
+
+    public function sendStatusUpdateMessage($fieldOnwer)
+    {
+        $phoneNumber = substr_replace($fieldOnwer->PhoneNumber, '+84', 0, 1);
+
+        if ($fieldOnwer->Status === "ACTIVE") {
+            $message = "Xin chúc mừng, doanh nghiệp 
+                $fieldOnwer->BusinessName - Đ.C: $fieldOnwer->BusinessAddress 
+                đã được hệ thống xác nhận
+                , Vui lòng đăng nhập vào trang web để xem lại thông tin!";
+
+            $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
+        } else {
+            $message = "Doanh nghiệp 
+            $fieldOnwer->BusinessName - Đ.C: $fieldOnwer->BusinessAddress 
+             đã bị hệ thống khóa do khiếu nại
+            , Nếu bạn có bất cứ thắc mắc nào vui lòng liên hệ QTV!";
+
+            $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
         }
     }
 }

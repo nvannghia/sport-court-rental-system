@@ -2,7 +2,7 @@
 
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\UserServiceImplement;
-use App\Utils\sendOTPViaSMS;
+use App\Utils\SendMessageViaSMS;
 
 class App
 {
@@ -17,8 +17,8 @@ class App
 
 
     protected $controllersWithDependencies = [
-        'UserController' => [UserServiceImplement::class, SendOTPViaSMS::class],
-        'FieldOwnerController' => [FieldOwnerServiceImplement::class]
+        'UserController' => [UserServiceImplement::class, SendMessageViaSMS::class],
+        'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class]
     ];
 
     protected $controllerMapping = [

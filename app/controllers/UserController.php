@@ -3,8 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 use App\Services\UserServiceInterface;
-use App\Utils\sendOTPViaSMS;
-
+use App\Utils\SendMessageViaSMS;
 
 class UserController extends Controller
 {
@@ -12,12 +11,12 @@ class UserController extends Controller
 
     protected $userServiceInterface;
 
-    protected $sendOTPViaSMS;
+    protected $sendMessageViaSMS;
 
-    public function __construct(UserServiceInterface $userServiceInterface, sendOTPViaSMS $sendOTPViaSMS)
+    public function __construct(UserServiceInterface $userServiceInterface, SendMessageViaSMS $sendMessageViaSMS)
     {
         $this->userServiceInterface = $userServiceInterface;
-        $this->sendOTPViaSMS = $sendOTPViaSMS;
+        $this->sendMessageViaSMS = $sendMessageViaSMS;
     }
 
     function verifyOTPandSaveData()
@@ -37,8 +36,8 @@ class UserController extends Controller
                 }
             }
 
-            $otp = $this->sendOTPViaSMS->generateOTP();
-            $this->sendOTPViaSMS->saveOTP($_POST['phoneNumber'], $otp); // tương ứng mỗi sdt sẽ có otp, được lưu trong session
+            $otp = $this->sendMessageViaSMS->generateOTP();
+            $this->sendMessageViaSMS->saveOTP($_POST['phoneNumber'], $otp); // tương ứng mỗi sdt sẽ có otp, được lưu trong session
 
             //save data for next request
             $_SESSION['fullname'] = $_POST['fullname'];
@@ -49,7 +48,7 @@ class UserController extends Controller
 
             $receiveNumber = $_POST['phoneNumber'];
             $message = "Your OTP code is: " .  $otp;
-            $isPending = $this->sendOTPViaSMS->sendSMS($receiveNumber, $message);
+            $isPending = $this->sendMessageViaSMS->sendSMS($receiveNumber, $message);
 
             if ($isPending)
                 echo json_encode([
@@ -67,7 +66,7 @@ class UserController extends Controller
 
             $otp = $_POST['otp'] ?? null;
 
-            if ($this->sendOTPViaSMS->verifyOTP($_SESSION['phoneNumber'], $otp)) {
+            if ($this->sendMessageViaSMS->verifyOTP($_SESSION['phoneNumber'], $otp)) {
 
                 $user = $this->create();
                 if ($user->wasRecentlyCreated) {
