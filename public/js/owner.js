@@ -136,6 +136,33 @@ const handleUpdateOnwerStatus = async (ownerID) => {
   })
 
   const data = await response.json();
+
+  if (data.statusCode === 200) {
+    let btnStatus = document.getElementById("btnStatus");
+    let textStatus = document.getElementById("textStatus");
+
+    if (data.fieldOnwerStatus === "INACTIVE") {
+      btnStatus.classList.remove("btn-danger");
+      btnStatus.classList.add("btn-success");
+      textStatus.classList.remove("text-success");
+      textStatus.classList.add("text-danger");
+      btnStatus.innerHTML = "Mở";
+      textStatus.innerHTML = "ACTIVE";
+    } else {
+      btnStatus.classList.remove("btn-success");
+      btnStatus.classList.add("btn-danger");
+      textStatus.classList.remove("text-danger");
+      textStatus.classList.add("text-success");
+      btnStatus.innerHTML = "Khóa";
+      textStatus.innerHTML = "INACTIVE";
+    }
+
+  } else if (data.statusCode === 404)
+    Swal.showValidationMessage('Not found!');
+  else
+    Swal.showValidationMessage('Server Internal Error!');
+
+
 }
 
 
@@ -160,15 +187,14 @@ const getAllOwners = async () => {
        <tr>
         <th scope="col">${o.OwnerID}</th>
         <th scope="col">
-        ${`<span class="${ (o.Status === "INACTIVE") ? "text-danger" : "text-success"}"> ${o.Status} </span>`
-        }
+        ${`<span id="textStatus" class="${(o.Status === "INACTIVE") ? "text-danger" : "text-success"}"> ${o.Status} </span>`}
         </th>
         <th scope="col">${o.BusinessName}</th>
         <th scope="col">${o.BusinessAddress}</th>
         <th scope="col">${o.PhoneNumber}</th>
         <th scope="col">
-        <button onclick="handleUpdateOnwerStatus(${o.OwnerID})" class="btn  ${ (o.Status === "INACTIVE") ? "btn-success" : "btn-danger"}" title="Mở khóa/Xác nhận doanh nghiệp">
-          ${ (o.Status === "INACTIVE") ? "Mở" : "Khóa"}
+        <button id="btnStatus" onclick="handleUpdateOnwerStatus(${o.OwnerID})" class="btn  ${(o.Status === "INACTIVE") ? "btn-success" : "btn-danger"}" title="Mở khóa/Xác nhận doanh nghiệp">
+          ${(o.Status === "INACTIVE") ? "Mở" : "Khóa"}
         </button>
       </tr>
     `;
@@ -182,7 +208,7 @@ const getAllOwners = async () => {
 
 const handleBusiness = async () => {
   const rowsContent = await getAllOwners();
-  console.log(typeof rowsContent);
+
   const htmlContent = `
     <table class="table">
     <thead style="color:#FF6347">

@@ -2,6 +2,8 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
+use App\Models\UserModel;
 use App\Services\UserServiceInterface;
 use App\Utils\SendMessageViaSMS;
 
@@ -18,6 +20,12 @@ class UserController extends Controller
         $this->userServiceInterface = $userServiceInterface;
         $this->sendMessageViaSMS = $sendMessageViaSMS;
     }
+
+    // public function fetch()
+    // {
+    //     var_dump($_SESSION['userInfo']);
+      
+    // }
 
     function verifyOTPandSaveData()
     {
@@ -53,7 +61,6 @@ class UserController extends Controller
             if ($isPending)
                 echo json_encode([
                     "status" => 'success',
-                    "session" => $_SESSION
                 ]);
             else
                 echo json_encode([
@@ -148,7 +155,10 @@ class UserController extends Controller
 
                     unset($user['Password']); // no return password
 
-                    $_SESSION['userInfo'] = $user; //save user logged to session
+                    if ($user->fieldOwner)
+                        $_SESSION['userInfo'] = array_merge($user->toArray(), $user->fieldOwner->toArray()); //save user logged to session
+                    else
+                        $_SESSION['userInfo'] = $user->toArray(); //save user logged to session
 
                     echo json_encode([
                         "statusCode" => 200,

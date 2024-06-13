@@ -16,8 +16,11 @@ class SendMessageViaSMS
 
     public function __construct()
     {
-        $this->baseUrl = "https://qyxygw.api.infobip.com";
-        $this->apiKey = "bef7a48e44e9c8eb23e0a27ebd211784-3175224a-3d8d-42c5-bd4b-bf4fc4b02d64";
+        // $this->baseUrl = "https://qyxygw.api.infobip.com";//nghiaturtle2002
+        // $this->apiKey = "bef7a48e44e9c8eb23e0a27ebd211784-3175224a-3d8d-42c5-bd4b-bf4fc4b02d64";//nghiaturtle2002
+        $this->baseUrl = "9l69z3.api.infobip.com";// account ou
+        $this->apiKey = "9839594adfaf63939e404fb1a07efa9a-ee005dd1-d91c-4b58-8adc-fb95fed4f8f3";// accout ou
+
         $configuration = new Configuration(host: $this->baseUrl, apiKey: $this->apiKey);
         $this->api = new SmsApi(config: $configuration);
     }

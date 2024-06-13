@@ -59,7 +59,7 @@
                                     </a>
 
                                     <?php if ($_SESSION['userInfo']['Role'] != 'SYSTEMADMIN') : ?>
-                                        <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['ID']; ?>)">
+                                        <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['OwnerID']; ?>)">
                                             <i class="fa-regular fa-building" style="min-width: 15%;"></i>
                                             <span> Bạn Là Chủ Sân? </span>
                                         </div>
@@ -68,6 +68,10 @@
                                         <div class="dropdown-item" href="#" onclick="handleBusiness()">
                                             <i class="fa-regular fa-building" style="min-width: 15%;"></i>
                                             <span>Các Doanh Nghiệp</span>
+                                        </div>
+                                        <div class="dropdown-item" href="#" onclick="handleSportType()">
+                                            <i class="fa-solid fa-list" style="min-width: 15%;"></i>
+                                            <span>Thể Loại Sân</span>
                                         </div>
                                     <?php endif; ?>
 
