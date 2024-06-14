@@ -2,10 +2,13 @@
 
 use App\Repositories\FieldOwnerRepositoryInterface;
 use App\Repositories\Implements\FieldOwnerRepositoryImplement;
+use App\Repositories\Implements\SportTypeRepositoryImplement;
 use DI\ContainerBuilder;
 use App\Repositories\UserRepositoryInterface as UserRepositoryInterface;
 use App\Repositories\Implements\UserRepositoryImplement as UserRepositoryImplement;
+use App\Repositories\SportTypeRepositoryInterface;
 use App\Services\Implements\FieldOwnerServiceImplement;
+use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement as UserServiceImplement;
 use App\Utils\SendMessageViaSMS;
 
@@ -18,10 +21,11 @@ $containerBuilder->addDefinitions([
 
     SendMessageViaSMS::class => DI\create(SendMessageViaSMS::class),
 
-    // Khai báo UserRepository sẽ sử dụng UserRepositoryImplement
     FieldOwnerRepositoryInterface::class => \DI\create(FieldOwnerRepositoryImplement::class),
-    // Khai báo UserServiceImplement và tự động wire các dependency
     FieldOwnerServiceImplement::class => \DI\autowire(),
+
+    SportTypeRepositoryInterface::class => \DI\create(SportTypeRepositoryImplement::class),
+    SportTypeServiceImplement::class => \DI\autowire(),
 ]);
 
 $container = $containerBuilder->build();

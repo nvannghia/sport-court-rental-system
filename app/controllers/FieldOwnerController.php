@@ -97,13 +97,14 @@ class FieldOwnerController extends Controller
                 $fieldOwner = $this->fieldOwnerServiceInterface->updateOwnerStatus($ownerID);
                 if ($fieldOwner) {
 
-                    $this->sendStatusUpdateMessage($fieldOwner);
+                    $isPending = $this->sendStatusUpdateMessage($fieldOwner);
 
-                    echo json_encode([
-                        "statusCode" => 200,
-                        "message" => "Owner Updated Successfully",
-                        "data" => $fieldOwner
-                    ]);
+                    if($isPending)
+                        echo json_encode([
+                            "statusCode" => 200,
+                            "message" => "Owner Updated Successfully",
+                            "fieldOnwerStatus" => $fieldOwner->Status,
+                        ]);
                 } else {
                     echo json_encode([
                         "statusCode" => 500,
@@ -129,14 +130,14 @@ class FieldOwnerController extends Controller
                 đã được hệ thống xác nhận
                 , Vui lòng đăng nhập vào trang web để xem lại thông tin!";
 
-            $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
+            return $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
         } else {
             $message = "Doanh nghiệp 
             $fieldOnwer->BusinessName - Đ.C: $fieldOnwer->BusinessAddress 
              đã bị hệ thống khóa do khiếu nại
             , Nếu bạn có bất cứ thắc mắc nào vui lòng liên hệ QTV!";
 
-            $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
+            return $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
         }
     }
 }

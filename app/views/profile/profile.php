@@ -3,7 +3,7 @@ $hiddenSliderSection = true;
 $hiddenCategory = true;
 require_once __DIR__ . '/../layouts/header.php';
 ?>
-<section style="background-color: lightgray">
+<section style="background-color: #1E286A;" >
     <div class="container py-5">
         <div class="row">
             <div class="col">
@@ -15,7 +15,7 @@ require_once __DIR__ . '/../layouts/header.php';
             </div>
         </div>
 
-        <div class="row">
+        <div class="row" id="infoView">
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
@@ -106,63 +106,130 @@ require_once __DIR__ . '/../layouts/header.php';
                         </div>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="card mb-4 mb-md-0">
-                            <div class="card-body">
-                                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                                </p>
-                                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+
+                <?php if ($_SESSION['userInfo']['Role'] === 'OWNER') : ?>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <p class="mb-4 h4">
+                                        <span class="text-primary font-italic me-1 h5">Doanh Nghiệp: </span> <?php echo $_SESSION['userInfo']['BusinessName']; ?>
+                                    </p>
+                                    <p class="mb-1 ">Trạng thái:
+                                        <span class="<?php echo $_SESSION['userInfo']['Status'] === 'ACTIVE' ? 'text-success' : 'text-danger'; ?>">
+                                            <?php echo $_SESSION['userInfo']['Status']; ?> </span>
+                                    </p>
+
+                                    <p class="mt-4 mb-1 ">Địa Chỉ Doanh Nghiệp: <?php echo $_SESSION['userInfo']['BusinessAddress']; ?></p>
+
+                                    <p class="mt-4 mb-1">SĐT: <?php echo $_SESSION['userInfo']['PhoneNumber']; ?></p>
+
+                                    <p class="mt-4 mb-1">Ngày Đăng Ký Trên Hệ Thống:
+                                        <?php
+                                        // Chuỗi thời gian ISO 8601
+                                        $iso8601String = $_SESSION['userInfo']['created_at'];
+
+                                        // Chuyển đổi chuỗi thời gian thành timestamp
+                                        $timestamp = strtotime($iso8601String);
+
+                                        // Định dạng ngày giờ
+                                        $formattedDate = date("H:i:s  m-d-Y ", $timestamp);
+
+                                        echo $formattedDate;
+
+                                        ?>
+                                    </p>
                                 </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                                <div class="progress rounded mb-2" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                                <button id="addSportFieldBtn" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-1">
+                                    Thêm Sân
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card mb-4 mb-md-0">
+                                <div class="card-body">
+                                    <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
+                                    </p>
+                                    <p class="mb-1" style="font-size: .77rem;">Web Design</p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
+                                    <div class="progress rounded" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
+                                    <div class="progress rounded mb-2" style="height: 5px;">
+                                        <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-6">
-                        <div class="card mb-4 mb-md-0">
-                            <div class="card-body">
-                                <p class="mb-4"><span class="text-primary font-italic me-1">assigment</span> Project Status
-                                </p>
-                                <p class="mb-1" style="font-size: .77rem;">Web Design</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                <?php endif; ?>
+
+                <!-- add  sport field form -->
+                <div id="formContainer" class="d-none" style="background-color:coral; padding: 10px; border-radius:4px">
+                    <form id="addSportFieldForm" class=" mt-3" method="POST" action="../sportfield/storeSportField" enctype="multipart/form-data">
+                        <div class="form-group d-flex flex-wrap justify-content-between">
+                            <label for="sportFieldName" class="text-white">Tên Sân</label>
+                            <button class="btn btn-outline-primary ms-1 mb-1 text-white" type="button" onclick="hiddenForm()" > Ẩn Form </button>
+                            <input type="text" class="form-control" id="sportFieldName" name="sportFieldName">
+                        </div>
+                        <div class="form-group" style="margin-top: -6px;">
+                            <div class="d-flex justify-content-between flex-wrap">
+                                <div>
+                                    <label for="pricePerHour" class="text-white">Giá Mỗi Giờ</label>
+                                    <input type="text" class="form-control" id="pricePerHour" name="pricePerHour">
                                 </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Website Markup</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 72%" aria-valuenow="72" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div>
+                                    <label for="status" class="text-white">Trạng Thái</label>
+                                    <input type="text" class="form-control" id="status" name="status">
                                 </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">One Page</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div>
+                                    <label for="numberOfField" class="text-white">Số Lượng Sân</label>
+                                    <input type="text" class="form-control" id="numberOfField" name="numberOfField">
                                 </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Mobile Template</p>
-                                <div class="progress rounded" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 55%" aria-valuenow="55" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <p class="mt-4 mb-1" style="font-size: .77rem;">Backend API</p>
-                                <div class="progress rounded mb-2" style="height: 5px;">
-                                    <div class="progress-bar" role="progressbar" style="width: 66%" aria-valuenow="66" aria-valuemin="0" aria-valuemax="100"></div>
+
+                                <div class="d-flex justify-content-center w-100 mt-3">
+                                    <div class="form-group">
+                                        <label for="sportTypeID" class="text-white">Thể Loại Sân</label>
+                                        <br>
+                                        <select class="form-control" id="sportTypeID" name="sportTypeID">
+                                            <option>1</option>
+                                            <option>2</option>
+                                            <option>3</option>
+                                            <option>4</option>
+                                            <option>5</option>
+                                        </select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                        <div class="form-group" style="margin-top: -50px;">
+                            <label for="address" class="form-label text-white">Địa chỉ</label>
+                            <textarea class="form-control" id="address" name="address" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label text-white">Mô Tả</label>
+                            <textarea class="form-control" id="default" name="description" name="description"></textarea>
+                        </div>
+                        <button id="" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-1 text-white">
+                            Thêm
+                        </button>
+
+                    </form>
                 </div>
             </div>
         </div>
