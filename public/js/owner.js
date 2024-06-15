@@ -185,17 +185,25 @@ const getAllOwners = async () => {
     htmlContent = data.owners.map((o) => {
       return `
        <tr>
-        <th scope="col">${o.OwnerID}</th>
-        <th scope="col">
+        <td scope="col">${o.OwnerID}</td>
+        <td scope="col">
         ${`<span id="textStatus" class="${(o.Status === "INACTIVE") ? "text-danger" : "text-success"}"> ${o.Status} </span>`}
-        </th>
-        <th scope="col">${o.BusinessName}</th>
-        <th scope="col">${o.BusinessAddress}</th>
-        <th scope="col">${o.PhoneNumber}</th>
-        <th scope="col">
-        <button id="btnStatus" onclick="handleUpdateOnwerStatus(${o.OwnerID})" class="btn  ${(o.Status === "INACTIVE") ? "btn-success" : "btn-danger"}" title="Mở khóa/Xác nhận doanh nghiệp">
-          ${(o.Status === "INACTIVE") ? "Mở" : "Khóa"}
-        </button>
+        </td>
+        <td scope="col">${o.BusinessName}</td>
+        <td scope="col">${o.BusinessAddress}</td>
+        <td scope="col">${o.PhoneNumber}</td>
+        <td scope="col">
+          <button id="btnStatus" onclick="handleUpdateOnwerStatus(${o.OwnerID})" class="w-100 btn  ${(o.Status === "INACTIVE") ? "btn-success" : "btn-danger"}" title="Mở khóa/Xác nhận doanh nghiệp">
+          <div class="d-flex  align-items-center justify-content-around">
+          ${(o.Status === "INACTIVE")
+          ?
+          "<i class='fa-solid fa-unlock'></i><span>Mở</span>"
+          :
+          "<i class='fa-solid fa-lock'></i><span>Khóa</span>"
+          } 
+          </div>  
+          </button>
+        </td>
       </tr>
     `;
     });
