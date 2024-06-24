@@ -10,6 +10,10 @@ addSportFiledBtn.addEventListener("click", () => {
 
 
 const hiddenForm = () => {
+    //reset the form
+    const form = document.getElementById('addSportFieldForm');
+    form.reset();
+
     formContainer.classList.toggle("d-block");
     window.scroll({
         top: 140,

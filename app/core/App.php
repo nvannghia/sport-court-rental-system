@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Implements\FieldOwnerServiceImplement;
+use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement;
 use App\Utils\SendMessageViaSMS;
@@ -18,9 +19,14 @@ class App
 
 
     protected $controllersWithDependencies = [
-        'UserController' => [UserServiceImplement::class, SendMessageViaSMS::class],
+        'UserController' => [
+            UserServiceImplement::class,
+            SendMessageViaSMS::class,
+            SportTypeServiceImplement::class,
+            SportFieldServiceImplement::class,
+        ],
         'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
-        'SportFieldController' => [],
+        'SportFieldController' => [SportFieldServiceImplement::class],
         'SportTypeController' => [SportTypeServiceImplement::class]
     ];
 

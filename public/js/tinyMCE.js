@@ -14,28 +14,41 @@ tinymce.init({
     },
     menubar: 'favs file edit view insert format tools table',
     content_style: 'body{font-family:Helvetica,Arial,sans-serif; font-size:16px}',
-    // images_upload_url: 'upload.php',
+    images_upload_url: '../../app/utils/upload.php', // Điều chỉnh đường dẫn đến endpoint xử lý upload.php
     automatic_uploads: true,
     file_picker_types: 'image',
-    file_picker_callback: function (callback, value, meta) {
+    file_picker_callback: function(callback, value, meta) {
         if (meta.filetype === 'image') {
             const input = document.createElement('input');
             input.setAttribute('type', 'file');
             input.setAttribute('accept', 'image/*');
-            input.onchange = function () {
+            input.onchange = function() {
                 const file = this.files[0];
-                const reader = new FileReader();
+                const formData = new FormData();
+                formData.append('file', file);
 
-                reader.onload = function () {
-                    const id = 'blobid' + (new Date()).getTime();
-                    const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-                    const base64 = reader.result.split(',')[1];
-                    const blobInfo = blobCache.create(id, file, base64);
-                    blobCache.add(blobInfo);
-
-                    callback(blobInfo.blobUri(), { title: file.name });
+                const xhr = new XMLHttpRequest();
+                xhr.open('POST', '../../app/utils/upload.php', true); // Điều chỉnh đường dẫn endpoint xử lý upload
+                xhr.onload = function() {
+                    if (xhr.status === 200) {
+                        try {
+                            const json = JSON.parse(xhr.responseText);
+                            if (json.location) {
+                                callback('../../app/utils/'+json.location, { alt: file.name });
+                            } else {
+                                alert('Failed to upload image: Invalid response from server');
+                            }
+                        } catch (e) {
+                            alert('Failed to upload image: Error parsing response');
+                        }
+                    } else {
+                        alert('Failed to upload image: Server Error ' + xhr.status);
+                    }
                 };
-                reader.readAsDataURL(file);
+                xhr.onerror = function() {
+                    alert('Failed to upload image: Network Error');
+                };
+                xhr.send(formData);
             };
             input.click();
         }

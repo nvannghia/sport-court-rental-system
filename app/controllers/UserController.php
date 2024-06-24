@@ -3,7 +3,10 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+use App\Models\SportField;
 use App\Models\UserModel;
+use App\Services\SportFieldServiceInterface;
+use App\Services\SportTypeServiceInterface;
 use App\Services\UserServiceInterface;
 use App\Utils\SendMessageViaSMS;
 
@@ -15,17 +18,32 @@ class UserController extends Controller
 
     protected $sendMessageViaSMS;
 
-    public function __construct(UserServiceInterface $userServiceInterface, SendMessageViaSMS $sendMessageViaSMS)
-    {
+    protected $sportTypeServiceInterface;
+
+    protected $sportFieldServiceInterface;
+
+    public function __construct(
+        UserServiceInterface $userServiceInterface,
+        SendMessageViaSMS $sendMessageViaSMS,
+        SportTypeServiceInterface $sportTypeServiceInterface,
+        SportFieldServiceInterface $sportFieldServiceInterface
+    ) {
         $this->userServiceInterface = $userServiceInterface;
         $this->sendMessageViaSMS = $sendMessageViaSMS;
+        $this->sportTypeServiceInterface = $sportTypeServiceInterface;
+        $this->sportFieldServiceInterface = $sportFieldServiceInterface;
     }
 
-    // public function fetch()
-    // {
-    //     var_dump($_SESSION['userInfo']);
-      
-    // }
+    public function fetch()
+    {
+
+        echo "<pre>";
+        print_r($this->sportFieldServiceInterface->getSportFieldByOwnerID(13)->toArray());
+        echo "</pre>";
+       
+        // var_dump(SportField::find(13)->sportType->TypeName);
+
+    }
 
     function verifyOTPandSaveData()
     {
@@ -200,8 +218,17 @@ class UserController extends Controller
 
     public function getProfile()
     {
+        if ($_SESSION['userInfo']['Role'] === "CUSTOMER")
+            return $this->view('user/profile', []);
+
+        $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes()->toArray();
+        $ownerID = $_SESSION['userInfo']['OwnerID'];
+        $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerID($ownerID)->toArray();
         if (isset($_SESSION['userInfo']))
-            return $this->view('profile/profile', $_SESSION['userInfo']);
+            return $this->view('user/profile', [
+                'sportTypes' => $sportTypes,
+                'sportFields' => $sportFields
+            ]);
 
         echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";
     }

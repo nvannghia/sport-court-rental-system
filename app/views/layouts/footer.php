@@ -97,34 +97,38 @@
 
 
 <!-- jQery -->
-<script src="../../public/js/jquery-3.4.1.min.js"></script>
+<script src="/sport-court-rental-system/public/js/jquery-3.4.1.min.js"></script>
 <!-- bootstrap js -->
-<script src="../../public/js/bootstrap.js"></script>
+<script src="/sport-court-rental-system/public/js/bootstrap.js"></script>
 <!-- nice select -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js" integrity="sha256-Zr3vByTlMGQhvMfgkQ5BtWRSKBGa2QlspKYJnkjZTmo=" crossorigin="anonymous"></script>
 <!-- custom js -->
-<script src="../../public/js/custom.js"></script>
+<script src="/sport-court-rental-system/public/js/custom.js"></script>
 <!-- sweet alert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- auth -->
-<script src="../../public/js/auth.js"></script>
+<script src="/sport-court-rental-system/public/js/auth.js"></script>
 
 <!-- owner -->
-<script src="../../public/js/owner.js"></script>
+<script src="/sport-court-rental-system/public/js/field-owner.js"></script>
 
 <!-- field-sport -->
-<script src="../../public/js/field-sport.js"></script>
+<script src="/sport-court-rental-system/public/js/field-sport.js"></script>
 
 <!-- sport-type -->
-<script src="../../public/js/sport-type.js"></script>
+<script src="/sport-court-rental-system/public/js/sport-type.js"></script>
 
 
 <!-- tinymce -->
-<script src="../../public/js/tinymce/tinymce.min.js"></script>
+<script src="/sport-court-rental-system/public/js/tinymce/tinymce.min.js"></script>
 
 <!-- tinymce init -->
-<script src="../../public/js/tinyMCE.js"></script>
+<script src="/sport-court-rental-system/public/js/tinyMCE.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/validator@13.7.0/dist/validator.min.js"></script>
+
+
 </body>
 
 </html>

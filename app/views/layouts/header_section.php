@@ -1,7 +1,7 @@
 <header class="header_section">
     <div class="container-fluid">
         <nav class="navbar navbar-expand-lg custom_nav-container ">
-            <a class="navbar-brand" href="../home/">
+            <a class="navbar-brand" href="/sport-court-rental-system/public/home/">
                 <span>
                     Sport Court Rental System
                 </span>
@@ -13,7 +13,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav  ml-auto">
                     <li class="nav-item active">
-                        <a class="nav-link" href="../home/">Trang chủ</a>
+                        <a class="nav-link" href="/sport-court-rental-system/public/home/">Trang chủ</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="about.html"> Về chúng tôi</a>
@@ -53,7 +53,7 @@
                                 </button>
 
                                 <div class="dropdown-menu" style="min-width: 220px" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="../user/getProfile">
+                                    <a class="dropdown-item w-100" href="/sport-court-rental-system/public/user/getProfile">
                                         <i class="fa-solid fa-id-card" style="min-width: 15%;"></i>
                                         <span>Hồ Sơ</span>
                                     </a>
