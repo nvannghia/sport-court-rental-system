@@ -14,4 +14,5 @@ class UserModel extends Eloquent
     {
         return $this->hasOne(FieldOwner::class, "OwnerID", "ID");
     }
+    
 }

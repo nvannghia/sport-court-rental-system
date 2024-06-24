@@ -2,7 +2,7 @@
 //Composer autoloader
 require_once '../vendor/autoload.php';
 
-require_once 'DI/DI.php';
+require_once 'DI.php';
 
 require_once 'database.php';
 

@@ -79,10 +79,18 @@ const updateSportType = async (sportTypeID, sportTypeName) => {
 
 
 const displayComponentEditSportType = (sportTypeID, sportTypeName) => {
-  //hide add component
-  if (document.getElementById("addSportType").classList.contains("d-block"))
-    document.getElementById("addSportType").classList.remove("d-block");
+  //hide add component and validate notify
+  const addSportTypeComponent = document.getElementById("addSportType");
+  const displayValidate = document.getElementById("displayValidate");
 
+  if (addSportTypeComponent.classList.contains("d-block"))
+    addSportTypeComponent.classList.remove("d-block");
+
+  if (displayValidate.classList.contains("d-block"))
+    displayValidate.classList.remove("d-block");
+
+  if (addSportTypeComponent.classList.contains("d-block"))
+    addSportTypeComponent.classList.remove("d-block");
 
   const editSportTypeElement = document.getElementById("editSportType");
   editSportTypeElement.classList.add("d-block");
@@ -231,9 +239,9 @@ const addSportType = async () => {
 
     const tr = `<tr id="row-${data.sportType.ID}">
           <td scope="col">${data.sportType.ID}</td>
-          <td scope="col">${data.sportType.TypeName}</td>
+          <td scope="col" id="col-typeName-${data.sportType.ID}">${data.sportType.TypeName}</td>
           <td scope="col">${parseToTime(data.sportType.created_at)}</td>
-          <td scope="col">${parseToTime(data.sportType.updated_at)}</td>
+          <td scope="col" id="col-updatedAt-${data.sportType.ID}">${parseToTime(data.sportType.updated_at)}</td>
           <td scope="col">
             <i style="cursor:pointer" onclick="displayComponentEditSportType(${data.sportType.ID},'${data.sportType.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
             <span class="h3">|</span>
@@ -266,9 +274,15 @@ const addSportType = async () => {
 
 
 const displayComponentAddSportType = () => {
-  //hide edit component
-  if (document.getElementById("editSportType").classList.contains("d-block"))
-    document.getElementById("editSportType").classList.remove("d-block");
+  //hide edit component and validate notify
+  const editComponent = document.getElementById("editSportType");
+  const displayValidate = document.getElementById("displayValidate");
+
+  if (editComponent.classList.contains("d-block"))
+    editComponent.classList.remove("d-block");
+
+  if (displayValidate.classList.contains("d-block"))
+    displayValidate.classList.remove("d-block");
 
   const addSportType = document.getElementById("addSportType");
   addSportType.classList.toggle("d-block");

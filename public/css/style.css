@@ -5,6 +5,18 @@ body {
   overflow-x: hidden;
 }
 
+.is-invalid {
+  border-color: red !important; /* Thay đổi màu viền khi lỗi */
+}
+
+.custom-select {
+  width: 150px; /* Thiết lập chiều rộng tối thiểu */
+  min-width: 150px; /* Đảm bảo chiều rộng không nhỏ hơn */
+  height: 39px;
+  max-height: 39px;
+}
+
+
 .layout_padding {
   padding: 90px 0;
 }

@@ -99,7 +99,7 @@ class FieldOwnerController extends Controller
 
                     $isPending = $this->sendStatusUpdateMessage($fieldOwner);
 
-                    if($isPending)
+                    if ($isPending)
                         echo json_encode([
                             "statusCode" => 200,
                             "message" => "Owner Updated Successfully",
@@ -125,18 +125,10 @@ class FieldOwnerController extends Controller
         $phoneNumber = substr_replace($fieldOnwer->PhoneNumber, '+84', 0, 1);
 
         if ($fieldOnwer->Status === "ACTIVE") {
-            $message = "Xin chúc mừng, doanh nghiệp 
-                $fieldOnwer->BusinessName - Đ.C: $fieldOnwer->BusinessAddress 
-                đã được hệ thống xác nhận
-                , Vui lòng đăng nhập vào trang web để xem lại thông tin!";
-
+            $message = "Xin chúc mừng! Doanh nghiệp {$fieldOnwer->BusinessName} (Địa chỉ: {$fieldOnwer->BusinessAddress}) đã được hệ thống xác nhận. Vui lòng đăng nhập vào trang web để xem lại thông tin chi tiết.";
             return $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
         } else {
-            $message = "Doanh nghiệp 
-            $fieldOnwer->BusinessName - Đ.C: $fieldOnwer->BusinessAddress 
-             đã bị hệ thống khóa do khiếu nại
-            , Nếu bạn có bất cứ thắc mắc nào vui lòng liên hệ QTV!";
-
+            $message = "Doanh nghiệp {$fieldOnwer->BusinessName} (Địa chỉ: {$fieldOnwer->BusinessAddress}) đã bị hệ thống khóa do khiếu nại. Nếu bạn có bất cứ thắc mắc nào, vui lòng liên hệ Quản trị viên.";
             return $this->sendMessageViaSMS->sendSMS($phoneNumber, $message);
         }
     }
