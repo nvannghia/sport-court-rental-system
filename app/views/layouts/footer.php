@@ -126,7 +126,9 @@
 <!-- tinymce init -->
 <script src="/sport-court-rental-system/public/js/tinyMCE.js"></script>
 
+<!-- validator.js -->
 <script src="https://cdn.jsdelivr.net/npm/validator@13.7.0/dist/validator.min.js"></script>
+
 
 
 </body>

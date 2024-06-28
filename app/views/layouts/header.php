@@ -41,6 +41,38 @@
     <link href="/sport-court-rental-system/public/css/header.css" rel="stylesheet" />
     <!-- sweet alert animate -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+    <!-- swiperjs.com -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+    <!-- swiperjs.com -->
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <style>
+        .swiper {
+            width: 100%;
+            height: 470px;
+        }
+
+        .ellipsis {
+            max-width: 150px;
+            /* Điều chỉnh độ rộng của phần tử theo ý muốn */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 5px;
+            /* Thêm khoảng cách bên trong */
+        }
+
+        .custom-success-title {
+            color: #A5DC86
+        }
+
+
+        .custom-error-title {
+            color: #FF5252
+        }
+
+    </style>
+
 </head>
 
 <body>

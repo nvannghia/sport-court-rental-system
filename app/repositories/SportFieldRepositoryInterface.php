@@ -9,4 +9,9 @@ interface SportFieldRepositoryInterface
     public function getSportFieldByOwnerID($owerID);
 
     public function getSportFieldByID($sportFieldID);
+
+    public function update($sportFieldID, array $attributes);
+
+    public function destroy($sportFieldID);
+
 }

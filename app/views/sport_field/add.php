@@ -1,9 +1,9 @@
-<div id="formContainer" class="d-none mt-3" style="background-color:#5361B5; padding: 10px; border-radius:4px">
+<div id="formAddContainer" class="d-none mt-3" style="background-color:#5361B5; padding: 10px; border-radius:4px">
     <form id="addSportFieldForm" class=" mt-3" method="POST" enctype="multipart/form-data">
         <div class="form-group d-flex flex-wrap justify-content-between">
             <label for="fieldName" class="text-white">Tên Sân</label>
 
-            <button class="btn btn-outline-primary ms-1 mb-1 text-white" type="button" onclick="hiddenForm()">
+            <button class="btn btn-outline-primary ms-1 mb-1 text-white" type="button" onclick="hiddenFormAdd()">
                 <i class="fa-regular fa-eye-slash"></i>
                 <span>Ẩn Form</span>
             </button>
@@ -34,7 +34,7 @@
 
                 <div style="max-width: 150px;">
                     <label for="numberOfField" class="text-white">Số Lượng Sân</label>
-                    <input type="text" class="form-control" id="numberOfField" name="numberOfField">
+                    <input type="number" class="form-control" id="numberOfField" name="numberOfField">
                 </div>
 
             </div>
@@ -48,7 +48,7 @@
         <div class="form-group">
             <label for="description" class="form-label text-white">Mô Tả</label>
             <div id="wrap-tinyMCE">
-                <textarea class="form-control" id="default" name="description" name="description"></textarea>
+                <textarea class="form-control" id="add" name="description" name="description"></textarea>
             </div>
         </div>
 
@@ -132,7 +132,7 @@
                 address.classList.remove('is-invalid');
             }
 
-            var editorContent = tinyMCE.get('default').getContent();
+            var editorContent = tinyMCE.get('add').getContent();
             if (editorContent == '') {
                 wrapTinyMCE.style.border = "1px solid red";
                 isValid = false;
@@ -163,7 +163,6 @@
                 const data = await response.json();
 
                 if (data.statusCode === 201) {
-                    console.log("200 here");
 
                     await Swal.fire({
                         title: "Thành Công!",
@@ -174,20 +173,28 @@
                         },
                     });
 
+                    console.log(data.sportField);
+                    
+
                     const containerSportField = document.getElementById("container-sportField");
                     containerSportField.insertAdjacentHTML('afterbegin', `
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-1 font-weight-bold">Sân ${data.sportField.TypeName} ${data.sportField.FieldName} </p>
-                        <div>
-                            <a href="" class="btn btn-default border shadow-sm mb-2" title="Chi Tiết Sân">
-                                <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
-                            </a>
-                            <a href="" class="btn btn-default border shadow-sm mb-2" title="Xóa Sân">
-                                <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
-                            </a>
+                     <div id="sportField-${data.sportField.ID}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <p class="mb-1">Sân ${data.sportField.TypeName} ${data.sportField.FieldName} </p>
+                            <div>
+                                <a href="../sportfield/detail/${data.sportField.ID}" class="btn btn-default border border-info shadow-sm mb-2" title="Chi Tiết Sân">
+                                    <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
+                                </a>
+                                <a onclick="fillDataToEditForm(${data.sportField.ID})" class="btn btn-default border border-warning shadow-sm mb-2" title="Cập Nhật Sân">
+                                    <i class="fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
+                                </a>
+                                <a onclick="destroySportField(${data.sportField.ID})" class="btn btn-default border-danger border shadow-sm mb-2" title="Xóa Sân">
+                                    <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
+                                </a>
+                            </div>
                         </div>
+                        <hr>
                     </div>
-                    <hr>
                 `);
 
                     // Reset form
