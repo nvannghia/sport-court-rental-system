@@ -26,7 +26,7 @@ class App
             SportFieldServiceImplement::class,
         ],
         'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
-        'SportFieldController' => [SportFieldServiceImplement::class],
+        'SportFieldController' => [SportFieldServiceImplement::class,SportTypeServiceImplement::class],
         'SportTypeController' => [SportTypeServiceImplement::class]
     ];
 

@@ -17,7 +17,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
     public function getSportFieldByOwnerID($owerID): Collection
     {
         return SportField::where('OwnerID', $owerID)
-            ->with(['sportType']) // fetch relationship: eager loading
+            ->with(['sportType']) // fetching relationship: eager loading
             ->orderBy('created_at', 'desc')
             ->get();
     }
@@ -25,5 +25,29 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
     public function getSportFieldByID($sportFieldID)
     {
         return SportField::find($sportFieldID);
+    }
+
+    public function update($sportFieldID, array $attributes)
+    {
+        $sportField = $this->getSportFieldByID($sportFieldID);
+
+        if ($sportField) {
+
+            $sportField->fill($attributes);
+
+            $isUpdated = $sportField->save();
+
+            if ($isUpdated)
+                return $sportField;
+            
+            return null;
+        }
+
+        return null;
+    }
+
+    public function destroy($sportFieldID)
+    {
+        return SportField::destroy($sportFieldID);
     }
 }

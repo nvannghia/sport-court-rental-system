@@ -1,20 +1,44 @@
 const addSportFiledBtn = document.getElementById("addSportFieldBtn");
-const formContainer = document.getElementById('formContainer');
+const formAddContainer = document.getElementById('formAddContainer');
+const formEditContainer = document.getElementById('formEditContainer');
 const infoView = document.getElementById('infoView');
 addSportFiledBtn.addEventListener("click", () => {
-    formContainer.classList.toggle("d-block");
-    formContainer.scrollIntoView({
+
+    //hide edit form and display add form
+    const formEditContainer = document.getElementById('formEditContainer');
+    if (formEditContainer.classList.contains("d-block"))
+        formEditContainer.classList.remove('d-block');
+
+    formAddContainer.classList.add('d-block');
+
+    //scroll to view add
+    formAddContainer.scrollIntoView({
         behavior: 'smooth'
     });
 });
 
 
-const hiddenForm = () => {
+const hiddenFormAdd = () => {
     //reset the form
-    const form = document.getElementById('addSportFieldForm');
-    form.reset();
+    const formAdd = document.getElementById('addSportFieldForm');
+    formAdd.reset();
 
-    formContainer.classList.toggle("d-block");
+    formAddContainer.classList.toggle("d-block");
+
+    window.scroll({
+        top: 140,
+        left: 0,
+        behavior: "smooth",
+    });
+}
+
+const hiddenFormEdit = () => {
+    //reset the form
+    const formEdit= document.getElementById('editSportFieldForm');
+    formEdit.reset();
+
+    formEditContainer.classList.toggle("d-block");
+
     window.scroll({
         top: 140,
         left: 0,

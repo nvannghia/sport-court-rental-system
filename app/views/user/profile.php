@@ -146,24 +146,34 @@ require_once __DIR__ . '/../layouts/header.php';
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="col-md-6" id="viewManageField">
                             <div class="card mb-4 mb-md-0">
                                 <div class="card-body">
                                     <p class="mb-4"><span class="font-weight-bold h5 text-center shadow p-2">Quản Lý Sân </p>
                                     <div id="container-sportField">
                                         <?php foreach ($sportFields as $spf) : ?>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="mb-1 font-weight-bold">Sân <?php echo $spf['sport_type']['TypeName'] . " " .  $spf['FieldName']; ?> </p>
-                                                <div>
-                                                    <a href="../sportfield/detail/<?php echo $spf['ID']; ?>" class="btn btn-default border shadow-sm mb-2" title="Chi Tiết Sân">
-                                                        <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
-                                                    </a>
-                                                    <a href="" class="btn btn-default border shadow-sm mb-2" title="Xóa Sân">
-                                                        <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
-                                                    </a>
+                                            <div id="sportField-<?php echo $spf['ID']; ?>">
+                                                <div class="d-flex justify-content-between align-items-center" >
+                                                    <p class=" ellipsis mb-1 ">
+                                                        Sân
+                                                        <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>">
+                                                            <?php echo $spf['sport_type']['TypeName'] . " " .  $spf['FieldName']; ?>
+                                                        </span>
+                                                    </p>
+                                                    <div>
+                                                        <a href="../sportfield/detail/<?php echo $spf['ID']; ?>" class="btn btn-default border border-info shadow-sm mb-2" title="Chi Tiết Sân">
+                                                            <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
+                                                        </a>
+                                                        <a onclick="fillDataToEditForm(<?php echo $spf['ID']; ?>)" class="btn btn-default border border-warning shadow-sm mb-2" title="Cập Nhật Sân">
+                                                            <i class="fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
+                                                        </a>
+                                                        <a onclick="destroySportField(<?php echo  $spf['ID']; ?>)" class="btn btn-default border-danger border shadow-sm mb-2" title="Xóa Sân">
+                                                            <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
+                                                        </a>
+                                                    </div>
                                                 </div>
+                                                <hr>
                                             </div>
-                                            <hr>
                                         <?php endforeach; ?>
                                     </div>
 
@@ -177,11 +187,75 @@ require_once __DIR__ . '/../layouts/header.php';
                 <?php
                 require_once realpath(dirname(__FILE__) . '/../sport_field/add.php');
                 ?>
+
+                <!-- edit  sport field form -->
+                <?php
+                require_once realpath(dirname(__FILE__) . '/../sport_field/edit.php');
+                ?>
             </div>
         </div>
     </div>
 </section>
 
+<script>
+    const destroySportField = (sportFieldID) => {
 
+        Swal.fire({
+            title: "Bạn Đã Chắc Chắn?",
+            text: "Dữ Liệu Về Sân Sẽ Bị Xóa!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Xóa!",
+            cancelButtonText: "Hủy"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+
+                const destroySportFieldUrl = `${sportFieldUrl}/destroy/${sportFieldID}`;
+
+                const response = await fetch(`${destroySportFieldUrl}`, {
+                    method: 'POST',
+                });
+
+                const data = await response.json();
+
+                if (data.statusCode === 204) {
+
+                    Swal.fire({
+                        title: "Xóa Thành Công!",
+                        text: "Đã Xóa Sân.",
+                        icon: "success"
+                    });
+
+                    //remove element sport fiele deleted
+                    sportFieldElement = document.getElementById(`sportField-${sportFieldID}`);
+                    sportFieldElement.remove();
+
+                } else if (data.statusCode === 400) {
+                    Swal.fire({
+                        title: "Thất Bại!",
+                        text: "Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!",
+                        icon: "error",
+                        customClass: {
+                            popup: 'my-custom-popup',
+                            title: 'custom-error-title'
+                        },
+                    });
+                } else {
+                    Swal.fire({
+                        title: "Thất Bại!",
+                        text: "Lỗi Phía Server, Vui Lòng Liên Hệ QTV!",
+                        icon: "error",
+                        customClass: {
+                            popup: 'my-custom-popup',
+                            title: 'custom-error-title'
+                        },
+                    });
+                }
+            }
+        });
+    }
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

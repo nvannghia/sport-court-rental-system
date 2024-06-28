@@ -1,5 +1,5 @@
 tinymce.init({
-    selector: 'textarea#default',
+    selector: 'textarea#add, textarea#edit',
     height: 300,
     plugins: [
         'advlist', 'autolink', 'link', 'image', 'lists', 'charmap', 'preview', 'anchor', 'pagebreak',

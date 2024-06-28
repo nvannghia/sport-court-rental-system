@@ -3,6 +3,10 @@
     /* Màu đỏ cam (Tomato) */
 }
 
+.custom-success-title{
+    color: #A5DC86
+}
+
 .swal2-input:focus {
     border: 2px solid #FF6347;
     outline: none;

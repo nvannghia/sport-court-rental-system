@@ -28,4 +28,14 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
     {
         return $this->sportFieldRepositoryInterface->getSportFieldByID($sportFieldID);
     }
+
+    public function update($sportFieldID, array $attributes)
+    {
+        return $this->sportFieldRepositoryInterface->update($sportFieldID, $attributes);
+    }
+
+    public function destroy($sportFieldID)
+    {
+        return $this->sportFieldRepositoryInterface->destroy($sportFieldID);
+    }
 }
