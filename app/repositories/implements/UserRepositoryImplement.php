@@ -19,4 +19,22 @@ class UserRepositoryImplement implements UserRepositoryInterface
     {
         return UserModel::where('Email', $email)->first();
     }
+
+    public function updateAvatar($userID, $url) // return null if failed(not found user, fail to update ...), otherwise return user updated
+    {
+        $user = UserModel::find($userID);
+
+        if ($user) {
+            $user->Avatar = $url;
+
+            $isUpdated = $user->save();
+
+            if ($isUpdated)
+                return $user;
+
+            return null;
+        }
+
+        return null;
+    }
 }

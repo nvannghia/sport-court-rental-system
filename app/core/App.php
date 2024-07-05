@@ -4,6 +4,7 @@ use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement;
+use App\Utils\CloudinaryService;
 use App\Utils\SendMessageViaSMS;
 
 class App
@@ -24,6 +25,7 @@ class App
             SendMessageViaSMS::class,
             SportTypeServiceImplement::class,
             SportFieldServiceImplement::class,
+            CloudinaryService::class,
         ],
         'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
         'SportFieldController' => [SportFieldServiceImplement::class,SportTypeServiceImplement::class],

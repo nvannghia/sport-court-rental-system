@@ -3,46 +3,43 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-use App\Models\SportField;
-use App\Models\UserModel;
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
 use App\Services\UserServiceInterface;
 use App\Utils\SendMessageViaSMS;
+use App\Utils\CloudinaryService;
 
 class UserController extends Controller
 {
     private const ROLES = ["CUSTOMER", "OWNER", "SYSTEMADMIN"];
 
-    protected $userServiceInterface;
+    private $userServiceInterface;
 
-    protected $sendMessageViaSMS;
+    private $sendMessageViaSMS;
 
-    protected $sportTypeServiceInterface;
+    private $sportTypeServiceInterface;
 
-    protected $sportFieldServiceInterface;
+    private $sportFieldServiceInterface;
+
+    private $cloudinaryService;
 
     public function __construct(
         UserServiceInterface $userServiceInterface,
         SendMessageViaSMS $sendMessageViaSMS,
         SportTypeServiceInterface $sportTypeServiceInterface,
-        SportFieldServiceInterface $sportFieldServiceInterface
+        SportFieldServiceInterface $sportFieldServiceInterface,
+        CloudinaryService $cloudinaryService
     ) {
         $this->userServiceInterface = $userServiceInterface;
         $this->sendMessageViaSMS = $sendMessageViaSMS;
         $this->sportTypeServiceInterface = $sportTypeServiceInterface;
         $this->sportFieldServiceInterface = $sportFieldServiceInterface;
+        $this->cloudinaryService = $cloudinaryService;
     }
 
-    public function fetch()
+    public function test()
     {
-
-        echo "<pre>";
-        print_r($this->sportFieldServiceInterface->getSportFieldByOwnerID(13)->toArray());
-        echo "</pre>";
-       
-        // var_dump(SportField::find(13)->sportType->TypeName);
-
+        var_dump($this->cloudinaryService);
     }
 
     function verifyOTPandSaveData()
@@ -173,14 +170,15 @@ class UserController extends Controller
 
                     unset($user['Password']); // no return password
 
-                    if ($user->fieldOwner)
-                        $_SESSION['userInfo'] = array_merge($user->toArray(), $user->fieldOwner->toArray()); //save user logged to session
-                    else
+                    if ($user->fieldOwner) { // laravel auto fetch eager loading if true
+                        $user = $user->toArray();
+                        $_SESSION['userInfo'] = $user; //save user logged to session
+                    } else
                         $_SESSION['userInfo'] = $user->toArray(); //save user logged to session
 
                     echo json_encode([
                         "statusCode" => 200,
-                        "user" => $user
+                        "user" => $user,
                     ]);
 
                     return;
@@ -222,7 +220,7 @@ class UserController extends Controller
             return $this->view('user/profile', []);
 
         $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes()->toArray();
-        $ownerID = $_SESSION['userInfo']['OwnerID'];
+        $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'] ?? null;
         $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerID($ownerID)->toArray();
         if (isset($_SESSION['userInfo']))
             return $this->view('user/profile', [
@@ -231,5 +229,43 @@ class UserController extends Controller
             ]);
 
         echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";
+    }
+
+    public function uploadUserAvatar()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+            $file = $_FILES['file']['tmp_name'];
+
+            try {
+                $result = $this->cloudinaryService->uploadFile($file, [
+                    'folder' => 'sport-court-rental-system/user-avatar/' // folder wanna upload 
+                ]);
+
+                $urlUploaded = $result['secure_url'];
+
+                //updated Avatar field
+                $userID = $_SESSION['userInfo']['ID'];
+
+                $userUpdated = $this->userServiceInterface->updateAvatar($userID, $urlUploaded);
+
+                if ($userUpdated) {
+                    echo json_encode([
+                        "statusCode" => 200,
+                        "url" => $urlUploaded,
+                    ]);
+                    return;
+                }
+                    
+
+                echo json_encode([
+                    "statusCode" => 500,
+                    "message" => "Update Failed",
+                ]);
+            } catch (Exception $e) {
+                echo "Upload failed: " . $e->getMessage();
+            }
+        } else {
+            echo "No file uploaded.";
+        }
     }
 }

@@ -59,7 +59,7 @@
                                     </a>
 
                                     <?php if ($_SESSION['userInfo']['Role'] != 'SYSTEMADMIN') : ?>
-                                        <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['OwnerID']; ?>)">
+                                        <div class="dropdown-item" href="#" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['ID']; ?>)">
                                             <i class="fa-regular fa-building" style="min-width: 15%;"></i>
                                             <span> Bạn Là Chủ Sân? </span>
                                         </div>

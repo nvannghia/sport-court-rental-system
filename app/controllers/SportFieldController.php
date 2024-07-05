@@ -49,7 +49,7 @@ class SportFieldController extends Controller
                 && empty($description);
 
             if (!$isValidInfo) {
-                $ownerID = $_SESSION['userInfo']['OwnerID'];
+                $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'];
                 $sportField = $this->sportFieldServiceInterface->create(
                     ["FieldName" => $fieldName],
                     [

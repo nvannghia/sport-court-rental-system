@@ -19,14 +19,25 @@ require_once __DIR__ . '/../layouts/header.php';
             <div class="col-lg-4">
                 <div class="card mb-4">
                     <div class="card-body text-center">
-                        <img src="https://w7.pngwing.com/pngs/178/595/png-transparent-user-profile-computer-icons-login-user-avatars-thumbnail.png" alt="avatar" class="rounded-circle img-fluid" style="width: 150px;">
+
+                        <?php
+                        if (!empty($_SESSION['userInfo']['Avatar'])) {
+
+                            $avatarUrl = $_SESSION['userInfo']['Avatar'];
+                            echo '<img id="userAvatar" src="' . $avatarUrl . '" class="shadow bg-body rounded-circle img-fluid" style="width: 200px; height: 200px; object-fit:cover;" alt="User Avatar Loading ...">';
+                        } else {
+
+                            echo '<img id="userAvatar" src="../../public/images/user.jpg" alt="User Avatar Loading ..." class="shadow bg-body rounded-circle img-fluid" style="width: 200px; height:200px; object-fit:cover;">';
+                        }
+                        ?>
+
+                        <div class="d-flex justify-content-center mb-2">
+                            <button type="button" onclick="uploadUserAvatar()" id="uploadBtn" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mt-2"> Cập Nhật </button>
+                            <input type="file" id="fileInput" name="avatarFile" style="display: none;" accept="image/*">
+                        </div>
                         <h5 class="my-3"> <?php echo $_SESSION['userInfo']['FullName']; ?> </h5>
                         <p class="text-muted mb-1">Cầu thủ bóng đá</p>
                         <p class="text-muted mb-4">Thần tượng: Ronaldo, Messi</p>
-                        <div class="d-flex justify-content-center mb-2">
-                            <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-primary">Follow</button>
-                            <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">Message</button>
-                        </div>
                     </div>
                 </div>
                 <div class="card mb-4 mb-lg-0">
@@ -113,21 +124,21 @@ require_once __DIR__ . '/../layouts/header.php';
                             <div class="card mb-4 mb-md-0">
                                 <div class="card-body">
                                     <p class="mb-4 h4 shadow p-2">
-                                        <span class="text-primary font-italic me-1">Doanh Nghiệp: </span> <?php echo $_SESSION['userInfo']['BusinessName']; ?>
+                                        <span class="text-primary font-italic me-1">Doanh Nghiệp: </span> <?php echo $_SESSION['userInfo']['field_owner']['BusinessName']; ?>
                                     </p>
                                     <p class="mb-1 ">Trạng thái:
-                                        <span class="<?php echo $_SESSION['userInfo']['Status'] === 'ACTIVE' ? 'text-success' : 'text-danger'; ?>">
-                                            <?php echo $_SESSION['userInfo']['Status']; ?> </span>
+                                        <span class="<?php echo $_SESSION['userInfo']['field_owner']['Status'] === 'ACTIVE' ? 'text-success' : 'text-danger'; ?>">
+                                            <?php echo $_SESSION['userInfo']['field_owner']['Status']; ?> </span>
                                     </p>
 
-                                    <p class="mt-4 mb-1 ">Địa Chỉ Doanh Nghiệp: <?php echo $_SESSION['userInfo']['BusinessAddress']; ?></p>
+                                    <p class="mt-4 mb-1 ">Địa Chỉ Doanh Nghiệp: <?php echo $_SESSION['userInfo']['field_owner']['BusinessAddress']; ?></p>
 
-                                    <p class="mt-4 mb-1">SĐT: <?php echo $_SESSION['userInfo']['PhoneNumber']; ?></p>
+                                    <p class="mt-4 mb-1">SĐT: <?php echo $_SESSION['userInfo']['field_owner']['PhoneNumber']; ?></p>
 
                                     <p class="mt-4 mb-1">Ngày Đăng Ký Trên Hệ Thống:
                                         <?php
                                         // Chuỗi thời gian ISO 8601
-                                        $iso8601String = $_SESSION['userInfo']['created_at'];
+                                        $iso8601String = $_SESSION['userInfo']['field_owner']['created_at'];
 
                                         // Chuyển đổi chuỗi thời gian thành timestamp
                                         $timestamp = strtotime($iso8601String);
@@ -153,7 +164,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <div id="container-sportField">
                                         <?php foreach ($sportFields as $spf) : ?>
                                             <div id="sportField-<?php echo $spf['ID']; ?>">
-                                                <div class="d-flex justify-content-between align-items-center" >
+                                                <div class="d-flex justify-content-between align-items-center">
                                                     <p class=" ellipsis mb-1 ">
                                                         Sân
                                                         <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>">
@@ -197,65 +208,8 @@ require_once __DIR__ . '/../layouts/header.php';
     </div>
 </section>
 
-<script>
-    const destroySportField = (sportFieldID) => {
+<script src="../../public/js/user.js"></script>
 
-        Swal.fire({
-            title: "Bạn Đã Chắc Chắn?",
-            text: "Dữ Liệu Về Sân Sẽ Bị Xóa!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#3085d6",
-            cancelButtonColor: "#d33",
-            confirmButtonText: "Xóa!",
-            cancelButtonText: "Hủy"
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-
-                const destroySportFieldUrl = `${sportFieldUrl}/destroy/${sportFieldID}`;
-
-                const response = await fetch(`${destroySportFieldUrl}`, {
-                    method: 'POST',
-                });
-
-                const data = await response.json();
-
-                if (data.statusCode === 204) {
-
-                    Swal.fire({
-                        title: "Xóa Thành Công!",
-                        text: "Đã Xóa Sân.",
-                        icon: "success"
-                    });
-
-                    //remove element sport fiele deleted
-                    sportFieldElement = document.getElementById(`sportField-${sportFieldID}`);
-                    sportFieldElement.remove();
-
-                } else if (data.statusCode === 400) {
-                    Swal.fire({
-                        title: "Thất Bại!",
-                        text: "Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!",
-                        icon: "error",
-                        customClass: {
-                            popup: 'my-custom-popup',
-                            title: 'custom-error-title'
-                        },
-                    });
-                } else {
-                    Swal.fire({
-                        title: "Thất Bại!",
-                        text: "Lỗi Phía Server, Vui Lòng Liên Hệ QTV!",
-                        icon: "error",
-                        customClass: {
-                            popup: 'my-custom-popup',
-                            title: 'custom-error-title'
-                        },
-                    });
-                }
-            }
-        });
-    }
-</script>
+<script src="../../public/js/sport-field.js"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
