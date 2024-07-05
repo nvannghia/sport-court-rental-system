@@ -113,9 +113,6 @@
 <!-- owner -->
 <script src="/sport-court-rental-system/public/js/field-owner.js"></script>
 
-<!-- field-sport -->
-<script src="/sport-court-rental-system/public/js/field-sport.js"></script>
-
 <!-- sport-type -->
 <script src="/sport-court-rental-system/public/js/sport-type.js"></script>
 
@@ -128,8 +125,6 @@
 
 <!-- validator.js -->
 <script src="https://cdn.jsdelivr.net/npm/validator@13.7.0/dist/validator.min.js"></script>
-
-
 
 </body>
 

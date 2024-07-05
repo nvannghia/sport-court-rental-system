@@ -18,5 +18,10 @@ class UserServiceImplement implements UserServiceInterface {
     public function findByEmail($username){
         return $this->userRepositoryInterface->findByEmail($username);
     }
+
+    public function updateAvatar($userID, $url)
+    {
+        return $this->userRepositoryInterface->updateAvatar($userID, $url);
+    }
 }
 ?>
