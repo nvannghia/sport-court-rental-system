@@ -1,10 +1,10 @@
 <?php
 $hiddenSliderSection = true;
 $hiddenCategory = true;
+
 require_once __DIR__ . '/../layouts/header.php';
 ?>
 <section class="bg-white">
-
     <div class="container d-flex">
         <div class="left" style="min-width: 70%;">
             <!-- Slider main container -->
@@ -60,8 +60,8 @@ require_once __DIR__ . '/../layouts/header.php';
 
         </div>
 
-        <div class="right ml-2 bg-success" style="min-width: 30%;">
-            <div class="card w-100" style="width: 18rem;">
+        <div class="right ml-2" style="min-width: 30%; border-left:5px solid #19458A">
+            <div class="card w-100 " style="width: 18rem;">
                 <div class="card-header font-weight-bold">
                     THÔNG TIN CHỦ SÂN
                 </div>
@@ -72,21 +72,22 @@ require_once __DIR__ . '/../layouts/header.php';
                     </li>
                     <li class="list-group-item" style="border-radius: 0 30px 30px 0;background-color: #E41A2B;">
                         <i class="fa-solid fa-phone-volume text-white" style="min-width: 20px;"></i>
-                        <span class="text-white"><?php echo str_replace('+84','0',$ownerOfSportField['PhoneNumber']); ?> </span>
+                        <span class="text-white"><?php echo str_replace('+84', '0', $ownerOfSportField['PhoneNumber']); ?> </span>
                     </li>
                     <li class="list-group-item">
                         <i class="fa-solid fa-location-dot" style="min-width: 20px;"></i>
-                        <span ><?php echo $ownerOfSportField['Address']; ?> </span>
+                        <span><?php echo $ownerOfSportField['Address']; ?> </span>
                     </li>
                 </ul>
             </div>
+
+            <!-- //reviews -->
+            <?php require_once('review.php'); ?>
         </div>
 
     </div>
 
 </section>
-
-
 
 <?php
 require_once __DIR__ . '/../layouts/footer.php';
@@ -104,3 +105,6 @@ require_once __DIR__ . '/../layouts/footer.php';
 
     replaceImagesSrc();
 </script>
+
+<!-- // field review js -->
+<script src="../../../public/js/field-review.js"></script>

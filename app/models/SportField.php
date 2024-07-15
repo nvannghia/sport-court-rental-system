@@ -11,7 +11,15 @@ class SportField extends Eloquent
     protected $primaryKey = "ID";
     protected $table = "sportfield";
     protected $fillable = [
-        "OwnerID", "SportTypeID", "FieldName", "Status", "PricePerHour", "NumberOfFields", "Address", "Description"
+        "OwnerID",
+        "SportTypeID",
+        "FieldName",
+        "Status",
+        "PricePerHour",
+        "NumberOfFields",
+        "Address",
+        "Description",
+        "Image"
     ];
 
     public function sportType()
@@ -22,5 +30,10 @@ class SportField extends Eloquent
     public function owner()
     {
         return $this->belongsTo(UserModel::class, 'OwnerID', 'ID');
+    }
+
+    public function fieldReviews()
+    {
+        return $this->hasMany(FieldReview::class, 'SportFieldID', 'ID');
     }
 }

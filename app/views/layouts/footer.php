@@ -30,11 +30,13 @@
       </div>
       <div class="col-md-3">
         <h4>
-          Mô tả hệ
+          Mô tả hệ thống
         </h4>
         <p>
-          Established fact that a reader will be distracted by the readable content of a page when looking at its
-          layout. The point of using Lorem Ipsum
+          Hệ thống cho thuê sân bóng là một nền tảng trực tuyến giúp người dùng tìm kiếm, 
+          đặt chỗ và thanh toán cho các sân bóng một cách dễ dàng. 
+          Nó giúp người dùng tiết kiệm thời gian khi tìm kiếm sân bóng có sẵn 
+          và cung cấp công cụ quản lý hiệu quả cho chủ sân bóng để theo dõi .
         </p>
       </div>
       <div class="col-md-3">

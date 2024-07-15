@@ -12,12 +12,17 @@ class SportTypeRepositoryImplement implements SportTypeRepositoryInterface
         return SportType::all();
     }
 
+    public function getAllSportTypesWithCount()
+    {
+        return SportType::withCount('sportFields')->get();
+    }
+
     public function addSportType(array $arrayCheck, array $arrayInsert)
     {
         return SportType::firstOrCreate($arrayCheck, $arrayInsert);
     }
 
-    public function deleteSportTypeByID($sportTypeID) 
+    public function deleteSportTypeByID($sportTypeID)
     {
         return SportType::destroy($sportTypeID);
     }
@@ -33,9 +38,8 @@ class SportTypeRepositoryImplement implements SportTypeRepositoryInterface
         if ($sportType) {
             $sportType->TypeName = $typeName;
             $sportType->save();
-            
+
             return $sportType->fresh();
         }
-        
     }
 }

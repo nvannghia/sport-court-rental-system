@@ -10,6 +10,19 @@
 
             <input type="text" class="form-control" id="fieldName" name="fieldName">
         </div>
+
+        <div class="form-group">
+            <label for="fieldImage" class="text-white">Hình đại diện sân</label>
+            <br>
+            <img 
+                class="mb-3 border rounded" 
+                style="width: 200px; height: 200px; object-fit: cover;" 
+                id="imagePreview" src="" 
+                alt="file choose"
+            >
+            <input type="file" class="form-control" id="fieldImage" name="fieldImage">
+        </div>
+
         <div class="form-group" style="margin-top: -6px;">
             <div class="d-flex justify-content-between flex-wrap">
                 <div style="max-width: 150px;" id="wrap-sportTypeID">
@@ -58,7 +71,7 @@
 
         <input type="hidden" id="sportFieldID">
 
-        <button type="submit" class="btn btn-outline-primary border border-warning text-warning ms-1 mb-1 text-white">
+        <button id="btnEditForm" type="submit" class="btn btn-outline-primary border border-warning text-warning ms-1 mb-1 text-white">
             <i class="fa-regular fa-pen-to-square text-warning"></i>
             <span>Sửa</span>
         </button>

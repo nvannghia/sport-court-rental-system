@@ -17,6 +17,16 @@ addSportFiledBtn.addEventListener("click", () => {
     });
 });
 
+// display image preview 
+const imagePreview = document.getElementById("imagePreview");
+const inputFileImage = document.getElementById("fieldImage");
+
+inputFileImage.addEventListener("change", function () {
+    imagePreview.src = URL.createObjectURL(inputFileImage.files[0]);
+    if (imagePreview.classList.contains('d-none'))
+        imagePreview.classList.remove('d-none');
+    imagePreview.classList.add('d-block');
+});
 
 const hiddenFormAdd = () => {
     //reset the form
@@ -24,6 +34,12 @@ const hiddenFormAdd = () => {
     formAdd.reset();
 
     formAddContainer.classList.toggle("d-block");
+
+    //clear image preview
+    if (imagePreview.classList.contains('d-block')) {
+        imagePreview.classList.remove('d-block');
+        imagePreview.classList.add('d-none');
+    }
 
     window.scroll({
         top: 140,
@@ -46,6 +62,22 @@ const hiddenFormEdit = () => {
     });
 }
 
+function replaceWithSpinner(oldElement) {
+    // Tạo một chuỗi HTML đại diện cho spinner
+    var spinnerHTML = `
+        <div class="spinner-grow text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+    `;
+
+    // Tạo một phần tử div để chứa spinnerHTML
+    var spinnerElement = document.createElement('div');
+    spinnerElement.innerHTML = spinnerHTML.trim(); // Sử dụng trim để loại bỏ khoảng trắng thừa
+
+    // Thực hiện thay thế
+    oldElement.replaceWith(spinnerElement.firstChild);
+}
+
 // add sport field
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('addSportFieldForm');
@@ -58,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const description = document.getElementById('description');
     const wrapTinyMCE = document.getElementById('wrap-tinyMCE');
     const wrapSportTypeID = document.getElementById('wrap-sportTypeID');
+    const btnSubmitFormAdd = document.querySelector('form#addSportFieldForm #btnAddForm');
+
 
     // Định dạng đầu vào tiền
     pricePerHour.addEventListener("input", function (e) {
@@ -72,6 +106,9 @@ document.addEventListener('DOMContentLoaded', function () {
     // Thêm event listener cho sự kiện submit một lần
     form.addEventListener('submit', async function (event) {
         event.preventDefault();
+        //image file
+        var fieldImage = document.getElementById('fieldImage');
+        var fileImage = fieldImage.files[0] ? fieldImage.files[0] : null;
 
         // Validate các trường
         let isValid = true;
@@ -127,7 +164,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Nếu form hợp lệ
         if (isValid) {
-            const formData = new URLSearchParams();
+            btnSubmitFormAdd.setAttribute("disabled", "disabled");
+
+            const formData = new FormData();
             formData.append('action', 'addSportField');
             formData.append('sportTypeID', sportTypeID.value);
             formData.append('fieldName', fieldName.value);
@@ -135,17 +174,17 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('numberOfField', numberOfField.value);
             formData.append('address', address.value);
             formData.append('description', editorContent);
+            formData.append('fieldImage', fileImage);
 
             const addSportFieldUrl = '../sportfield/storeSportField';
             const response = await fetch(addSportFieldUrl, {
                 method: 'POST',
-                headers: {
-                    "Content-Type": "application/x-www-form-urlencoded",
-                },
-                body: formData.toString(),
+                body: formData,
             });
 
+            //disabled button submit 
             const data = await response.json();
+
 
             if (data.statusCode === 201) {
 
@@ -180,27 +219,42 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
             `);
 
+                //enabled button
+                btnSubmitFormAdd.removeAttribute('disabled');
+
                 // Reset form
                 form.reset();
+                //hidden image preview
+                if (imagePreview.classList.contains('d-block')) {
+                    imagePreview.classList.remove('d-block');
+                    imagePreview.classList.add('d-none');
+                }
                 tinyMCE.get('default').setContent('');
+
             } else if (data.statusCode === 400) {
                 Swal.fire({
                     icon: "error",
                     title: "Lỗi !",
                     text: "Vui lòng nhập đầy đủ các thông tin!",
                 });
+                btnSubmitFormAdd.removeAttribute('disabled');
+
             } else if (data.statusCode === 409) {
                 Swal.fire({
                     icon: "error",
                     title: "Lỗi !",
                     text: `Tên sân \`${data.sportField.FieldName}\` đã tồn tại!`,
                 });
+                btnSubmitFormAdd.removeAttribute('disabled');
+
             } else {
                 Swal.fire({
                     icon: "error",
                     title: "Lỗi !",
                     text: "Lỗi phía máy chủ, vui lòng liên hệ QTV!",
                 });
+                btnSubmitFormAdd.removeAttribute('disabled');
+
             }
         }
     });
@@ -279,6 +333,7 @@ const fillDataToEditForm = async (sportFieldID) => {
             NumberOfFields,
             Address,
             Description,
+            Image
         } = data.sportField;
 
 
@@ -291,6 +346,7 @@ const fillDataToEditForm = async (sportFieldID) => {
         const address = document.querySelector('form#editSportFieldForm #address');
         const description = document.querySelector('form#editSportFieldForm #description');
         const wrapTinyMCE = document.querySelector('form#editSportFieldForm #wrap-tinyMCE');
+        const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
 
         //setting value for hidden input, ID of sport field need edit
         sportFieldID.value = ID;
@@ -335,10 +391,26 @@ const fillDataToEditForm = async (sportFieldID) => {
         pricePerHour.value = PricePerHour;
         numberOfField.value = NumberOfFields;
         address.value = Address;
+        imagePreview.src = Image;
         tinyMCE.get('edit').setContent(Description);
 
     }
 }
+
+
+//EDIT
+
+const imagePreviewEdit = document.querySelector("form#editSportFieldForm #imagePreview");
+const inputFileImageEdit = document.querySelector("form#editSportFieldForm #fieldImage");
+
+inputFileImageEdit.addEventListener("change", function () {
+    imagePreviewEdit.src = URL.createObjectURL(inputFileImageEdit.files[0]);
+    if (imagePreviewEdit.classList.contains('d-none'))
+        imagePreviewEdit.classList.remove('d-none');
+    imagePreviewEdit.classList.add('d-block');
+});
+
+//Update sport field action
 const form = document.getElementById('editSportFieldForm');
 const pricePerHour = document.querySelector('form#editSportFieldForm #pricePerHour');
 
@@ -367,6 +439,9 @@ form.addEventListener('submit', async function (event) {
     const wrapTinyMCE = document.querySelector('form#editSportFieldForm #wrap-tinyMCE');
     const wrapSportTypeID = document.querySelector('form#editSportFieldForm #wrap-sportTypeID');
     const sportTypeID = document.querySelector('form#editSportFieldForm #sportTypeID');
+    const fileImage = document.querySelector('form#editSportFieldForm #fieldImage');
+    const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
+    const btnSubmitFormEdit = document.querySelector('form#editSportFieldForm #btnEditForm');
 
     // Validate các trường
     let isValid = true;
@@ -433,7 +508,10 @@ form.addEventListener('submit', async function (event) {
     // Nếu form hợp lệ
     if (isValid) {
 
-        const formData = new URLSearchParams();
+        //disabled button submit to edit
+        btnSubmitFormEdit.setAttribute('disabled', 'disabled');
+
+        const formData = new FormData();
         formData.append('action', 'updateSportField');
         formData.append('sportFieldID', sportFieldID.value);
         formData.append('sportTypeID', sportTypeID.value);
@@ -444,13 +522,15 @@ form.addEventListener('submit', async function (event) {
         formData.append('address', address.value);
         formData.append('description', editorContent);
 
+        if (fileImage.files[0]) // have upload image file
+            formData.append('fieldImage', fileImage.files[0]);
+        else
+            formData.append('oldImage', imagePreview.src);
+
         const updateSportFieldUrl = `${sportFieldUrl}/update/${sportFieldID.value}`;
         const response = await fetch(updateSportFieldUrl, {
             method: 'POST',
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-            body: formData.toString(),
+            body: formData,
         });
 
         const data = await response.json();
@@ -466,6 +546,9 @@ form.addEventListener('submit', async function (event) {
                 },
             });
 
+            //enabled button submit to edit
+            btnSubmitFormEdit.removeAttribute('disabled');
+            
             //hide form and reset form edit
             form.reset();
             const formEditContainer = document.getElementById('formEditContainer');
@@ -476,7 +559,7 @@ form.addEventListener('submit', async function (event) {
             displayTypeNameAndFieldName.innerText = `${data?.sportFieldUpdated?.TypeName} ${data?.sportFieldUpdated?.FieldName} `;
 
             const viewMangeField = document.getElementById('viewManageField');
-            viewManageField.scrollIntoView(true);
+            viewMangeField.scrollIntoView(true);
 
         } else {
             await Swal.fire({
@@ -488,6 +571,8 @@ form.addEventListener('submit', async function (event) {
                     title: 'custom-error-title'
                 },
             });
+
+            btnSubmitFormEdit.removeAttribute('disabled');
         }
 
     }

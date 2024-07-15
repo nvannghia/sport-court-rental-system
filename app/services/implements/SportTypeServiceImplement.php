@@ -20,6 +20,11 @@ class SportTypeServiceImplement implements SportTypeServiceInterface
         return $this->sportTypeRepositoryInterface->getAllSportTypes();
     }
 
+    public function getAllSportTypesWithCount()
+    {
+        return $this->sportTypeRepositoryInterface->getAllSportTypesWithCount();
+    }
+
     public function addSportType(array $arrayCheck, array $arrayInsert)
     {
         return $this->sportTypeRepositoryInterface->addSportType($arrayCheck, $arrayInsert);

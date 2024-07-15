@@ -1,7 +1,9 @@
 <?php
 
 use App\Repositories\FieldOwnerRepositoryInterface;
+use App\Repositories\FieldReviewRepositoryInterface;
 use App\Repositories\Implements\FieldOwnerRepositoryImplement;
+use App\Repositories\Implements\FieldReviewRepositoryImplement;
 use App\Repositories\Implements\SportFieldRepositoryImplement;
 use App\Repositories\Implements\SportTypeRepositoryImplement;
 use DI\ContainerBuilder;
@@ -10,6 +12,7 @@ use App\Repositories\Implements\UserRepositoryImplement as UserRepositoryImpleme
 use App\Repositories\SportFieldRepositoryInterface;
 use App\Repositories\SportTypeRepositoryInterface;
 use App\Services\Implements\FieldOwnerServiceImplement;
+use App\Services\Implements\FieldReviewServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement as UserServiceImplement;
@@ -34,6 +37,9 @@ $containerBuilder->addDefinitions([
 
     SportFieldRepositoryInterface::class => \DI\create(SportFieldRepositoryImplement::class),
     SportFieldServiceImplement::class => \DI\autowire(),
+
+    FieldReviewRepositoryInterface::class => \DI\create(FieldReviewRepositoryImplement::class),
+    FieldReviewServiceImplement::class => \DI\autowire(),
 ]);
 
 $container = $containerBuilder->build();
