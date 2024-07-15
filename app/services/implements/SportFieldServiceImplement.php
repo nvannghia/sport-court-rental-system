@@ -24,7 +24,7 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
         return $this->sportFieldRepositoryInterface->getSportFieldByOwnerID($owerID);
     }
 
-    public function getSportFieldByID($sportFieldID) 
+    public function getSportFieldByID($sportFieldID)
     {
         return $this->sportFieldRepositoryInterface->getSportFieldByID($sportFieldID);
     }
@@ -37,5 +37,15 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
     public function destroy($sportFieldID)
     {
         return $this->sportFieldRepositoryInterface->destroy($sportFieldID);
+    }
+
+    public function filterSportFieldsByConditions($sportType = null,  $fieldName = null, $zoneName = null)
+    {
+        return $this->sportFieldRepositoryInterface->filterSportFieldsByConditions($sportType,  $fieldName, $zoneName);
+    }
+
+    public function getSportFieldByIDWithReviews($sportFieldID)
+    {
+        return $this->sportFieldRepositoryInterface->getSportFieldByIDWithReviews($sportFieldID);
     }
 }

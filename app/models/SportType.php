@@ -9,4 +9,9 @@ class SportType extends Eloquent
     protected $primaryKey = 'ID';
     protected $table = "sporttype";
     protected $fillable = ["TypeName"];
+
+    public function sportFields()
+    {
+        return $this->hasMany(SportField::class, 'SportTypeID', 'ID');
+    }
 }

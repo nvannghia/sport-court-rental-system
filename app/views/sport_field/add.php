@@ -10,6 +10,13 @@
 
             <input type="text" class="form-control" id="fieldName" name="fieldName">
         </div>
+
+        <div class="form-group">
+            <label for="fieldImage" class="text-white">Hình đại diện sân</label>
+            <img  class="d-none mb-3 border rounded" style="width: 200px; height: 200px; object-fit: cover;" id="imagePreview" src="test.png" alt="file choose">
+            <input type="file" class="form-control" id="fieldImage" name="fieldImage">
+        </div>
+
         <div class="form-group" style="margin-top: -6px;">
             <div class="d-flex justify-content-between flex-wrap">
 
@@ -52,11 +59,10 @@
             </div>
         </div>
 
-        <button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-1 text-white">
+        <button id="btnAddForm" type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-1 text-white">
             <i class="fa-solid fa-plus"></i>
             <span>Thêm</span>
         </button>
 
     </form>
 </div>
-

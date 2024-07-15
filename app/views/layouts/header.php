@@ -52,6 +52,7 @@
             height: 470px;
         }
 
+        /* //... for overflow */
         .ellipsis {
             max-width: 150px;
             /* Điều chỉnh độ rộng của phần tử theo ý muốn */
@@ -62,6 +63,7 @@
             /* Thêm khoảng cách bên trong */
         }
 
+        /* //sweet alert custom  */
         .custom-success-title {
             color: #A5DC86
         }
@@ -71,6 +73,51 @@
             color: #FF5252
         }
 
+        .overflow-hidden {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+
+        /* // image hover effect */
+        .image-container {
+            position: relative;
+            display: inline-block;
+            overflow: hidden;
+        }
+
+        .image-container img {
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .image-container:hover img {
+            transform: scale(1.5);
+        }
+
+        /* // sport type hover effect */
+        .sporttype-hover:hover p {
+            color: #F9BC18 !important;
+        }
+
+        .sporttype-hover:hover ~ p {
+            color: #F9BC18 !important;
+        }
+
+
+
+        /* //button effect */
+        .btnDetail:hover {
+            width: 60% !important;
+            transform: scale(1);
+            transition: transform 0.5s ease-in-out;
+        }
+
+        /* //shadow effect */
+        .shadow-hover:hover {
+            padding: 0;
+            box-shadow: 12px 6px rgba(25, 69, 138);
+            transition: box-shadow 0.5s ease-in-out;
+        }
     </style>
 
 </head>

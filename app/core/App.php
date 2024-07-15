@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\Implements\FieldOwnerServiceImplement;
+use App\Services\Implements\FieldReviewServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement;
@@ -20,6 +21,10 @@ class App
 
 
     protected $controllersWithDependencies = [
+        'HomeController' => [
+            SportTypeServiceImplement::class,
+            SportFieldServiceImplement::class,
+        ],
         'UserController' => [
             UserServiceImplement::class,
             SendMessageViaSMS::class,
@@ -28,8 +33,17 @@ class App
             CloudinaryService::class,
         ],
         'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
-        'SportFieldController' => [SportFieldServiceImplement::class,SportTypeServiceImplement::class],
-        'SportTypeController' => [SportTypeServiceImplement::class]
+        'SportFieldController' => [
+            SportFieldServiceImplement::class,
+            SportTypeServiceImplement::class,
+            CloudinaryService::class,
+            FieldReviewServiceImplement::class,
+        ],
+        'SportTypeController' => [SportTypeServiceImplement::class],
+        'FieldReviewController' => [
+            FieldReviewServiceImplement::class,
+            CloudinaryService::class,
+        ]
     ];
 
     protected $controllerMapping = [
@@ -38,6 +52,7 @@ class App
         'fieldowner' => 'FieldOwnerController',
         'sportfield' => 'SportFieldController',
         'sporttype' => 'SportTypeController',
+        'fieldreview' => 'FieldReviewController'
     ];
 
     /*

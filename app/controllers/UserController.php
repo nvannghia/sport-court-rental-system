@@ -37,11 +37,6 @@ class UserController extends Controller
         $this->cloudinaryService = $cloudinaryService;
     }
 
-    public function test()
-    {
-        var_dump($this->cloudinaryService);
-    }
-
     function verifyOTPandSaveData()
     {
         if (isset($_POST['action']) && $_POST['action'] == 'getOTP') {
@@ -234,6 +229,7 @@ class UserController extends Controller
     public function uploadUserAvatar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
+            
             $file = $_FILES['file']['tmp_name'];
 
             try {

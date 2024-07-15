@@ -4,9 +4,11 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-use App\Models\SportField;
+use App\Models\FieldReview;
+use App\Services\FieldReviewServiceInterface;
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
+use App\Utils\CloudinaryService;
 
 class SportFieldController extends Controller
 {
@@ -14,23 +16,46 @@ class SportFieldController extends Controller
 
     private $sportTypeServiceInterface;
 
+    private $cloudinaryService;
+
+    private $fieldReviewServiceInterface;
+
     private const STATUS = ["ACTIVE", "INACTIVE"];
 
-    public function __construct(SportFieldServiceInterface $sportFieldServiceInterface, SportTypeServiceInterface $sportTypeServiceInterface)
-    {
+    public function __construct(
+        SportFieldServiceInterface $sportFieldServiceInterface,
+        SportTypeServiceInterface $sportTypeServiceInterface,
+        CloudinaryService $cloudinaryService,
+        FieldReviewServiceInterface $fieldReviewServiceInterface
+    ) {
         $this->sportFieldServiceInterface = $sportFieldServiceInterface;
         $this->sportTypeServiceInterface = $sportTypeServiceInterface;
+        $this->cloudinaryService = $cloudinaryService;
+        $this->fieldReviewServiceInterface = $fieldReviewServiceInterface;
     }
 
-    public function test()
+    public function uploadRepresentation($file)
     {
-        var_dump($this->sportFieldServiceInterface->getSportFieldByID(69)->owner->toArray());
+        try {
+            $result = $this->cloudinaryService->uploadFile($file, [
+                'folder' => 'sport-court-rental-system/sport-field/representation' // folder wanna upload 
+            ]);
+
+            $urlUploaded = $result['secure_url'];
+
+            if ($urlUploaded)
+                return $urlUploaded;
+
+            return null;
+        } catch (Exception $e) {
+            return null;
+        }
     }
 
     public function storeSportField()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['action'] === "addSportField") {
-            // Lấy giá trị từng trường và kiểm tra empty
+            // Lấy giá trị từng trường và kiểm tra isset
             $sportTypeID = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
             $fieldName = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
             $pricePerHour = isset($_POST['pricePerHour']) ? $_POST['pricePerHour'] : '';
@@ -38,6 +63,13 @@ class SportFieldController extends Controller
             $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
             $address = isset($_POST['address']) ? $_POST['address'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
+            $image = null;
+
+            //Upload image of sport field to cloudinary
+            if (isset($_FILES['fieldImage'])) {
+                $file = $_FILES['fieldImage']['tmp_name'];
+                $image = $this->uploadRepresentation($file);
+            }
 
             // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
             $isValidInfo = empty($fieldName)
@@ -60,13 +92,15 @@ class SportFieldController extends Controller
                         "PricePerHour" => $pricePerHour,
                         "NumberOfFields" => $numberOfField,
                         "Address" => $address,
-                        "Description" => $description
+                        "Description" => $description,
+                        "Image" => $image
                     ]
                 );
 
                 if ($sportField) {
+
                     if ($sportField->wasRecentlyCreated) {
-                        
+
                         $sportType = $sportField->sportType->toArray();
                         unset($sportType['ID']);
 
@@ -98,11 +132,66 @@ class SportFieldController extends Controller
         }
     }
 
+    public function test()
+    {
+        echo "<pre>";
+        print_r($this->sportFieldServiceInterface->getSportFieldByIDWithReviews(91)->toArray());
+        echo "</pre>";
+    }
+
+    public function calculateStarPercentageTotal(
+        array $stars
+    ) {
+        $star1  = $stars[0];
+        $star2  = $stars[1];
+        $star3  = $stars[2];
+        $star4  = $stars[3];
+        $star5  = $stars[4];
+
+        //percentage each star
+        $totalStars = $star1 + $star2 + $star3 + $star4 + $star5;
+        $percents = [];
+        for ($i = 1; $i <= 5; ++$i) {
+            $var = "star$i";
+            $count = $$var;
+            if ($count != 0)
+                $percent = number_format($count * 100 / $totalStars, 2);
+            else
+                $percent = 0;
+            $percents[] = $percent;
+        }
+
+        // average point
+        $totalReviews = $totalStars; //$totalStars = total of reviews
+        $totalPoints = ($star5 * 5) + ($star4 * 4) + ($star3 * 3) + ($star2 * 2) + ($star1 * 1);
+        if ($totalPoints == 0)
+            $number = 0;
+        else
+            $number = $totalPoints / $totalReviews;
+
+        $decimalPlaces = 1;
+        $factor = pow(10, $decimalPlaces);
+
+        $roundedDown = floor($number * $factor) / $factor;
+
+        return [
+            'percents' => $percents,
+            'averagePoint' => $roundedDown,
+            'totalReviews' => $totalReviews
+        ];
+    }
+
     public function detail($sportFieldID)
     {
         if (isset($sportFieldID) && is_numeric($sportFieldID)) {
 
-            $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
+            //get sport field
+            $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($sportFieldID);
+
+            //calculate percentage of each star and total star
+            $stars = $this->fieldReviewServiceInterface->calculateStarCountsSportFieldByID($sportFieldID);
+            //destructuring array 
+            ['percents' => $percents, 'averagePoint' => $averagePoint, 'totalReviews' => $totalReviews] = $this->calculateStarPercentageTotal($stars);
 
             if ($sportField) {
 
@@ -111,7 +200,10 @@ class SportFieldController extends Controller
 
                 return $this->view('sport_field/detail', [
                     'sportField' => $sportField->toArray(),
-                    'ownerOfSportField' => $ownerOfSportField->toArray()
+                    'ownerOfSportField' => $ownerOfSportField->toArray(),
+                    'averagePoint' => $averagePoint,
+                    'percents' => $percents,
+                    'totalReviews' => $totalReviews
                 ]);
             } else {
                 return $this->view('404');
@@ -162,6 +254,15 @@ class SportFieldController extends Controller
                 $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
                 $address = isset($_POST['address']) ? $_POST['address'] : '';
                 $description = isset($_POST['description']) ? $_POST['description'] : '';
+                $image = null;
+
+                //Upload new image of sport field to cloudinary, otherwise use old image
+                if (isset($_FILES['fieldImage'])) {
+                    $file = $_FILES['fieldImage']['tmp_name'];
+                    $image = $this->uploadRepresentation($file);
+                } else {
+                    $image = isset($_POST['oldImage']) ? $_POST['oldImage'] : '';
+                }
 
                 // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
                 $isValidInfo = empty($fieldName)
@@ -181,7 +282,8 @@ class SportFieldController extends Controller
                         "PricePerHour" => $pricePerHour,
                         "NumberOfFields" => $numberOfField,
                         "Address" => $address,
-                        "Description" => $description
+                        "Description" => $description,
+                        "Image" => $image
                     ]);
 
                     if ($sportFieldUpdated)
