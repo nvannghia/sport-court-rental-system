@@ -34,6 +34,6 @@ class SportField extends Eloquent
 
     public function fieldReviews()
     {
-        return $this->hasMany(FieldReview::class, 'SportFieldID', 'ID');
+        return $this->hasMany(FieldReview::class, 'SportFieldID', 'ID')->orderBy('created_at', 'desc');
     }
 }

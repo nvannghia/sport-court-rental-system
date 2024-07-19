@@ -1,22 +1,32 @@
-btnRating = document.getElementById('type-rating');
-btnRating.addEventListener('click', function (event) {
-    const button = event.target;
-    const sportFieldID = button.dataset.sportfieldId;
-    if (sportFieldID === undefined) {
-        Swal.fire({
-            icon: "error",
-            title: "Đã xảy ra lỗi...",
-            text: "Vui lòng thử lại sau!",
-        });
-        return;
-    }
+const urlFieldReview = '/sport-court-rental-system/public/fieldreview';
 
-    Swal.fire({
-        input: "textarea",
-        // inputLabel: "Nhập đánh giá của bạn",
-        inputPlaceholder: "Nhập đánh giá ở đây...",
-        html: `
+
+document.addEventListener('DOMContentLoaded', (event) => {
+    //Rating
+    btnRating = document.getElementById('type-rating');
+    btnRating.addEventListener('click', function (event) {
+
+        const button = event.target;
+        const sportFieldID = button.dataset.sportfieldId;
+        if (sportFieldID === undefined) {
+            Swal.fire({
+                icon: "error",
+                title: "Đã xảy ra lỗi...",
+                text: "Vui lòng thử lại sau!",
+            });
+            return;
+        }
+
+        Swal.fire({
+            input: "textarea",
+            // inputLabel: "Nhập đánh giá của bạn",
+            inputPlaceholder: "Nhập đánh giá ở đây...",
+            html: `
             <div class="ml-2">
+                <div id="contain-review-image-preview" style="display:none !important" class="mb-2 d-flex align-items-center">  
+                    <label class="font-weight-bold mr-2"> Ảnh bạn đã chọn: </label>
+                    <img style="width:300px" class="shadow  bg-white rounded" src="#" id="image-review-preview" alt="image review preview"/>
+                </div>
                 <div class="input-group mb-3">
                     <label class="input-group-text" for="rating-image"> Ảnh Sân </label>
                     <input type="file" class="form-control" id="rating-image">
@@ -35,14 +45,283 @@ btnRating.addEventListener('click', function (event) {
                 </div>
             </div>
         `,
+            showCancelButton: true,
+            confirmButtonText: "Gửi đánh giá",
+            cancelButtonText: "Hủy",
+            didOpen: () => {
+                //show image file when user choose
+                const imageReviewPreview = document.getElementById("image-review-preview");
+                const inputFileImage = document.getElementById("rating-image");
+                const containImageReviewPreview = document.getElementById("contain-review-image-preview");
+
+                inputFileImage.addEventListener("change", function () {
+                    imageReviewPreview.src = URL.createObjectURL(inputFileImage.files[0]);
+                    if (containImageReviewPreview.style.display == "none")
+                        containImageReviewPreview.style.removeProperty("display");
+                });
+                // Đặt ID cho phần tử textarea sau khi hộp thoại được mở
+                const textarea = Swal.getInput();
+                if (textarea) {
+                    textarea.id = 'rating-content';
+                }
+            },
+            preConfirm: () => {
+
+                const ratingContent = document.getElementById('rating-content').value != '' ? document.getElementById('rating-content').value : null;
+                const ratingStar = document.getElementById('rating-star').value ?? null;
+                const ratingImage = document.getElementById('rating-image').files[0] ?? null;
+
+                return new Promise((resolve, reject) => {
+                    if (!ratingContent || !ratingStar) {
+                        Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin.');
+                        Swal.enableButtons();
+                        reject();
+                    } else {
+                        resolve({
+                            ratingContent,
+                            ratingStar,
+                            ratingImage
+                        });
+                    }
+                });
+            }
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const {
+                    ratingContent,
+                    ratingStar,
+                    ratingImage
+                } = result.value;
+
+                if (!ratingContent || !ratingStar) {
+                    Swal.showValidationMessage('Vui lòng điền đầy đủ thông tin.');
+                    return false;
+                }
+
+                const formData = new FormData();
+                formData.append('action', 'addFieldReview');
+                formData.append('sportFieldID', sportFieldID);
+                formData.append('ratingStar', ratingStar);
+                formData.append('content', ratingContent);
+                formData.append('imageReview', ratingImage);
+
+                const addFieldReivewUrl = `${urlFieldReview}/addFieldReivew`;
+
+                const response = await fetch(`${addFieldReivewUrl}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.statusCode === 400) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Đã xảy ra lỗi...",
+                        text: data.message,
+                    });
+                } else if (data.statusCode === 500) {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Đã xảy ra lỗi...",
+                        text: data.message,
+                    });
+                } else {
+                    await Swal.fire({
+                        title: 'Thành công!',
+                        text: 'Đánh giá của bạn đã được tải lên!',
+                        icon: 'success'
+                    });
+
+                    //window reload and scroll to reviews view to see the new review
+                    localStorage.setItem('scrollTo', 'view-reviews');
+                    window.location.reload();
+                }
+            }
+        });
+    });
+});
+
+// Scroll to the element after the page reloads
+window.addEventListener('load', () => {
+    const scrollTo = localStorage.getItem('scrollTo');
+    if (scrollTo) {
+        const element = document.getElementById(scrollTo);
+        if (element) {
+            element.scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        // Remove the item from localStorage
+        localStorage.removeItem('scrollTo');
+    }
+});
+
+
+
+// like review
+const likeReview = async (fieldReviewID) => {
+    // number of like
+    const numberLikeDisplay = document.getElementById(`number-like-id-${fieldReviewID}`);
+    let numberLike = parseInt(numberLikeDisplay.innerText);
+
+    // form data
+    const formData = new FormData();
+    formData.append('fieldReviewID', fieldReviewID);
+
+    //change the color of button
+    const iconLike = document.getElementById(`icon-like-review-id-${fieldReviewID}`);
+
+    if (iconLike.classList.contains('text-primary')) { //liked
+        iconLike.classList.remove('text-primary');
+        iconLike.classList.add('text-white');
+        //action descrease
+        formData.append('action', 'descreaseReviewLike');
+        //increase like on user interface
+        numberLikeDisplay.innerText = --numberLike;
+    } else { //don't like yet
+        iconLike.classList.add('text-primary');
+        formData.append('action', 'increaseReviewLike');
+        numberLikeDisplay.innerText = ++numberLike;
+    }
+
+    const updateLikeReviewUrl = `${urlFieldReview}/updateLike`;
+
+    const response = await fetch(`${updateLikeReviewUrl}`, {
+        method: 'POST',
+        body: formData
+    });
+
+    const data = await response.json();
+    if (data.statusCode >= 400)
+        Swal.fire({
+            icon: "error",
+            title: "Đã xảy ra lỗi...",
+            text: data.message,
+        });
+}
+
+
+//delete review
+const deleteReview = async (fieldReviewID) => {
+    Swal.fire({
+        title: "Xóa đánh giá!",
+        text: "Bạn đã chắc chắn muốn xóa đánh giá này?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Không",
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const formData = new FormData();
+            formData.append('action', 'deleteFieldReview');
+
+            const deleteReviewUrl = `${urlFieldReview}/deleteFieldReview/${fieldReviewID}`;
+
+            const response = await fetch(`${deleteReviewUrl}`, {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.statusCode == 204) {
+                Swal.fire({
+                    title: 'Thành công!',
+                    text: 'Đánh giá của bạn đã được xóa!',
+                    icon: 'success'
+                });
+
+                //remove review at user interface
+                let reviewDeleted = document.getElementById(`review-id-${fieldReviewID}`);
+                reviewDeleted.remove();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Đã xảy ra lỗi...",
+                    text: 'Vui lòng thử lại sau!',
+                });
+            }
+        }
+    });
+}
+
+
+
+//============== edit review
+const getFieldReviewByID = async (fieldReviewID) => {
+    const getReviewUrl = `${urlFieldReview}/getFieldReviewByID/${fieldReviewID}`;
+
+    const response = await fetch(`${getReviewUrl}`);
+
+    const data = await response.json();
+
+    if (data.statusCode === 200)
+        return data.fieldReview;
+    else {
+        Swal.fire({
+            icon: "error",
+            title: "Đã xảy ra lỗi...",
+            text: 'Vui lòng thử lại sau!',
+        });
+        return;
+    }
+
+
+}
+
+const editReview = async (fieldReviewID) => {
+    const fieldReview = await getFieldReviewByID(fieldReviewID);
+    console.log(fieldReview);
+    Swal.fire({
+        input: "textarea",
+        // inputLabel: "Nhập đánh giá của bạn",
+        inputPlaceholder: "Nhập đánh giá ở đây...",
+        html: `
+        <div class="ml-2">
+            <div id="contain-review-image-preview" style="${!fieldReview.ImageReview ? "display:none !important" : ""}" class="mb-2 d-flex align-items-center">  
+                <label class="font-weight-bold mr-2"> Ảnh bạn đã chọn: </label>
+                <img style="width:300px" class="shadow  bg-white rounded" src="${fieldReview.ImageReview}" id="image-review-preview" alt="image review preview"/>
+            </div>
+            <div class="input-group mb-3">
+                <label class="input-group-text" for="rating-image"> Ảnh Sân </label>
+                <input type="file" class="form-control" id="rating-image">
+            </div>
+            <div class="input-group mb-2">
+                <select style="height:40px; width:45px" class="border rounded form-select" id="rating-star">
+                    <option value="1" ${fieldReview.Rating == 1 ? "selected" : ""}>1</option>
+                    <option value="2" ${fieldReview.Rating == 2 ? "selected" : ""}>2</option>
+                    <option value="3" ${fieldReview.Rating == 3 ? "selected" : ""}>3</option>
+                    <option value="4" ${fieldReview.Rating == 4 ? "selected" : ""}>4</option>
+                    <option value="5" ${fieldReview.Rating == 5 ? "selected" : ""}>5</option>
+                </select>
+                <label style="height:40px" class="bg-white input-group-text" for="rating-star">
+                    <i class="text-warning fa-solid fa-star" style="font-size: large"></i>
+                </label>
+            </div>
+        </div>
+    `,
         showCancelButton: true,
         confirmButtonText: "Gửi đánh giá",
         cancelButtonText: "Hủy",
         didOpen: () => {
+            //show image file when user choose
+            const imageReviewPreview = document.getElementById("image-review-preview");
+            const inputFileImage = document.getElementById("rating-image");
+            const containImageReviewPreview = document.getElementById("contain-review-image-preview");
+
+            inputFileImage.addEventListener("change", function () {
+                imageReviewPreview.src = URL.createObjectURL(inputFileImage.files[0]);
+                if (containImageReviewPreview.style.display == "none")
+                    containImageReviewPreview.style.removeProperty("display");
+            });
             // Đặt ID cho phần tử textarea sau khi hộp thoại được mở
             const textarea = Swal.getInput();
             if (textarea) {
                 textarea.id = 'rating-content';
+                textarea.value = fieldReview.Content;
             }
         },
         preConfirm: () => {
@@ -79,40 +358,37 @@ btnRating.addEventListener('click', function (event) {
             }
 
             const formData = new FormData();
-            formData.append('action', 'addFieldReview');
-            formData.append('sportFieldID', sportFieldID);
+            formData.append('action', 'updateFieldReview');
             formData.append('ratingStar', ratingStar);
             formData.append('content', ratingContent);
             formData.append('imageReview', ratingImage);
 
-            const addFieldReivewUrl = `../../fieldreview/addFieldReivew`;
+            const updateFieldReivewUrl = `${urlFieldReview}/updateFieldReview/${fieldReviewID}`;
 
-            const response = await fetch(`${addFieldReivewUrl}`, {
+            const response = await fetch(`${updateFieldReivewUrl}`, {
                 method: 'POST',
                 body: formData
             });
 
             const data = await response.json();
 
-            if (data.statusCode === 400) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Đã xảy ra lỗi...",
-                    text: data.message,
-                });
-            } else if (data.statusCode === 500) {
-                Swal.fire({
-                    icon: "error",
-                    title: "Đã xảy ra lỗi...",
-                    text: data.message,
-                });
-            } else {
-                 Swal.fire({
+            if (data.statusCode === 200) {
+                await Swal.fire({
                     title: 'Thành công!',
-                    text: 'Đánh giá của bạn đã được tải lên!',
+                    text: 'Đánh giá của bạn đã được sửa và tải lên!',
                     icon: 'success'
+                });
+                //window reload and scroll to reviews view to see the new review
+                localStorage.setItem('scrollTo', 'view-reviews');
+                window.location.reload();
+            } else {
+                Swal.fire({
+                    icon: "error",
+                    title: "Đã xảy ra lỗi...",
+                    text: data.message,
                 });
             }
         }
     });
-});
+}
+

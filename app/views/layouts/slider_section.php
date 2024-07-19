@@ -3,7 +3,7 @@
         <div class="row">
             <div class="col-lg-7 col-md-8 mx-auto">
                 <div class="detail-box">
-                    <img src="../../public/images/soccer.gif" alt="gif" style="width: 25%;">
+                    <img src="/sport-court-rental-system/public/images/soccer.gif" alt="gif" style="width: 25%;">
 
                     <h1>
                         HỆ THỐNG HỖ TRỢ TÌM KIẾM SÂN BÃI NHANH

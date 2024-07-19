@@ -22,4 +22,25 @@ class FieldReviewServiceImplement implements FieldReviewServiceInterface
     {
         return $this->fieldReviewRepositoryInterface->calculateStarCountsSportFieldByID($sportFieldID);
     }
+
+    public function updateLikeReview($action, $fieldReviewID, $userID) 
+    {
+        return $this->fieldReviewRepositoryInterface->updateLikeReview($action, $fieldReviewID, $userID);
+    }
+
+    public function deleteFieldReview($fieldReviewID)
+    {
+        return $this->fieldReviewRepositoryInterface->deleteFieldReview($fieldReviewID);
+    }
+
+    public function getFieldReviewByID($fieldReviewID)
+    {
+        return $this->fieldReviewRepositoryInterface->getFieldReviewByID($fieldReviewID);
+    }
+
+    public function updateFieldReview($fieldReviewID, array $data)
+    {
+        return $this->fieldReviewRepositoryInterface->updateFieldReview($fieldReviewID, $data);
+
+    }
 }

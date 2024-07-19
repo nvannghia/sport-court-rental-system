@@ -1,8 +1,13 @@
 <?php
+// if (session_status() == PHP_SESSION_NONE) {
+//     session_start();
+// }
+
 $hiddenSliderSection = true;
 $hiddenCategory = true;
 
 require_once __DIR__ . '/../layouts/header.php';
+
 ?>
 <section class="bg-white">
     <div class="container d-flex">

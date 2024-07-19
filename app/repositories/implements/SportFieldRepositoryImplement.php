@@ -29,7 +29,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
 
     public function getSportFieldByIDWithReviews($sportFieldID)
     {
-        return SportField::with('fieldReviews.user')->find($sportFieldID);
+        return SportField::with(['fieldReviews.user', 'fieldReviews.usersLikedReview' ])->find($sportFieldID);
     }
 
     public function update($sportFieldID, array $attributes)

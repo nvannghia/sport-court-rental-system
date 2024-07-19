@@ -118,6 +118,12 @@
             box-shadow: 12px 6px rgba(25, 69, 138);
             transition: box-shadow 0.5s ease-in-out;
         }
+
+        /* //like hover */
+        .like-hover:hover {
+            transform: scale(1.5);
+            transition: transform 0.1s ease-in-out;
+        }
     </style>
 
 </head>
