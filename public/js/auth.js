@@ -1,4 +1,4 @@
-const urlRequest = '../../public/user';
+const urlRequest = '/sport-court-rental-system/public/user';
 
 const handleLogin = (evt) => {
 
@@ -47,7 +47,7 @@ const handleLogin = (evt) => {
         formData.append('password', password);
 
         const loginUrl = `${urlRequest}/login`;
-        const response = await fetch(`${loginUrl}/login`, {
+        const response = await fetch(`${loginUrl}`, {
           method: 'POST',
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -311,7 +311,7 @@ const handleLogout = () => {
           }
         });
 
-        window.location.href = `../home/index`;
+        window.location.href = '/sport-court-rental-system/public/home';
       }
     }
   })

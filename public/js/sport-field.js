@@ -62,22 +62,6 @@ const hiddenFormEdit = () => {
     });
 }
 
-function replaceWithSpinner(oldElement) {
-    // Tạo một chuỗi HTML đại diện cho spinner
-    var spinnerHTML = `
-        <div class="spinner-grow text-primary" role="status">
-            <span class="sr-only">Loading...</span>
-        </div>
-    `;
-
-    // Tạo một phần tử div để chứa spinnerHTML
-    var spinnerElement = document.createElement('div');
-    spinnerElement.innerHTML = spinnerHTML.trim(); // Sử dụng trim để loại bỏ khoảng trắng thừa
-
-    // Thực hiện thay thế
-    oldElement.replaceWith(spinnerElement.firstChild);
-}
-
 // add sport field
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('addSportFieldForm');

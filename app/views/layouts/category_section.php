@@ -4,7 +4,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,103)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/basketball.png" sty alt="basketball.png">
+                        <img src="/sport-court-rental-system/public/images/category/basketball.png" sty alt="basketball.png">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">
@@ -16,7 +16,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,104)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/volleyball.png" alt="">
+                        <img src="/sport-court-rental-system/public/images/category/volleyball.png" alt="">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">
@@ -28,7 +28,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,105)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/tennis.png" alt="">
+                        <img src="/sport-court-rental-system/public/images/category/tennis.png" alt="">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">
@@ -40,7 +40,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,106)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/badminton.png" alt="">
+                        <img src="/sport-court-rental-system/public/images/category/badminton.png" alt="">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">
@@ -52,7 +52,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,108)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/football.png" alt="">
+                        <img src="/sport-court-rental-system/public/images/category/football.png" alt="">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">
@@ -64,7 +64,7 @@
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
                 <a onclick="handleFilterBySportType(this,109)" class="box">
                     <div class="img-box">
-                        <img src="../../public/images/category/golf.png" alt="">
+                        <img src="/sport-court-rental-system/public/images/category/golf.png" alt="">
                     </div>
                     <div class="detail-box">
                         <h5 class="text-white">

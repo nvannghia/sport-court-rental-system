@@ -51,6 +51,13 @@ const updateSportType = async (sportTypeID, sportTypeName) => {
 
       tdTypeNameUpdated.innerText = data.sportType.TypeName;
       tdUpdatedAt.innerText = parseToTime(data.sportType.updated_at);
+
+      // //update type name for next edit sport type request
+      // let btnEdit = document.getElementById(`edit-sporttype-${sportTypeID}`);
+      // btnEdit.removeEventListener("click", displayComponentEditSportType(sportTypeID, oldTypeName), true);
+      // console.log(btnEdit);
+      // return;
+      // btnEdit.addEventListener("click", displayComponentEditSportType(sportTypeID, data.sportType.TypeName))
       break;
 
     case 400:
@@ -176,7 +183,7 @@ const getAllSportTypes = async () => {
           <td scope="col">${parseToTime(spT.created_at)}</td>
           <td scope="col" id="col-updatedAt-${spT.ID}">${parseToTime(spT.updated_at)}</td>
           <td scope="col">
-            <i style="cursor:pointer" onclick="displayComponentEditSportType(${spT.ID},'${spT.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
+            <i id="edit-sporttype-${spT.ID}" style="cursor:pointer" onclick="displayComponentEditSportType(${spT.ID},'${spT.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
             <span class="h3">|</span>
             <i style="cursor:pointer" onclick="deleteSportType(${spT.ID})" class="fa-solid fa-xmark h3 text-danger"></i>
           </td>

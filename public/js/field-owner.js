@@ -1,5 +1,5 @@
 
-const ownerRequest = '../../public/fieldowner';
+const ownerRequest = '/sport-court-rental-system/public/fieldowner';
 
 const handleOwnerRegister = async (ownerID) => {
 

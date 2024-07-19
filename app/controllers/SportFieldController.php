@@ -134,8 +134,13 @@ class SportFieldController extends Controller
 
     public function test()
     {
+        $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews(91)->toArray();
+
+
+
+
         echo "<pre>";
-        print_r($this->sportFieldServiceInterface->getSportFieldByIDWithReviews(91)->toArray());
+        print_r($sportField);
         echo "</pre>";
     }
 
@@ -187,7 +192,6 @@ class SportFieldController extends Controller
 
             //get sport field
             $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($sportFieldID);
-
             //calculate percentage of each star and total star
             $stars = $this->fieldReviewServiceInterface->calculateStarCountsSportFieldByID($sportFieldID);
             //destructuring array 
@@ -198,8 +202,21 @@ class SportFieldController extends Controller
                 $ownerOfSportField = $sportField->owner;
                 unset($ownerOfSportField->Password);
 
+                //filter data 'users_liked_review' to flatten array
+                $sportField = $sportField->toArray();
+                $fieldReviews =  $sportField['field_reviews'];
+                foreach ($fieldReviews as $index => $fieldReview) {
+                    $usersLikeReviews = $fieldReview['users_liked_review'];
+                    $usersLikeReviewID = [];
+                    foreach ($usersLikeReviews as $usersLikeReview) {
+                        $usersLikeReviewID[] = $usersLikeReview['ID'];
+                    }
+
+                    $sportField['field_reviews'][$index]['users_liked_review'] = $usersLikeReviewID;
+                }
+
                 return $this->view('sport_field/detail', [
-                    'sportField' => $sportField->toArray(),
+                    'sportField' => $sportField,
                     'ownerOfSportField' => $ownerOfSportField->toArray(),
                     'averagePoint' => $averagePoint,
                     'percents' => $percents,

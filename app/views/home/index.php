@@ -74,7 +74,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                     </span>
                                 </p>
                                 <div class="text-center">
-                                    <a href="../sportfield/detail/<?= $sportField['ID']; ?>" id="btnDetail" style="background-color: #123366;" class=" btnDetail w-50 text-white btn ">
+                                    <a href="/sport-court-rental-system/public/sportfield/detail/<?= $sportField['ID']; ?>" id="btnDetail" style="background-color: #123366;" class=" btnDetail w-50 text-white btn ">
                                         <b>Chi tiết</b>
                                     </a>
                                 </div>
