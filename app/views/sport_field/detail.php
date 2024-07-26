@@ -50,6 +50,11 @@ require_once __DIR__ . '/../layouts/header.php';
                 </script>
             </div>
 
+            <div class="mt-3 d-flex align-items-center justify-content-end">
+                <i class="fa-solid fa-calendar-week mr-2 h2" style="color: #E41A2B;"></i>
+                <a href="sport-court-rental-system/public/sportfield/bookafield" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐẶT SÂN NGAY</a>
+            </div>
+
             <div class="mt-5">
                 <span class="rounded h4 shadow font-weight-bold" style="padding:20px">
                     <i class="fa-solid fa-audio-description"></i> -

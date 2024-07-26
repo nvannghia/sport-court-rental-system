@@ -360,5 +360,10 @@ class SportFieldController extends Controller
             ]);
         }
     }
+
+    public function bookafield()
+    {
+        return $this->view('sport_field/book_a_field');
+    }
 }
 ?>

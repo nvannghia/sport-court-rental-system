@@ -1,4 +1,4 @@
-const sportTypeUrl = '../../public/sporttype'
+const sportTypeUrl = '/sport-court-rental-system/public/sporttype'
 
 const parseToTime = (timestamp) => {
   // Chuyển đổi chuỗi thời gian thành đối tượng Date
@@ -15,6 +15,7 @@ const parseToTime = (timestamp) => {
 }
 
 const updateSportType = async (sportTypeID, sportTypeName) => {
+
 
   const displayValidateElement = document.getElementById('displayValidate');
   const messageValidateElement = document.getElementById('messageValidate');
@@ -52,12 +53,10 @@ const updateSportType = async (sportTypeID, sportTypeName) => {
       tdTypeNameUpdated.innerText = data.sportType.TypeName;
       tdUpdatedAt.innerText = parseToTime(data.sportType.updated_at);
 
-      // //update type name for next edit sport type request
-      // let btnEdit = document.getElementById(`edit-sporttype-${sportTypeID}`);
-      // btnEdit.removeEventListener("click", displayComponentEditSportType(sportTypeID, oldTypeName), true);
-      // console.log(btnEdit);
-      // return;
-      // btnEdit.addEventListener("click", displayComponentEditSportType(sportTypeID, data.sportType.TypeName))
+      //remove old onlick event and add new onlick event with new params
+      let iconEdit = document.getElementById(`edit-sporttype-${sportTypeID}`);
+      iconEdit.removeAttribute("onclick");
+      iconEdit.setAttribute("onclick", `displayComponentEditSportType(${sportTypeID}, '${data.sportType.TypeName}')`);
       break;
 
     case 400:
@@ -185,7 +184,7 @@ const getAllSportTypes = async () => {
           <td scope="col">
             <i id="edit-sporttype-${spT.ID}" style="cursor:pointer" onclick="displayComponentEditSportType(${spT.ID},'${spT.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
             <span class="h3">|</span>
-            <i style="cursor:pointer" onclick="deleteSportType(${spT.ID})" class="fa-solid fa-xmark h3 text-danger"></i>
+            <i style="cursor:pointer" onclick="deleteSportType(${spT.ID})" class="fa-solid fa-trash-can h3 text-danger"></i>
           </td>
         </tr>
       `;
@@ -252,7 +251,7 @@ const addSportType = async () => {
           <td scope="col">
             <i style="cursor:pointer" onclick="displayComponentEditSportType(${data.sportType.ID},'${data.sportType.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
             <span class="h3">|</span>
-            <i style="cursor:pointer" onclick="deleteSportType(${data.sportType.ID})" class="fa-solid fa-xmark h3 text-danger"></i>
+            <i style="cursor:pointer" onclick="deleteSportType(${data.sportType.ID})" class="fa-solid fa-trash-can h3 text-danger"></i>
           </td>
         </tr>`;
 
@@ -301,8 +300,8 @@ const handleSportType = async () => {
 
 
   const htmlContent = `
-    <button onclick="displayComponentAddSportType()" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-3">
-    <i class="fa-solid fa-plus"></i>
+    <button onclick="displayComponentAddSportType()" type="button" class=" custom-button btn btn-outline-primary ms-1 mb-3">
+    <i class="fa-solid fa-plus" ></i>
       <span>Thêm Loại Sân</span>
     </button>
     
@@ -318,8 +317,8 @@ const handleSportType = async () => {
           </span>
         </div>
         <div class="col-auto">
-          <button onclick="addSportType()" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">
-            <i class="fa-solid fa-plus"></i>
+          <button onclick="addSportType()" type="button" class="custom-button btn btn-outline-primary ms-1">
+            <i class="fa-solid fa-check-to-slot"></i>
             <span> Thêm </span>
           </button>
         </div> 
@@ -339,7 +338,7 @@ const handleSportType = async () => {
           </span>
         </div>
         <div class="col-auto">
-          <button id="editTypeSport" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1">
+          <button id="editTypeSport" type="button"  class="custom-button btn btn-outline-primary ms-1">
             <i class="fa-regular fa-pen-to-square"></i>
             <span> Sửa </span>
           </button>
@@ -348,16 +347,16 @@ const handleSportType = async () => {
       
     </div>
 
-    <div id="displayValidate" class="d-none" >
+    <div id="displayValidate" class="d-none border border-black" >
         <div style="padding: 8px;" class="text-danger bg-white d-flex align-items-center justify-content-center">
           <i id="iconValidate" class="fa-solid fa-circle-exclamation mr-3"></i>
           <span id="messageValidate"> validation message </span>
         </div>
-      </div>
+    </div>
 
-    <table class="table">
-      <thead style="color:#FF6347">
-        <tr>
+    <table class="table shadow-lg" style="border-radius:5px">
+      <thead style="color:#123366">
+        <tr class="bg-light ">
           <th scope="col">ID</th>
           <th scope="col">Tên Loại Sân</th>
           <th scope="col">Ngày Tạo</th>
@@ -373,18 +372,20 @@ const handleSportType = async () => {
 
   Swal.fire({
     title: "Thể Loại Sân",
-    width: '70%',
+    width: '60%',
     padding: "1em",
     color: "#716add",
-    background: "#fff url(https://sweetalert2.github.io/images/trees.png)",
+    background: "#fff  no-repeat center center / contain ", //url(https://i.gifer.com/OnVZ.gif)
     backdrop: `
         rgba(0,0,123,0.4)
-        url("https://sweetalert2.github.io/images/nyan-cat.gif")
+        url("/sport-court-rental-system/public/images/gif/sport-type-management_1.gif")
         left top
         no-repeat
       `,
-    html: htmlContent
-
+    html: htmlContent,
+    customClass: {
+      title: 'custom-title'
+    }
   });
 
 

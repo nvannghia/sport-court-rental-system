@@ -99,7 +99,7 @@
             color: #F9BC18 !important;
         }
 
-        .sporttype-hover:hover ~ p {
+        .sporttype-hover:hover~p {
             color: #F9BC18 !important;
         }
 
@@ -110,6 +110,14 @@
             width: 60% !important;
             transform: scale(1);
             transition: transform 0.5s ease-in-out;
+        }
+
+        .custom-button {
+            color: #123366;
+        }
+
+        .custom-button:hover {
+            color: white;
         }
 
         /* //shadow effect */
@@ -123,6 +131,11 @@
         .like-hover:hover {
             transform: scale(1.5);
             transition: transform 0.1s ease-in-out;
+        }
+
+        body.swal2-shown>[aria-hidden='true'] {
+            transition: 0.1s filter;
+            filter: blur(10px);
         }
     </style>
 
