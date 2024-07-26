@@ -1,4 +1,4 @@
-<div id="formEditContainer" class="d-none mt-3" style="background-color:#5361B5; padding: 10px; border-radius:4px">
+<div id="formEditContainer" class="d-none mt-3" style="background-color:#29378f; padding: 10px; border-radius:4px">
     <form id="editSportFieldForm" class=" mt-3" method="POST" enctype="multipart/form-data">
         <div class="form-group d-flex flex-wrap justify-content-between">
             <label for="fieldName" class="text-white">Tên Sân</label>
@@ -35,7 +35,7 @@
                     <div id="wrap-status">
                         <div class="bg-white border border-success rounded" style="max-height: 40px;">
                             <input type="radio" id="ACTIVE" name="status" value="ACTIVE">
-                            <label for="ACTIVE" class="  text-success " style="padding:5px; min-width: 125px ;">ACTIVE</label><br>
+                            <label for="ACTIVE" class="text-success" style="padding:5px; min-width: 125px ;">ACTIVE</label><br>
                         </div>
                         <div class="bg-white border border-danger rounded mt-2" style="max-height: 40px;">
                             <input type="radio" id="INACTIVE" name="status" value="INACTIVE">

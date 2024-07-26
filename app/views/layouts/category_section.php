@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,103)" class="box">
+                <a onclick="handleFilterBySportType(this,111)" class="box">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/basketball.png" sty alt="basketball.png">
                     </div>
@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,104)" class="box">
+                <a onclick="handleFilterBySportType(this,112)" class="box">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/volleyball.png" alt="">
                     </div>
