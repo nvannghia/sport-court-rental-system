@@ -5,6 +5,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Models\FieldReview;
+use App\Models\SportField;
 use App\Services\FieldReviewServiceInterface;
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
@@ -58,11 +59,15 @@ class SportFieldController extends Controller
             // Lấy giá trị từng trường và kiểm tra isset
             $sportTypeID = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
             $fieldName = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
-            $pricePerHour = isset($_POST['pricePerHour']) ? $_POST['pricePerHour'] : '';
             $status = isset($_POST['status']) ? $_POST['status'] : '';
             $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
             $address = isset($_POST['address']) ? $_POST['address'] : '';
             $description = isset($_POST['description']) ? $_POST['description'] : '';
+            $priceDay = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
+            $priceEvening = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
+            $openingTime = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
+            $closingTime = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
+            $fieldSize = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
             $image = null;
 
             //Upload image of sport field to cloudinary
@@ -78,7 +83,12 @@ class SportFieldController extends Controller
                 && empty($status)
                 && empty($numberOfField)
                 && empty($address)
-                && empty($description);
+                && empty($description)
+                && empty($priceDay)
+                && empty($priceEvening)
+                && empty($openingTime)
+                && empty($closingTime);
+
 
             if (!$isValidInfo) {
                 $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'];
@@ -89,10 +99,14 @@ class SportFieldController extends Controller
                         "SportTypeID" => $sportTypeID,
                         "FieldName" => $fieldName,
                         "Status" => self::STATUS[0],
-                        "PricePerHour" => $pricePerHour,
                         "NumberOfFields" => $numberOfField,
                         "Address" => $address,
                         "Description" => $description,
+                        "PriceDay" => $priceDay,
+                        "PriceEvening" => $priceEvening,
+                        "OpeningTime" => $openingTime,
+                        "ClosingTime" => $closingTime,
+                        "FieldSize" => $fieldSize,
                         "Image" => $image
                     ]
                 );
@@ -134,13 +148,9 @@ class SportFieldController extends Controller
 
     public function test()
     {
-        $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews(91)->toArray();
-
-
-
-
+        $sportField = SportField::find(91);
         echo "<pre>";
-        print_r($sportField);
+        print_r($sportField->toArray());
         echo "</pre>";
     }
 
@@ -271,6 +281,11 @@ class SportFieldController extends Controller
                 $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
                 $address = isset($_POST['address']) ? $_POST['address'] : '';
                 $description = isset($_POST['description']) ? $_POST['description'] : '';
+                $priceDay = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
+                $priceEvening = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
+                $openingTime = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
+                $closingTime = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
+                $fieldSize = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
                 $image = null;
 
                 //Upload new image of sport field to cloudinary, otherwise use old image
@@ -288,7 +303,12 @@ class SportFieldController extends Controller
                     && empty($status)
                     && empty($numberOfField)
                     && empty($address)
-                    && empty($description);
+                    && empty($description)
+                    && empty($priceDay)
+                    && empty($priceEvening)
+                    && empty($openingTime)
+                    && empty($closingTime)
+                    && empty($fieldSize);
 
                 if (!$isValidInfo) {
 
@@ -300,6 +320,11 @@ class SportFieldController extends Controller
                         "NumberOfFields" => $numberOfField,
                         "Address" => $address,
                         "Description" => $description,
+                        "PriceDay" => $priceDay,
+                        "PriceEvening" => $priceEvening,
+                        "OpeningTime" => $openingTime,
+                        "ClosingTime" => $closingTime,
+                        "FieldSize" => $fieldSize,
                         "Image" => $image
                     ]);
 

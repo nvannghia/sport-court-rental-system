@@ -1,3 +1,4 @@
+const sportFieldUrl = '/sport-court-rental-system/public/sportfield';
 const addSportFiledBtn = document.getElementById("addSportFieldBtn");
 const formAddContainer = document.getElementById('formAddContainer');
 const formEditContainer = document.getElementById('formEditContainer');
@@ -62,30 +63,62 @@ const hiddenFormEdit = () => {
     });
 }
 
-// add sport field
+//format tiền
+function formatCurrency(e) {
+    let value = e.target.value;
+    value = value.replace(/[^0-9]/g, "");
+    if (value !== "") {
+        value = Number(value).toLocaleString('vi-VN');
+    }
+    e.target.value = value;
+}
+
+// Nếu khách hàng chọn thể loại sân là Bóng Đá, cho chọn sân 5,7,11 
+const wrapFieldSizeAdd = document.getElementById('wrapFieldSize');
+const wrapFieldSizeEdit = document.querySelector('#editSportFieldForm #wrapFieldSize');
+const fieldSize = document.getElementById('fieldSize');
+const displayFieldSize = (e, action) => {
+    let wrapFieldSize = null;
+    if (action === 'add') {
+        wrapFieldSize = wrapFieldSizeAdd;
+    } else {
+        wrapFieldSize = wrapFieldSizeEdit;
+    }
+    let sportTypeID = e.value;
+    if (sportTypeID == 108) {
+        if (wrapFieldSize.classList.contains('d-none')) {
+            wrapFieldSize.classList.remove('d-none');
+            wrapFieldSize.classList.add('d-block');
+        }
+    } else {
+        if (wrapFieldSize.classList.contains('d-block')) {
+            wrapFieldSize.classList.remove('d-block');
+            wrapFieldSize.classList.add('d-none');
+        }
+    }
+}
+
+//===================== add sport field
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('addSportFieldForm');
     const fieldName = document.getElementById('fieldName');
-    const pricePerHour = document.getElementById('pricePerHour');
+    const priceDay = document.getElementById('priceDay');
+    const priceEvening = document.getElementById('priceEvening');
+    const openingTime = document.getElementById('openingTime');
+    const closingTime = document.getElementById('closingTime');
     const status = document.getElementById('status');
     const numberOfField = document.getElementById('numberOfField');
-    const sportTypeID = document.getElementById('sportTypeID');
+    const sportTypeID = document.getElementById('sportTypeID'); // sportTypeID là select box, sportTypeID.value là value của option
     const address = document.getElementById('address');
     const description = document.getElementById('description');
     const wrapTinyMCE = document.getElementById('wrap-tinyMCE');
     const wrapSportTypeID = document.getElementById('wrap-sportTypeID');
     const btnSubmitFormAdd = document.querySelector('form#addSportFieldForm #btnAddForm');
+    const fieldSize = document.getElementById('fieldSize'); // fieldSize là select box, fieldSize.value là value của option
 
-
-    // Định dạng đầu vào tiền
-    pricePerHour.addEventListener("input", function (e) {
-        let value = e.target.value;
-        value = value.replace(/[^0-9]/g, "");
-        if (value !== "") {
-            value = Number(value).toLocaleString('vi-VN');
-        }
-        e.target.value = value;
-    });
+    //Định dạng đầu vào cho giá tiền trước và sau 17:00
+    priceDay.addEventListener("input", formatCurrency);
+    priceEvening.addEventListener("input", formatCurrency);
 
     // Thêm event listener cho sự kiện submit một lần
     form.addEventListener('submit', async function (event) {
@@ -103,11 +136,32 @@ document.addEventListener('DOMContentLoaded', function () {
             fieldName.classList.remove('is-invalid');
         }
 
-        if (!pricePerHour.value.trim()) {
-            pricePerHour.classList.add('is-invalid');
+        if (!priceDay.value.trim()) {
+            priceDay.classList.add('is-invalid');
             isValid = false;
         } else {
-            pricePerHour.classList.remove('is-invalid');
+            priceDay.classList.remove('is-invalid');
+        }
+
+        if (!priceEvening.value.trim()) {
+            priceEvening.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            priceEvening.classList.remove('is-invalid');
+        }
+
+        if (openingTime.value === '' || openingTime.value.trim < 0) {
+            openingTime.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            openingTime.classList.remove('is-invalid');
+        }
+
+        if (closingTime.value === '' || closingTime.value.trim < 0) {
+            closingTime.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            closingTime.classList.remove('is-invalid');
         }
 
         if (!status.value.trim()) {
@@ -153,14 +207,20 @@ document.addEventListener('DOMContentLoaded', function () {
             const formData = new FormData();
             formData.append('action', 'addSportField');
             formData.append('sportTypeID', sportTypeID.value);
+            if (sportTypeID.value == 108) {
+                formData.append('fieldSize', fieldSize.value)
+            }
             formData.append('fieldName', fieldName.value);
-            formData.append('pricePerHour', pricePerHour.value);
+            formData.append('priceDay', priceDay.value);
+            formData.append('priceEvening', priceEvening.value);
+            formData.append('openingTime', openingTime.value);
+            formData.append('closingTime', closingTime.value);
             formData.append('numberOfField', numberOfField.value);
             formData.append('address', address.value);
             formData.append('description', editorContent);
             formData.append('fieldImage', fileImage);
 
-            const addSportFieldUrl = '../sportfield/storeSportField';
+            const addSportFieldUrl = `${sportFieldUrl}/storeSportField`;
             const response = await fetch(addSportFieldUrl, {
                 method: 'POST',
                 body: formData,
@@ -186,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 containerSportField.insertAdjacentHTML('afterbegin', `
                  <div id="sportField-${data.sportField.ID}">
                     <div class="d-flex justify-content-between align-items-center">
-                        <p class="mb-1" id="display-typename-sportfield-${data.sportField.ID}"> Sân ${data.sportField.TypeName} ${data.sportField.FieldName} </p>
+                        <p class="ellipsis mb-1" id="display-typename-sportfield-${data.sportField.ID}"> Sân ${data.sportField.TypeName} ${data.sportField.FieldName} </p>
                         <div>
                             <a href="../sportfield/detail/${data.sportField.ID}" class="btn btn-default border border-info shadow-sm mb-2" title="Chi Tiết Sân">
                                 <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
@@ -249,10 +309,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-//Edit sport field
-const sportFieldUrl = '../sportfield';
-
-
+//==================Edit sport field
 //script for get sport field by id
 const getFieldSportByID = async (sportFieldID) => {
 
@@ -313,11 +370,15 @@ const fillDataToEditForm = async (sportFieldID) => {
             SportTypeID,
             FieldName,
             Status,
-            PricePerHour,
             NumberOfFields,
             Address,
             Description,
-            Image
+            Image,
+            OpeningTime,
+            ClosingTime,
+            PriceDay,
+            PriceEvening,
+            FieldSize
         } = data.sportField;
 
 
@@ -331,34 +392,38 @@ const fillDataToEditForm = async (sportFieldID) => {
         const description = document.querySelector('form#editSportFieldForm #description');
         const wrapTinyMCE = document.querySelector('form#editSportFieldForm #wrap-tinyMCE');
         const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
+        const openingTime = document.querySelector('form#editSportFieldForm #openingTime');
+        const closingTime = document.querySelector('form#editSportFieldForm #closingTime');
+        const priceDay = document.querySelector('form#editSportFieldForm #priceDay');
+        const priceEvening = document.querySelector('form#editSportFieldForm #priceEvening');
+        const fieldSize = document.querySelector('form#editSportFieldForm #fieldSize');
+
+        // Cập nhật giá trị của thẻ <select>
+        fieldSize.value = FieldSize;
+        sportTypeID.value = SportTypeID;
+        // Khởi tạo Nice Select
+        $(fieldSize).niceSelect();
+        $(sportTypeID).niceSelect();
+
+        // Khởi tạo lại Nice Select sau khi cập nhật giá trị
+        $(fieldSize).niceSelect('update');
+        $(sportTypeID).niceSelect('update');
 
         //setting value for hidden input, ID of sport field need edit
         sportFieldID.value = ID;
 
-        //sport type setting value
-        const wrapSportTypeID = document.querySelector('form#editSportFieldForm #wrap-sportTypeID');
-
-        const selectElement = document.querySelector('form#editSportFieldForm #sportTypeID');
-        if (selectElement == null) {
-
-            const selectElement = document.createElement('select');
-            selectElement.id = 'sportTypeID';
-            selectElement.classList.add('custom-select');
-
-            // Tạo các tùy chọn và thêm vào thẻ <select>
-            data.sportTypes.forEach(spt => {
-                const option = document.createElement('option');
-                option.style.fontFamily = 'Poppins';
-                option.style.fontSize = '16px';
-                option.value = spt.ID;
-                option.value == SportTypeID ? option.selected = true : option.selected = false;
-                option.textContent = spt.TypeName;
-                selectElement.appendChild(option);
-                // Thêm thẻ <select> vào trong wrapSportTypeID
-                wrapSportTypeID.appendChild(selectElement);
-            })
+        //Nếu đang edit sân bóng thì hiển thị kích cỡ sân(5,7,11)
+        const wrapFieldSize = document.querySelector('form#editSportFieldForm #wrapFieldSize');
+        if (SportTypeID == 108) {
+            if (wrapFieldSize.classList.contains('d-none')) {
+                wrapFieldSize.classList.remove('d-none');
+                wrapFieldSize.classList.add('d-block');
+            }
         } else {
-            selectElement.value = SportTypeID;
+            if (wrapFieldSize.classList.contains('d-block')) {
+                wrapFieldSize.classList.remove('d-block');
+                wrapFieldSize.classList.add('d-none');
+            }
         }
 
         //status setting value
@@ -372,18 +437,20 @@ const fillDataToEditForm = async (sportFieldID) => {
         });
 
         fieldName.value = FieldName;
-        pricePerHour.value = PricePerHour;
         numberOfField.value = NumberOfFields;
         address.value = Address;
         imagePreview.src = Image;
         tinyMCE.get('edit').setContent(Description);
-
+        openingTime.value = OpeningTime;
+        closingTime.value = ClosingTime;
+        priceDay.value = PriceDay;
+        priceEvening.value = PriceEvening;
+        fieldSize.value = FieldSize;
     }
 }
 
 
-//EDIT
-
+//================= EDIT
 const imagePreviewEdit = document.querySelector("form#editSportFieldForm #imagePreview");
 const inputFileImageEdit = document.querySelector("form#editSportFieldForm #fieldImage");
 
@@ -395,22 +462,17 @@ inputFileImageEdit.addEventListener("change", function () {
 });
 
 //Update sport field action
-const form = document.getElementById('editSportFieldForm');
-const pricePerHour = document.querySelector('form#editSportFieldForm #pricePerHour');
+const form = document.getElementById('editSportFieldForm'); //edit form
 
-// Định dạng đầu vào tiền
-pricePerHour.addEventListener("input", function (e) {
-    let value = e.target.value;
-    value = value.replace(/[^0-9]/g, "");
-    if (value !== "") {
-        value = Number(value).toLocaleString('vi-VN');
-    }
-    e.target.value = value;
-});
+// Định dạng đầu vào giá tiền trước và sau 17:00
+const priceDay = document.querySelector('form#editSportFieldForm #priceDay');
+const priceEvening = document.querySelector('form#editSportFieldForm #priceEvening');
+priceDay.addEventListener("input", formatCurrency);
+priceEvening.addEventListener("input", formatCurrency);
+
 
 // Thêm event listener cho sự kiện submit một lần
 form.addEventListener('submit', async function (event) {
-
     event.preventDefault();
 
     const sportFieldID = document.querySelector('form#editSportFieldForm #sportFieldID');
@@ -426,6 +488,10 @@ form.addEventListener('submit', async function (event) {
     const fileImage = document.querySelector('form#editSportFieldForm #fieldImage');
     const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
     const btnSubmitFormEdit = document.querySelector('form#editSportFieldForm #btnEditForm');
+    const openingTime = document.querySelector('form#editSportFieldForm #openingTime');
+    const closingTime = document.querySelector('form#editSportFieldForm #closingTime');
+    const priceDay = document.querySelector('form#editSportFieldForm #priceDay');
+    const priceEvening = document.querySelector('form#editSportFieldForm #priceEvening');
 
     // Validate các trường
     let isValid = true;
@@ -445,11 +511,32 @@ form.addEventListener('submit', async function (event) {
         fieldName.classList.remove('is-invalid');
     }
 
-    if (!pricePerHour.value.trim()) {
-        pricePerHour.classList.add('is-invalid');
+    if (!priceDay.value.trim()) {
+        priceDay.classList.add('is-invalid');
         isValid = false;
     } else {
-        pricePerHour.classList.remove('is-invalid');
+        priceDay.classList.remove('is-invalid');
+    }
+
+    if (!priceEvening.value.trim()) {
+        priceEvening.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        priceEvening.classList.remove('is-invalid');
+    }
+
+    if (openingTime.value === '' || openingTime.value.trim < 0) {
+        openingTime.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        openingTime.classList.remove('is-invalid');
+    }
+
+    if (closingTime.value === '' || closingTime.value.trim < 0) {
+        closingTime.classList.add('is-invalid');
+        isValid = false;
+    } else {
+        closingTime.classList.remove('is-invalid');
     }
 
     if (!status.value) {
@@ -499,14 +586,27 @@ form.addEventListener('submit', async function (event) {
         formData.append('action', 'updateSportField');
         formData.append('sportFieldID', sportFieldID.value);
         formData.append('sportTypeID', sportTypeID.value);
+        if (sportTypeID.value == 108) {
+            formData.append('fieldSize', fieldSize.value)
+        }
         formData.append('fieldName', fieldName.value);
-        formData.append('pricePerHour', pricePerHour.value);
+        formData.append('priceDay', priceDay.value);
+        formData.append('priceEvening', priceEvening.value);
+        formData.append('openingTime', openingTime.value);
+        formData.append('closingTime', closingTime.value);
         formData.append('status', status.value);
         formData.append('numberOfField', numberOfField.value);
         formData.append('address', address.value);
         formData.append('description', editorContent);
 
-        if (fileImage.files[0]) // have upload image file
+        // // Lặp qua tất cả các cặp key-value và in ra
+        for (const [key, value] of formData.entries()) {
+            console.log(`${key}: ${value}`);
+        }
+
+        // return;
+
+        if (fileImage.files[0]) // have photos uploaded
             formData.append('fieldImage', fileImage.files[0]);
         else
             formData.append('oldImage', imagePreview.src);
@@ -532,7 +632,7 @@ form.addEventListener('submit', async function (event) {
 
             //enabled button submit to edit
             btnSubmitFormEdit.removeAttribute('disabled');
-            
+
             //hide form and reset form edit
             form.reset();
             const formEditContainer = document.getElementById('formEditContainer');

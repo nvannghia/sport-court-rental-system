@@ -15,8 +15,12 @@ class SportField extends Eloquent
         "SportTypeID",
         "FieldName",
         "Status",
-        "PricePerHour",
+        "PriceDay",
+        "PriceEvening",
         "NumberOfFields",
+        "FieldSize",
+        "OpeningTime",
+        "ClosingTime",
         "Address",
         "Description",
         "Image"
