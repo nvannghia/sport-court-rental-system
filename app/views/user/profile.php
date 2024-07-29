@@ -165,7 +165,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                         <?php foreach ($sportFields as $spf) : ?>
                                             <div id="sportField-<?php echo $spf['ID']; ?>">
                                                 <div class="d-flex justify-content-between align-items-center">
-                                                    <p class=" ellipsis mb-1 ">
+                                                    <p class="ellipsis mb-1 ">
                                                         Sân
                                                         <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>">
                                                             <?php echo $spf['sport_type']['TypeName'] . " " .  $spf['FieldName']; ?>
