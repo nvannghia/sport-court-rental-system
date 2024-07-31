@@ -61,12 +61,12 @@
 
                 <div style="max-width: 150px;">
                     <label for="openingTime" class="text-white" style="min-width: 200px;">Giờ Mở Cửa</label>
-                    <input class="form-control" type="number" min="0" max="24"  id="openingTime" name="openingTime">
+                    <input class="form-control" type="number" step="2" min="0" max="24"  id="openingTime" name="openingTime">
                 </div>
 
                 <div style="max-width: 150px;">
                     <label for="closingTime" class="text-white" style="min-width: 200px;">Giờ Đóng Cửa</label>
-                    <input class="form-control" type="number" min="0" max="24"   id="closingTime" name="closingTime">
+                    <input class="form-control" type="number" step="2" min="0" max="24"   id="closingTime" name="closingTime">
                 </div>
 
                 <div style="max-width: 150px;">
