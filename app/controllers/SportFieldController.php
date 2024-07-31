@@ -386,9 +386,32 @@ class SportFieldController extends Controller
         }
     }
 
-    public function bookafield()
+    public function bookafield($sportFieldID)
     {
-        return $this->view('sport_field/book_a_field');
+        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
+        return $this->view('sport_field/book_a_field', ['sportField' => $sportField]);
+    }
+
+    public function bookingDetail($sportFieldID)
+    {
+        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
+        $bookingDate = isset($_GET['bookingDate']) ? $_GET['bookingDate'] : null;
+        $fieldNumber = isset($_GET['fieldNumber']) ? $_GET['fieldNumber'] : null;
+        $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : null;
+
+
+        $isValidInfo = isset($bookingDate) && isset($fieldNumber) && isset($startTime);
+
+        if ($isValidInfo) {
+            return $this->view('sport_field/booking_detail', [
+                'sportField' => $sportField,
+                'bookingDate' => $bookingDate,
+                'fieldNumber' => $fieldNumber,
+                'startTime' => $startTime,
+            ]);
+        }
+
+        return $this->view('404');
     }
 }
 ?>

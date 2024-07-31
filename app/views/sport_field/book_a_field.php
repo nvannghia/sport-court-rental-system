@@ -36,7 +36,17 @@
         }
 
         tr:hover {
-            background-color: #ddd;
+            background-color: orange;
+        }
+
+        a {
+            color:#73879C;
+            text-decoration: none !important;
+        }
+
+        a:hover {
+            color: gold;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -61,64 +71,135 @@
             <i class="fa-solid fa-circle-right ml-2" style="font-size: 22px;"></i>
         </button>
     </div>
+    <div style="text-align:center">
+        <span class="h5 text-warning font-weight-bold">* Lưu ý: giá sân bên dưới bảng là giá mỗi giờ</span>
+        <hr>
+    </div>
+
+    <?php
+    $openingTime = $sportField['OpeningTime'];
+    $closingTime = $sportField['ClosingTime'];
+    $priceDay = $sportField['PriceDay'];
+    $priceEvening = $sportField['PriceEvening'];
+    $fieldSize = $sportField['FieldSize'];
+    $numberOfFields = $sportField['NumberOfFields'];
+    $sportFieldID = $sportField['ID'];
+    ?>
     <table style="color: #73879C">
         <thead>
             <tr id="header-row">
                 <th></th>
+                <th>Sân</th>
                 <!-- Các cột ngày sẽ được thêm tự động bằng JavaScript -->
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td rowspan="4">5:30</td>
-                <td>Sân 1
-                    <br>
-                    (sân 5)
-                </td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-            </tr>
-            <tr>
-                <td>Sân 2
-                    <br>
-                    (sân 5)
-                </td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-            </tr>
-            <tr>
-                <td>Sân 3
-                    <br>
-                    (sân 5)
-                </td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-            </tr>
-            <tr>
-                <td>Sân 4
-                    <br>
-                    (sân 5)
-                </td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-                <td>300.000 đ</td>
-            </tr>
-            <!-- Các hàng khác tùy chỉnh -->
+            <?php
+
+            $pricePerHour = $priceDay;
+            ?>
+            <?php while ($openingTime < $closingTime) : ?>
+                <?php
+                if ($openingTime >= 17) { // > 17h => tính giá chiều
+                    $pricePerHour = $priceEvening;
+                }
+                ?>
+                <?php for ($j = 0; $j < $numberOfFields; $j++) : ?>
+                    <?php if ($j == 0) : ?>
+                        <tr>
+                            <td data-start-time=<?= $openingTime ?> id="start-time" class="text-dark font-weight-bold" rowspan="<?= $numberOfFields ?>">
+                                <?= $openingTime ?>:00
+                            </td>
+                            <td class="text-dark">
+                                Sân số <span data-field-number=<?= $j + 1 ?> id="field-number"> <?= $j + 1 ?></span>
+                                <br>
+                                (Sân <?= $fieldSize ?>)
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                        </tr>
+                    <?php else : ?>
+                        <tr>
+                            <td class="text-dark">
+                                Sân số <span data-field-number=<?= $j + 1 ?> id="field-number"> <?= $j + 1 ?></span>
+                                <br>
+                                (Sân <?= $fieldSize ?>)
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                            <td>
+                                <a href="/sport-court-rental-system/public/sportfield/bookingdetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
+                                    <?= $pricePerHour ?> đ
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+                <?php endfor; ?>
+                <?php
+                $openingTime += 2;
+                ?>
+            <?php endwhile; ?>
         </tbody>
     </table>
     <script src="script.js"></script>
@@ -134,20 +215,61 @@
 
         function updateTable(startDate) {
             // Clear existing header
-            while (headerRow.children.length > 1) {
+            while (headerRow.children.length > 2) {
                 headerRow.removeChild(headerRow.lastChild);
             }
+
+            let dateArray = [];
 
             for (let i = 0; i < 7; i++) {
                 let currentDate = new Date(startDate);
                 currentDate.setDate(startDate.getDate() + i);
                 let day = daysOfWeek[currentDate.getDay()];
                 let date = currentDate.toLocaleDateString('vi-VN');
+                let parts = date.split('/');
+                let formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`; // yyyy-mm-dd
+                dateArray.push(formattedDate);
 
                 let th = document.createElement("th");
                 th.innerHTML = `${day}<br>${date}`;
                 headerRow.appendChild(th);
             }
+
+            // Update data-date attributes for each cell
+            const rows = document.querySelectorAll("tbody tr");
+            let previousTime; // previouse time of rows have the same start time
+            rows.forEach((row, rowIndex) => {
+                //get start time of booking
+                let startTime = row.querySelector("td#start-time");
+                if (startTime) {
+                    if (startTime.hasAttribute("data-start-time")) {
+                        startTime = startTime.getAttribute("data-start-time");
+                    }
+                    previousTime = startTime;
+                } else {
+                    startTime = previousTime;
+                }
+
+                //get field number of booking
+                let fieldNumber = row.querySelector("td span#field-number");
+                if (fieldNumber) {
+                    if (fieldNumber.hasAttribute("data-field-number")) {
+                        fieldNumber = fieldNumber.getAttribute("data-field-number");
+                    }
+                }
+
+                row.querySelectorAll("td a").forEach((a, colIndex) => {
+                    if (colIndex < dateArray.length) {
+                        let originalHref = a.getAttribute("href")
+                                            .split('?')[0] //remove from '?' found first to end
+                                            .split('/')
+                                            .slice(0, 6)
+                                            .join('/'); // if click tuần sau button, if will overload params
+                        a.setAttribute("href", `${originalHref}?bookingDate=${dateArray[colIndex]}&fieldNumber=${fieldNumber}&startTime=${startTime}`);
+                    }
+                });
+
+            });
         }
 
         document.getElementById("next-week").addEventListener("click", function() {
