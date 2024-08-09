@@ -63,9 +63,6 @@ const handleLogin = (evt) => {
           Swal.showValidationMessage('Tài khoản hoặc mật khẩu không chính xác!');
         }
 
-
-
-
       } catch (error) {
         Swal.showValidationMessage(`Request failed: ${error}`);
       }
@@ -298,17 +295,20 @@ const handleLogout = () => {
       const data = await response.json();
 
       if (data.statusCode === 200) {
-        await Swal.fire({
-          position: "top-right",
-          icon: "success",
-          title: "Đăng xuất thành công",
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
           showConfirmButton: false,
-          timer: 1500,
-          customClass: {
-            title: 'my-custom-title-class',
-            icon: 'my-custom-icon-class',
-            popup: 'my-custom-popup'
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
           }
+        });
+        await Toast.fire({
+          icon: "success",
+          title: "Đăng xuất thành công"
         });
 
         window.location.href = '/sport-court-rental-system/public/home';

@@ -52,7 +52,7 @@ require_once __DIR__ . '/../layouts/header.php';
              
             <div class="mt-3 d-flex align-items-center justify-content-end">
                 <i class="fa-solid fa-calendar-week mr-2 h2" style="color: #E41A2B;"></i>
-                <a target="_blank" href="/sport-court-rental-system/public/sportfield/bookafield/<?= $sportField["ID"] ?>" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐẶT SÂN NGAY</a>
+                <a target="_blank" href="/sport-court-rental-system/public/booking/fieldSchedule/<?= $sportField["ID"] ?>" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐẶT SÂN NGAY</a>
             </div>
 
             <div class="mt-5">

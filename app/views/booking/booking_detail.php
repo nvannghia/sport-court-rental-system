@@ -1,3 +1,9 @@
+<?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,6 +16,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Latest compiled JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -30,16 +37,25 @@
                 <hr class="border-secondary">
 
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="name@example.com">
-                    <label for="floatingInput">Tên <b class="text-danger">*</b></label>
+                    <input value="<?php echo isset($_SESSION['userInfo']['FullName'])
+                                        ? $_SESSION['userInfo']['FullName']
+                                        : '';
+                                    ?>" type="text" class="form-control" id="customer-name" placeholder="">
+                    <label for="customer-name">Tên <b class="text-danger">*</b></label>
                 </div>
                 <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">SĐT <b class="text-danger">*</b></label>
+                    <input value="<?php echo isset($_SESSION['userInfo']['PhoneNumber'])
+                                        ? str_replace("+84", "0", $_SESSION['userInfo']['PhoneNumber'])
+                                        : '';
+                                    ?>" type="text" class="form-control" id="customer-phone" placeholder="">
+                    <label for="customer-phone">SĐT <b class="text-danger">*</b></label>
                 </div>
                 <div class="form-floating">
-                    <input type="email" class="form-control" id="floatingPassword" placeholder="Password">
-                    <label for="floatingPassword">Email <b class="text-danger">*</b></label>
+                    <input value="<?php echo isset($_SESSION['userInfo']['Email'])
+                                        ? $_SESSION['userInfo']['Email']
+                                        : '';
+                                    ?>" type="email" class="form-control" id="customer-email" placeholder="">
+                    <label for="customer-email">Email <b class="text-danger">*</b></label>
                 </div>
 
             </div>
@@ -54,6 +70,12 @@
                     <hr class="border-secondary">
 
                     <div>
+                        <!-- //hidden field  -->
+                        <input id="sport-field-id" type="hidden" value="<?= $sportField["ID"] ?>">
+                        <input id="booking-date" type="hidden" value="<?= $bookingDate ?>">
+                        <input id="field-number" type="hidden" value="<?= $fieldNumber ?>">
+                        <input id="start-time" type="hidden" value="<?= $startTime ?>">
+
                         <div class="d-flex align-items-center mb-3" style="width:100% ;font-size: 18px;">
                             <input id="price-per-hour" type="hidden" value="<?php echo $startTime < 17 ? $sportField["PriceDay"] : $sportField["PriceEvening"] ?>">
                             <span style="min-width: 150px;">Loại giờ: </span>
@@ -66,7 +88,7 @@
                         <div class="d-flex align-items-center mb-3" style="width:100% ;font-size: 18px;">
                             <span style="min-width: 150px;">Thời Gian: </span>
                             <span class="d-flex">
-                                <div id="start-time" class="mr-3"><?= $startTime ?>:00</div>
+                                <div class="mr-3"><?= $startTime ?>:00</div>
                                 -
                                 <select name="end-time" id="end-time" class="ml-3">
                                     <option value="null" selected disabled>?</option>
@@ -88,7 +110,7 @@
                         </div>
                         <div class="d-flex align-items-center mb-3" style="width:100% ;font-size: 18px;">
                             <span style="min-width: 150px;">Ngày Đặt: </span>
-                            <span> <?= $bookingDate ?> </span>
+                            <span class="mr-2"> <?= $bookingDate ?> </span> <span> (Năm-Tháng-Ngày)</span>
                         </div>
                         <div class="d-flex align-items-start" style="width:100% ;font-size: 18px;">
                             <span style="min-width: 150px;">Địa Chỉ Sân: </span>
@@ -122,59 +144,22 @@
 
         </div>
 
-        <div class="container rounded mb-5" style="background-color: #E9E9E9;text-align: right ;padding:12px">
-            <button id="btn-booking" style="width: 200px; font-size: 20px;" class="btn btn-info">Đặt Sân</button>
-            <button id="btn-cancel" style="width: 100px; font-size: 20px;" class="btn btn-outline-danger">Hủy</button>
+        <div class="container rounded mb-5 d-flex justify-content-end" style="background-color: #E9E9E9;text-align: right ;padding:12px">
+            <button id="btn-booking" style=" font-size: 20px;" class="btn btn-info">Đặt Sân</button>
+
+            <!-- <form class="" 
+                method="POST" 
+                target="_blank" 
+                enctype="application/x-www-form-urlencoded" 
+                action="/sport-court-rental-system/app/utils/MomoPaymentService.php"
+            >
+                <button name="momo" style="font-size: 20px; background-color: #D82D8B ;" class="btn text-white ml-2">Đặt Sân - Thanh Toán MoMo</button>
+            </form> -->
+
+            <a id="btn-cancel" href="/sport-court-rental-system/public/booking/fieldSchedule/<?= $sportField['ID'] ?>" style="width: 100px; font-size: 20px;" class="btn btn-outline-danger ml-2 text-danger">Hủy</a>
         </div>
     </div>
 </body>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        let endTimeSelect = document.getElementById("end-time");
-        let hours = document.getElementById("hours");
-        let pricePerHour = document.getElementById("price-per-hour");
-        let totalMoney = document.getElementById("total-money");
-        let wrapMessage = document.getElementById("wrap-message");
-        let message = document.getElementById("message");
-        const hoursValid = [1, 1.5, 2];
-
-        //onchange select
-        endTimeSelect.addEventListener("change", () => {
-            // remove error message 
-            wrapMessage.classList.add("d-none")
-            endTimeSelect.style.border = "none";
-            //set value for element
-            hours.innerText = endTimeSelect.value;
-            totalMoney.innerText = pricePerHour.value * endTimeSelect.value + ".000";
-        })
-
-        //set event submit and cancel for btn
-        const btnBooking = document.getElementById("btn-booking");
-        const btnCancel = document.getElementById("btn-cancel");
-
-        const booking = () => {
-            if (endTimeSelect.value == "null" || hoursValid.includes(parseInt(endTimeSelect.value)) == false) {
-                endTimeSelect.style.border = "2px solid red";
-                //display message error
-                if (wrapMessage.classList.contains("d-none")) {
-                    wrapMessage.classList.remove("d-none")
-                    message.innerText = "Vui lòng chọn số giờ muốn thuê!"
-                }
-                return;
-            } else {
-                //hide the message and remove border invalid
-                wrapMessage.classList.add("d-none")
-                endTimeSelect.style.border = "none";
-
-                // the logic save data to booking table
-                alert("success")
-            }
-
-        }
-
-        btnBooking.addEventListener("click", booking);
-    });
-</script>
-
 </html>
+<!-- // booking.js -->
+<script src="/sport-court-rental-system/public/js/booking.js"></script>
