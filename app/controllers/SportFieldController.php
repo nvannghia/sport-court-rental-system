@@ -297,20 +297,20 @@ class SportFieldController extends Controller
                 }
 
                 // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
-                $isValidInfo = empty($fieldName)
-                    && empty($pricePerHour)
-                    && empty($sportTypeID)
-                    && empty($status)
-                    && empty($numberOfField)
-                    && empty($address)
-                    && empty($description)
-                    && empty($priceDay)
-                    && empty($priceEvening)
-                    && empty($openingTime)
-                    && empty($closingTime)
-                    && empty($fieldSize);
+                $isValidInfo = !empty($fieldName)
+                    && !empty($pricePerHour)
+                    && !empty($sportTypeID)
+                    && !empty($status)
+                    && !empty($numberOfField)
+                    && !empty($address)
+                    && !empty($description)
+                    && !empty($priceDay)
+                    && !empty($priceEvening)
+                    && !empty($openingTime)
+                    && !empty($closingTime)
+                    && !empty($fieldSize);
 
-                if (!$isValidInfo) {
+                if ($isValidInfo) {
 
                     $sportFieldUpdated = $this->sportFieldServiceInterface->update($sportFieldID, [
                         "SportTypeID" => $sportTypeID,
@@ -384,34 +384,6 @@ class SportFieldController extends Controller
                 'message' => 'Bad Request!'
             ]);
         }
-    }
-
-    public function bookafield($sportFieldID)
-    {
-        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
-        return $this->view('sport_field/book_a_field', ['sportField' => $sportField]);
-    }
-
-    public function bookingDetail($sportFieldID)
-    {
-        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
-        $bookingDate = isset($_GET['bookingDate']) ? $_GET['bookingDate'] : null;
-        $fieldNumber = isset($_GET['fieldNumber']) ? $_GET['fieldNumber'] : null;
-        $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : null;
-
-
-        $isValidInfo = isset($bookingDate) && isset($fieldNumber) && isset($startTime);
-
-        if ($isValidInfo) {
-            return $this->view('sport_field/booking_detail', [
-                'sportField' => $sportField,
-                'bookingDate' => $bookingDate,
-                'fieldNumber' => $fieldNumber,
-                'startTime' => $startTime,
-            ]);
-        }
-
-        return $this->view('404');
     }
 }
 ?>

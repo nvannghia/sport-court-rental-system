@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\Implements\BookingServiceImplement;
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\FieldReviewServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
@@ -43,6 +44,10 @@ class App
         'FieldReviewController' => [
             FieldReviewServiceImplement::class,
             CloudinaryService::class,
+        ],
+        'BookingController' => [
+            BookingServiceImplement::class,
+            SportFieldServiceImplement::class,
         ]
     ];
 
@@ -52,7 +57,8 @@ class App
         'fieldowner' => 'FieldOwnerController',
         'sportfield' => 'SportFieldController',
         'sporttype' => 'SportTypeController',
-        'fieldreview' => 'FieldReviewController'
+        'fieldreview' => 'FieldReviewController',
+        'booking' => 'BookingController'
     ];
 
     /*
