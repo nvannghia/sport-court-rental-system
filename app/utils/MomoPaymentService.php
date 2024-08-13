@@ -1,6 +1,23 @@
 <?php
 header('Content-type: text/html; charset=utf-8');
 
+//total amount
+$totalAmount = 0;
+if (!isset($_GET['totalAmount'])) {
+    echo "Bad Request!";
+    exit;
+} else {
+    $totalAmount = $_GET['totalAmount'];
+}
+
+//bookingID
+if (!isset($_GET['bookingID'])) {
+    echo "Bad Request!";
+    exit;
+} else {
+    $bookingID = $_GET['bookingID'];
+}
+
 function execPostRequest($url, $data)
 {
     $ch = curl_init($url);
@@ -33,10 +50,11 @@ $accessKey = 'klm05TvNBzhg7h7j';
 $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 
 $orderInfo = "Thanh toán qua MoMo ATM";
-$amount = "10000";
+$amount = $totalAmount."000";
+
 $orderId = time() . "";
-$redirectUrl = "http://localhost/sport-court-rental-system/public/booking/showBooking";
-$ipnUrl = "http://localhost//sport-court-rental-system/public/booking/showBooking";
+$redirectUrl = "http://localhost/sport-court-rental-system/public/invoice/processPayment?bookingID=$bookingID";
+$ipnUrl = "http://localhost//sport-court-rental-system/public/invoice/processPayment?bookingID=$bookingID";
 $extraData = "";
 
 
@@ -47,11 +65,11 @@ $extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
 $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
 $signature = hash_hmac("sha256", $rawHash, $secretKey);
 $data = array(
+    'amount' => $amount,
     'partnerCode' => $partnerCode,
     'partnerName' => "Test",
     "storeId" => "MomoTestStore",
     'requestId' => $requestId,
-    'amount' => $amount,
     'orderId' => $orderId,
     'orderInfo' => $orderInfo,
     'redirectUrl' => $redirectUrl,
@@ -59,7 +77,7 @@ $data = array(
     'lang' => 'vi',
     'extraData' => $extraData,
     'requestType' => $requestType,
-    'signature' => $signature
+    'signature' => $signature,
 );
 
 $result = execPostRequest($endpoint, json_encode($data));

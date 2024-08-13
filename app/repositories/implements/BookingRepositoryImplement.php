@@ -7,9 +7,21 @@ use App\Repositories\BookingRepositoryInterface;
 
 class BookingRepositoryImplement implements BookingRepositoryInterface
 {
-    public function createBooking(array $attributesCheck,array $data)
+    public function createBooking(array $attributesCheck, array $data)
     {
-        return Booking::firstOrCreate($attributesCheck ,$data);
+        return Booking::firstOrCreate($attributesCheck, $data);
+    }
+
+    public function updateBookingStatus($bookingID)
+    {
+        $booking = Booking::find($bookingID);
+        if ($booking) {
+            $booking->PaymentStatus = 'PAID';
+            $booking->save();
+            return $booking->refresh();
+        }
+
+        return false;
     }
 
     public function getBookingByUserID($userID)

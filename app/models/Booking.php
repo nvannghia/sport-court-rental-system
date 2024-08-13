@@ -17,6 +17,7 @@ class Booking extends Eloquent
         "CustomerEmail",
         "StartTime",
         "EndTime",
+        "PaymentStatus",
         "BookingDate",
     ];
 

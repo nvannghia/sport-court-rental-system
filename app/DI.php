@@ -6,11 +6,13 @@ use App\Repositories\FieldReviewRepositoryInterface;
 use App\Repositories\Implements\BookingRepositoryImplement;
 use App\Repositories\Implements\FieldOwnerRepositoryImplement;
 use App\Repositories\Implements\FieldReviewRepositoryImplement;
+use App\Repositories\Implements\InvoiceRepositoryImplement;
 use App\Repositories\Implements\SportFieldRepositoryImplement;
 use App\Repositories\Implements\SportTypeRepositoryImplement;
 use DI\ContainerBuilder;
 use App\Repositories\UserRepositoryInterface as UserRepositoryInterface;
 use App\Repositories\Implements\UserRepositoryImplement as UserRepositoryImplement;
+use App\Repositories\InvoiceRepositoryInterface;
 use App\Repositories\SportFieldRepositoryInterface;
 use App\Repositories\SportTypeRepositoryInterface;
 use App\Services\Implements\BookingServiceImplement;
@@ -45,6 +47,9 @@ $containerBuilder->addDefinitions([
     FieldReviewServiceImplement::class => \DI\autowire(),
 
     BookingRepositoryInterface::class => \DI\create(BookingRepositoryImplement::class),
+    BookingServiceImplement::class => \DI\autowire(),
+
+    InvoiceRepositoryInterface::class => \DI\create(InvoiceRepositoryImplement::class),
     BookingServiceImplement::class => \DI\autowire(),
 ]);
 

@@ -19,6 +19,11 @@ class BookingServiceImplement implements BookingServiceInterface
         return $this->bookingRepositoryInterface->createBooking($attributesCheck ,$data);
     }
 
+    public function updateBookingStatus($bookingID)
+    {
+        return $this->bookingRepositoryInterface->updateBookingStatus($bookingID);
+    }
+
     public function getBookingByUserID($userID)
     {
         return $this->bookingRepositoryInterface->getBookingByUserID($userID);
