@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Services\BookingServiceInterface;
+use App\Services\InvoiceServiceInterface;
 use App\Services\SportFieldServiceInterface;
 
 class BookingController extends Controller
@@ -12,27 +13,44 @@ class BookingController extends Controller
 
     private $sportFieldServiceInterface;
 
+    private const PAYMENT_STATUS = ['PAID', 'UNPAID'];
+
     function __construct(
         BookingServiceInterface $bookingServiceInterface,
-        SportFieldServiceInterface $sportFieldServiceInterface
+        SportFieldServiceInterface $sportFieldServiceInterface,
     ) {
         $this->bookingServiceInterface = $bookingServiceInterface;
         $this->sportFieldServiceInterface = $sportFieldServiceInterface;
     }
 
-    public function test()
-    {
-        $userID = isset($_SESSION['userInfo']['ID']) ? $_SESSION['userInfo']['ID'] : false;
-        echo "<pre>";
-        print_r($this->bookingServiceInterface->getBookingByUserID($userID)->toArray());
-        echo "</pre>";
-    }
 
     public function showBooking()
     {
         $userID = isset($_SESSION['userInfo']['ID']) ? $_SESSION['userInfo']['ID'] : false;
         if ($userID) {
             $bookings = $this->bookingServiceInterface->getBookingByUserID($userID)->toArray();
+
+            // format date booking, date rental, total amount
+            foreach ($bookings as $bookingKey => $bookingValue) {
+                // format date booking, date rental, total amount
+                $date = new DateTime($bookingValue['created_at']);
+                $formattedDateCreatedAt = $date->format('d/m/Y');
+
+                $date = new DateTime($bookingValue['BookingDate']);
+                $formattedBookingDate = $date->format('d/m/Y');
+
+                $startTime = $bookingValue['StartTime'];
+                $rentalDuration = $bookingValue['EndTime']; //rental: 1,1.5,2 hours
+                $priceDay = $bookingValue['sport_field']['PriceDay'];
+                $priceEvening = $bookingValue['sport_field']['PriceEvening'];
+                $pricePerHour = $startTime <= 17 ? $priceDay : $priceEvening;
+                $totalAmount = $rentalDuration * $pricePerHour;
+                //replace date booking, date rental, total amount for each booking
+                $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;
+                $bookings[$bookingKey]['created_at'] = $formattedDateCreatedAt;
+                $bookings[$bookingKey]['TotalAmount'] = $totalAmount;
+            }
+
             return $this->view('booking/show_booking', ['bookings' => $bookings]);
         } else {
             echo json_encode([
@@ -110,6 +128,7 @@ class BookingController extends Controller
                         'CustomerEmail' => $customerEmail,
                         'StartTime' => $startTime,
                         'EndTime' => $endTime,
+                        'PaymentStatus' => self::PAYMENT_STATUS[1],
                         'BookingDate' => $bookingDate,
                     ]
                 );

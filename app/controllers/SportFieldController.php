@@ -146,14 +146,6 @@ class SportFieldController extends Controller
         }
     }
 
-    public function test()
-    {
-        $sportField = SportField::find(91);
-        echo "<pre>";
-        print_r($sportField->toArray());
-        echo "</pre>";
-    }
-
     public function calculateStarPercentageTotal(
         array $stars
     ) {

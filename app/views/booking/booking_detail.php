@@ -146,16 +146,6 @@ if (session_status() == PHP_SESSION_NONE) {
 
         <div class="container rounded mb-5 d-flex justify-content-end" style="background-color: #E9E9E9;text-align: right ;padding:12px">
             <button id="btn-booking" style=" font-size: 20px;" class="btn btn-info">Đặt Sân</button>
-
-            <!-- <form class="" 
-                method="POST" 
-                target="_blank" 
-                enctype="application/x-www-form-urlencoded" 
-                action="/sport-court-rental-system/app/utils/MomoPaymentService.php"
-            >
-                <button name="momo" style="font-size: 20px; background-color: #D82D8B ;" class="btn text-white ml-2">Đặt Sân - Thanh Toán MoMo</button>
-            </form> -->
-
             <a id="btn-cancel" href="/sport-court-rental-system/public/booking/fieldSchedule/<?= $sportField['ID'] ?>" style="width: 100px; font-size: 20px;" class="btn btn-outline-danger ml-2 text-danger">Hủy</a>
         </div>
     </div>

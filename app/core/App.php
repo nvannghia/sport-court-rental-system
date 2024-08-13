@@ -3,6 +3,7 @@
 use App\Services\Implements\BookingServiceImplement;
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\FieldReviewServiceImplement;
+use App\Services\Implements\InvoiceServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\UserServiceImplement;
@@ -48,6 +49,10 @@ class App
         'BookingController' => [
             BookingServiceImplement::class,
             SportFieldServiceImplement::class,
+        ],
+        'InvoiceController' => [
+            BookingServiceImplement::class,
+            InvoiceServiceImplement::class,
         ]
     ];
 
@@ -58,7 +63,8 @@ class App
         'sportfield' => 'SportFieldController',
         'sporttype' => 'SportTypeController',
         'fieldreview' => 'FieldReviewController',
-        'booking' => 'BookingController'
+        'booking' => 'BookingController',
+        'invoice' => 'InvoiceController',
     ];
 
     /*
