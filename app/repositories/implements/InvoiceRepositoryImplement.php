@@ -11,4 +11,9 @@ class InvoiceRepositoryImplement implements InvoiceRepositoryInterface
     {
         return Invoice::create($data);
     }
+
+    public function getInvoiceByBookingID($bookingID)
+    {
+        return Invoice::where("BookingID",$bookingID)->first();
+    }
 }

@@ -91,10 +91,9 @@ require_once __DIR__ . '/../layouts/header.php';
         btnDetailInfoBookings.forEach(btnDetailInfoBooking => {
 
             btnDetailInfoBooking.addEventListener('click', function(evt) {
-
                 const bookingData = this.getAttribute('data-booking');
                 const bookingObject = JSON.parse(bookingData);
-                console.log(bookingObject);
+    
                 Swal.fire({
                     title: 'Thông Tin Chi Tiết',
                     imageAlt: "Custom image",

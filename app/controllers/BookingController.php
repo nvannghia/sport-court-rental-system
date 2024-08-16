@@ -43,7 +43,7 @@ class BookingController extends Controller
                 $rentalDuration = $bookingValue['EndTime']; //rental: 1,1.5,2 hours
                 $priceDay = $bookingValue['sport_field']['PriceDay'];
                 $priceEvening = $bookingValue['sport_field']['PriceEvening'];
-                $pricePerHour = $startTime <= 17 ? $priceDay : $priceEvening;
+                $pricePerHour = $startTime < 17 ? $priceDay : $priceEvening;
                 $totalAmount = $rentalDuration * $pricePerHour;
                 //replace date booking, date rental, total amount for each booking
                 $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;

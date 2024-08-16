@@ -18,11 +18,19 @@
                     <li class="nav-item">
                         <a class="nav-link" href="about.html"> Về chúng tôi</a>
                     </li>
-                    <?php if (isset($_SESSION['userInfo'])) : ?>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/sport-court-rental-system/public/booking/showBooking">Sân đã đặt</a>
-                    </li>
+                    
+                    <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['Role'] === 'CUSTOMER') : ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/sport-court-rental-system/public/booking/showBooking">Sân đã đặt</a>
+                        </li>
                     <?php endif;?>
+
+                    <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['Role'] === 'OWNER') : ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/sport-court-rental-system/public/statistical/getOwnerOfSportField">THỐNG KÊ</a>
+                        </li>
+                    <?php endif;?>
+
                     <li class="nav-item">
                         <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
                     </li>

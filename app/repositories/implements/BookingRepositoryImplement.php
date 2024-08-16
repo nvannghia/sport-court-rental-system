@@ -28,4 +28,12 @@ class BookingRepositoryImplement implements BookingRepositoryInterface
     {
         return Booking::with('sportField')->where('CustomerID', $userID)->orderBy('created_at', 'desc')->get();
     }
+
+    public function getBookingBySportFieldID($sportFieldID)
+    {
+        return Booking::with('sportField')
+                        ->where('SportFieldID', $sportFieldID)
+                        ->orderBy('created_at', 'desc')
+                        ->get();
+    }
 }

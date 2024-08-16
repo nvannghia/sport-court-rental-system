@@ -19,4 +19,15 @@ class InvoiceServiceImplement implements InvoiceServiceInterface
     {
         return $this->invoiceRepositoryInterface->createInvoice($data);
     }
+
+    public function getInvoiceByBookingID($bookingID)
+    {
+        $invoice = $this->invoiceRepositoryInterface->getInvoiceByBookingID($bookingID);
+        
+        if ($invoice) {
+            return $invoice;
+        }
+
+        return null;
+    }
 }
