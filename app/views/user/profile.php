@@ -187,6 +187,36 @@ require_once __DIR__ . '/../layouts/header.php';
                                             </div>
                                         <?php endforeach; ?>
                                     </div>
+                                    <!-- //paginate -->
+                                    <div class="d-flex justify-content-center">
+                                        <nav>
+                                            <ul class="pagination">
+                                                <li class="page-item <?php echo $currentPage - 1 < 1 ? "d-none" : ''; ?>">
+                                                    <a
+                                                        class="page-link"
+                                                        data-page=<?= $currentPage - 1 ?>>
+                                                        Trước
+                                                    </a>
+                                                </li>
+                                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                                    <li class="page-item">
+                                                        <a
+                                                            class="page-link"
+                                                            data-page=<?= $i ?>>
+                                                            <?= $i ?>
+                                                        </a>
+                                                    </li>
+                                                <?php endfor; ?>
+                                                <li class="page-item <?php echo $currentPage + 1 > $totalPages ? "d-none" : ''; ?>">
+                                                    <a
+                                                        class="page-link"
+                                                        data-page=<?= $currentPage + 1 ?>>
+                                                        Sau
+                                                    </a>
+                                                </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
 
                                 </div>
                             </div>
@@ -211,5 +241,30 @@ require_once __DIR__ . '/../layouts/header.php';
 <script src="../../public/js/user.js"></script>
 
 <script src="../../public/js/sport-field.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Lấy URL hiện tại
+        const currentUrl = new URL(window.location.href);
+
+        // Lấy tất cả các thẻ <a> với class "page-link"
+        const pageLinks = document.querySelectorAll('.page-link');
+
+        // Cập nhật giá trị href cho từng thẻ <a>
+        pageLinks.forEach(link => {
+            const page = link.getAttribute('data-page'); // Lấy số trang từ thuộc tính data-page
+            const newUrl = new URL(currentUrl); // Tạo một đối tượng URL mới để sửa đổi
+
+            // Xóa tham số page nếu có
+            newUrl.searchParams.delete('page');
+
+            // Thêm tham số page mới
+            newUrl.searchParams.set('page', page);
+
+            // Cập nhật thuộc tính href của thẻ <a>
+            link.href = newUrl.toString();
+        });
+    })
+</script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>

@@ -83,50 +83,50 @@ require_once __DIR__ . '/../layouts/header.php';
                         </div>
                     </div>
                 <?php
-                    if ($key % 3 == 2) :
+                    if ($key % 3 == 2 || $key == count($sportFields) - 1) :
                         echo '</div>';
                     endif;
                 endforeach;
                 ?>
 
+                <!-- //paginate -->
+                <div class="d-flex justify-content-center">
+                    <nav>
+                        <ul class="pagination">
+                            <li class="page-item <?php echo $currentPage - 1 < 1 ? "d-none" : ''; ?>">
+                                <a
+                                    class="page-link"
+                                    data-page=<?= $currentPage - 1 ?>>
+                                    Trước
+                                </a>
+                            </li>
+                            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                <li class="page-item">
+                                    <a
+                                        class="page-link"
+                                        data-page=<?= $i ?>>
+                                        <?= $i ?>
+                                    </a>
+                                </li>
+                            <?php endfor; ?>
+                            <li class="page-item <?php echo $currentPage + 1 > $totalPages ? "d-none" : ''; ?>">
+                                <a
+                                    class="page-link"
+                                    data-page=<?= $currentPage + 1 ?>>
+                                    Sau
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+
             </div>
         </div>
-
-
     </section>
 <?php endif; ?>
 
-<script>
-    const handleFilterBySportType = (evt, sportType) => {
-        evt.preventDefault;
-
-        // Create a new URLSearchParams object
-        const urlParams = new URLSearchParams();
-        // Add the new parameter
-        urlParams.set('sportType', sportType);
-
-        const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-        window.location.href = newUrl;
-
-        // Save the typeName in localStorage to scroll to it after reload
-        localStorage.setItem('scrollTo', 'view-sport-field');
-    }
-
-    // Scroll to the element after the page reloads
-    window.addEventListener('load', () => {
-        const scrollTo = localStorage.getItem('scrollTo');
-        if (scrollTo) {
-            const element = document.getElementById(scrollTo);
-            if (element) {
-                element.scrollIntoView({
-                    behavior: 'smooth'
-                });
-            }
-            // Remove the item from localStorage
-            localStorage.removeItem('scrollTo');
-        }
-    });
-</script>
+<!-- //home.js -->
+<script src="/sport-court-rental-system/public/js/home.js"></script>
 
 <?php
 require_once __DIR__ . '/../layouts/footer.php';

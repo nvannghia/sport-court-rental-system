@@ -9,4 +9,8 @@ interface BookingServiceInterface
     public function updateBookingStatus($bookingID);
 
     public function getBookingByUserID($userID);
+
+    public function getBookingBySportFieldID($sportField, $ownerID);
+
+    public function getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter);
 }

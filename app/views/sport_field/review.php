@@ -151,13 +151,20 @@
             </div>
 
             <!-- //type a rating -->
-            <div class="border-bottom  d-flex justify-content-center align-items-center">
-                <i class="fa-solid fa-feather-pointed mr-2" style="font-size: 26px; color: #E41A2B;"></i>
-                <button id="type-rating" data-sportfield-id="<?= $sportField['ID']; ?>"  style="background-color: #E41A2B;" class=" mt-2 mb-2 btn text-white">Nhập đánh giá</button>
-            </div>
+            <?php if (isset($_SESSION['userInfo'])): ?>
+                <div class="border-bottom  d-flex justify-content-center align-items-center">
+                    <i class="fa-solid fa-feather-pointed mr-2" style="font-size: 26px; color: #E41A2B;"></i>
+                    <button id="type-rating" data-sportfield-id="<?= $sportField['ID']; ?>" style="background-color: #E41A2B;" class="mt-2 mb-2 btn text-white">Nhập đánh giá</button>
+                </div>
+            <?php else: ?>
+                <div class="border-bottom  d-flex justify-content-center align-items-center">
+                    <i class="fa-solid fa-feather-pointed mr-2" style="font-size: 26px; color: #E41A2B;"></i>
+                    <button onclick="handleLogin()" style="background-color: #E41A2B;" class="mt-2 mb-2 btn text-white">Đăng nhập để đánh giá</button>
+                </div>
+            <?php endif; ?>
 
             <!-- reviews -->
-            <div id="view-reviews" >
+            <div id="view-reviews">
                 <!-- //each review -->
                 <?php
                 $reviews = $sportField['field_reviews'];
@@ -194,7 +201,7 @@
                                 <!-- //image review -->
                                 <?php if ($review['ImageReview']) : ?>
                                     <div class="mr-2">
-                                        <img src="<?= $review['ImageReview'] ?>" style="max-height: 150px;" class="border rounded" alt=" field image review">
+                                        <img src="<?= $review['ImageReview'] ?>" style="max-height: 150px;" class="border rounded w-100" alt=" field image review">
                                     </div>
 
                                 <?php endif; ?>
@@ -242,12 +249,7 @@
                         <span style="text-align: center;font-size: 22px;">Chưa có đánh giá nào!</span>
                     </div>
                 <?php endif; ?>
-
-
             </div>
         </div>
-        <!-- <div>
-                        sadass
-                    </div> -->
     </div>
 </div>

@@ -12,4 +12,6 @@ interface FieldOwnerRepositoryInterface
     public function getAllOwners();
     
     public function updateOwnerStatus($ownerID);
+
+    public function getFieldOwnerByOwnerID($ownerID);
 }

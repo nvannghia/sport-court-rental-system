@@ -278,3 +278,87 @@ document.addEventListener("DOMContentLoaded", function() {
     //set event submit btn
     btnBooking.addEventListener("click", handleBooking);
 });
+
+
+// Show Booking Detail
+document.addEventListener('DOMContentLoaded', () => {
+    const btnDetailInfoBookings = document.querySelectorAll('button[name=detail-info-booking]');
+
+    btnDetailInfoBookings.forEach(btnDetailInfoBooking => {
+
+        btnDetailInfoBooking.addEventListener('click', function(evt) {
+            const bookingData = this.getAttribute('data-booking');
+            const bookingObject = JSON.parse(bookingData);
+
+            Swal.fire({
+                title: 'Thông Tin Chi Tiết',
+                imageAlt: "Custom image",
+                html: `
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-signature"></i>]
+                    <b>Tên sân: </b> 
+                    <span class="ml-3"> 
+                    ${bookingObject.sport_field.FieldName} 
+                    </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-map-location-dot"></i>]
+                    <b>Địa chỉ sân: </b> 
+                    <span class="ml-3"> ${bookingObject.sport_field.Address} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-list-ol"></i>]
+                    <b style="width:100px">Sân số: </b> 
+                    <span class="ml-3"> ${bookingObject.FieldNumber} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-calendar-days"></i>]
+                    <b style="width:100px">Ngày thuê: </b> 
+                    <span class="ml-3"> ${bookingObject.BookingDate} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-clock"></i>]
+                    <b style="width:100px">Giờ thuê: </b> 
+                    <span class="ml-3"> ${bookingObject.StartTime}:00 - ${parseInt(bookingObject.StartTime) + parseInt(bookingObject.EndTime)}:00 </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-money-check-dollar"></i>]
+                    <b style="width:100px">Tiền sân: </b> 
+                    <span class="ml-3"> ${bookingObject.TotalAmount}.000 đ </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-regular fa-credit-card"></i>]
+                    <b style="width:100px">Trạng thái: </b> 
+                    <span class="ml-3"> ${bookingObject.PaymentStatus == 'UNPAID' ? 'Chưa thanh toán' : 'Đã thanh toán'} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-regular fa-address-card"></i>]
+                    <b style="width:100px">Tên khách hàng: </b> 
+                    <span class="ml-3"> ${bookingObject.CustomerName} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-envelope"></i>]
+                    <b style="width:100px">Email khách hàng: </b> 
+                    <span class="ml-3"> ${bookingObject.CustomerEmail} </span>
+                </div>
+                <hr>
+                <div style="text-align:left">
+                    [<i class="fa-solid fa-mobile"></i>]
+                    <b style="width:100px">SĐT: </b> 
+                    <span class="ml-3"> ${bookingObject.CustomerPhone} </span>
+                </div>
+                <hr>
+                `
+            });
+        });
+    })
+});

@@ -23,6 +23,8 @@ class UserController extends Controller
 
     private $cloudinaryService;
 
+    private const ITEM_PER_PAGE_OWNER = 4;
+
     public function __construct(
         UserServiceInterface $userServiceInterface,
         SendMessageViaSMS $sendMessageViaSMS,
@@ -211,25 +213,37 @@ class UserController extends Controller
 
     public function getProfile()
     {
-        if ($_SESSION['userInfo']['Role'] === "CUSTOMER")
-            return $this->view('user/profile', []);
+        $userInfo = $_SESSION['userInfo'] ?? null;
+        if ($userInfo) {
+            $role = $userInfo['Role'];
+            if ($role === "CUSTOMER")
+                return $this->view('user/profile', []);
 
-        $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes()->toArray();
-        $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'] ?? null;
-        $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerID($ownerID)->toArray();
-        if (isset($_SESSION['userInfo']))
+            //==== role owner
+            //pagination
+            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $offset = ($currentPage - 1) * self::ITEM_PER_PAGE_OWNER;
+
+            $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes()->toArray();
+            $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'] ?? null;
+
+            $results = $this->sportFieldServiceInterface->getSportFieldByOwnerID($offset, $ownerID);
+            $sportFields = $results['sportFields']->toArray();
+            $totalPages = $results['totalPages'];
             return $this->view('user/profile', [
                 'sportTypes' => $sportTypes,
-                'sportFields' => $sportFields
+                'sportFields' => $sportFields,
+                'totalPages' => $totalPages,
+                'currentPage' => $currentPage,
             ]);
-
+        }
         echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";
     }
 
     public function uploadUserAvatar()
     {
         if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
-            
+
             $file = $_FILES['file']['tmp_name'];
 
             try {
@@ -251,7 +265,7 @@ class UserController extends Controller
                     ]);
                     return;
                 }
-                    
+
 
                 echo json_encode([
                     "statusCode" => 500,

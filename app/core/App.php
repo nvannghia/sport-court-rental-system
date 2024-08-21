@@ -6,6 +6,7 @@ use App\Services\Implements\FieldReviewServiceImplement;
 use App\Services\Implements\InvoiceServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
+use App\Services\Implements\StatisticsServiceImplement;
 use App\Services\Implements\UserServiceImplement;
 use App\Utils\CloudinaryService;
 use App\Utils\SendMessageViaSMS;
@@ -34,7 +35,10 @@ class App
             SportFieldServiceImplement::class,
             CloudinaryService::class,
         ],
-        'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
+        'FieldOwnerController' => [
+            FieldOwnerServiceImplement::class,
+            SendMessageViaSMS::class
+        ],
         'SportFieldController' => [
             SportFieldServiceImplement::class,
             SportTypeServiceImplement::class,
@@ -53,6 +57,12 @@ class App
         'InvoiceController' => [
             BookingServiceImplement::class,
             InvoiceServiceImplement::class,
+        ],
+        'StatisticalController' => [
+            SportFieldServiceImplement::class,
+            BookingServiceImplement::class,
+            StatisticsServiceImplement::class,
+            FieldOwnerServiceImplement::class,
         ]
     ];
 
@@ -65,6 +75,7 @@ class App
         'fieldreview' => 'FieldReviewController',
         'booking' => 'BookingController',
         'invoice' => 'InvoiceController',
+        'statistical' => 'StatisticalController',
     ];
 
     /*

@@ -28,4 +28,37 @@ class BookingRepositoryImplement implements BookingRepositoryInterface
     {
         return Booking::with('sportField')->where('CustomerID', $userID)->orderBy('created_at', 'desc')->get();
     }
+
+    public function getBookingBySportFieldID($sportFieldID, $ownerID)
+    {
+        return Booking::with(['sportField', 'invoice'])
+            ->whereHas('sportField', function ($query) use ($ownerID) {
+                $query->where('OwnerID', $ownerID);
+            })
+            ->where('SportFieldID', $sportFieldID)
+            ->orderBy('created_at', 'desc')
+            ->get();
+    }
+
+    public function getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter)
+    {
+        if ($filter == "PAID")
+            return Booking::with(['sportField', 'invoice'])
+                ->whereHas('sportField', function ($query) use ($ownerID) {
+                    $query->where('OwnerID', $ownerID);
+                })
+                ->where('SportFieldID', $sportFieldID)
+                ->where('PaymentStatus', 'PAID')
+                ->orderBy('created_at', 'desc')
+                ->get();
+        else
+            return Booking::with(['sportField', 'invoice'])
+                ->whereHas('sportField', function ($query) use ($ownerID) {
+                    $query->where('OwnerID', $ownerID);
+                })
+                ->where('SportFieldID', $sportFieldID)
+                ->where('PaymentStatus', 'UNPAID')
+                ->orderBy('created_at', 'desc')
+                ->get();
+    }
 }
