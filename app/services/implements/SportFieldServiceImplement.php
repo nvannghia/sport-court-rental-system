@@ -19,9 +19,14 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
         return $this->sportFieldRepositoryInterface->create($arrayCheck, $arrayInsert);
     }
 
-    public function getSportFieldByOwnerID($owerID)
+    public function getSportFieldByOwnerID($offset, $owerID)
     {
-        return $this->sportFieldRepositoryInterface->getSportFieldByOwnerID($owerID);
+        return $this->sportFieldRepositoryInterface->getSportFieldByOwnerID($offset, $owerID);
+    }
+
+    public function getSportFieldByOwnerIDWithFilter($ownerID, $filter)
+    {
+        return $this->sportFieldRepositoryInterface->getSportFieldByOwnerIDWithFilter($ownerID, $filter);
     }
 
     public function getSportFieldByID($sportFieldID)
@@ -39,9 +44,9 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
         return $this->sportFieldRepositoryInterface->destroy($sportFieldID);
     }
 
-    public function filterSportFieldsByConditions($sportType = null,  $fieldName = null, $zoneName = null)
+    public function filterSportFieldsByConditions($offset, $sportType = null,  $fieldName = null, $zoneName = null)
     {
-        return $this->sportFieldRepositoryInterface->filterSportFieldsByConditions($sportType,  $fieldName, $zoneName);
+        return $this->sportFieldRepositoryInterface->filterSportFieldsByConditions($offset, $sportType,  $fieldName, $zoneName);
     }
 
     public function getSportFieldByIDWithReviews($sportFieldID)

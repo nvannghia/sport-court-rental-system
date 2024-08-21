@@ -204,10 +204,16 @@ class SportFieldController extends Controller
                 $ownerOfSportField = $sportField->owner;
                 unset($ownerOfSportField->Password);
 
-                //filter data 'users_liked_review' to flatten array
+                //filter data 'users_liked_review' to flatten array and get all images review to display
                 $sportField = $sportField->toArray();
                 $fieldReviews =  $sportField['field_reviews'];
+                $fieldReivewImagesUrl = [];
                 foreach ($fieldReviews as $index => $fieldReview) {
+                    //append image review to  $fieldReivewImagesUrl
+                    $imageReview = $fieldReview['ImageReview'] ?? null;
+                    if ($imageReview)
+                        $fieldReivewImagesUrl[] = $imageReview;
+                    //flatten array 'users_liked_review'
                     $usersLikeReviews = $fieldReview['users_liked_review'];
                     $usersLikeReviewID = [];
                     foreach ($usersLikeReviews as $usersLikeReview) {
@@ -222,7 +228,8 @@ class SportFieldController extends Controller
                     'ownerOfSportField' => $ownerOfSportField->toArray(),
                     'averagePoint' => $averagePoint,
                     'percents' => $percents,
-                    'totalReviews' => $totalReviews
+                    'totalReviews' => $totalReviews,
+                    'fieldReivewImagesUrl' => $fieldReivewImagesUrl
                 ]);
             } else {
                 return $this->view('404');

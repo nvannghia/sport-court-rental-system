@@ -6,7 +6,9 @@ interface SportFieldServiceInterface
 {
     public function create(array $arrayCheck, array $arrayInsert);
 
-    public function getSportFieldByOwnerID($owerID);
+    public function getSportFieldByOwnerID($offset, $owerID);
+
+    public function getSportFieldByOwnerIDWithFilter($ownerID, $filter);
 
     public function getSportFieldByID($sportFieldID);
 
@@ -16,5 +18,5 @@ interface SportFieldServiceInterface
 
     public function destroy($sportFieldID);
 
-    public function filterSportFieldsByConditions($sportType = null,  $fieldName = null, $zoneName = null);
+    public function filterSportFieldsByConditions($offset ,$sportType = null,  $fieldName = null, $zoneName = null);
 }

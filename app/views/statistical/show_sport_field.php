@@ -22,6 +22,7 @@ require_once __DIR__ . '/../layouts/header.php';
             </p>
             <hr>
             <div class="d-flex align-items-center flex-column mb-2">
+                <p>* Doanh thu dựa trên các bookings đã được thanh toán!</p>
                 <div class="d-flex align-items-center">
                     <span class="font-weight-bold mr-2" style="min-width:170px">TỔNG DOANH THU:</span>
                     <input id="revenue" class="border-0" style="width:120px" type="password" value="<?= number_format($totalRevenue); ?> đ" readonly disabled>
@@ -38,6 +39,25 @@ require_once __DIR__ . '/../layouts/header.php';
                     <i onclick="toggleUnpaidBookingsVisibility(this)" class="fa-solid fa-eye-slash h4"></i>
                 </div>
             </div>
+            <hr>
+            <div class="d-flex justify-content-around mt-1 mb-1">
+                <div class="h4">[<i class="fa-solid fa-filter"></i>]</div>
+                <span>||</span>
+                <div class="form-check h5">
+                    <input type="radio" class="form-check-input" id="radio1" name="filter-payment-status" value="all" checked>
+                    <label class="form-check-label" for="radio1">Tất Cả Sân</label>
+                </div>
+                <span>|</span>
+                <div class="form-check h5">
+                    <input type="radio" class="form-check-input" id="radio2" name="filter-payment-status" value="paid">
+                    <label class="form-check-label" for="radio2">Sân Đã Hoàn Tất Thanh Toán</label>
+                </div>
+                <span>|</span>
+                <div class="form-check h5">
+                    <input type="radio" class="form-check-input" id="radio3" name="filter-payment-status" value="unpaid">
+                    <label class="form-check-label" for="radio3">Sân Chưa Hoàn Tất Thanh Toán</label>
+                </div>
+            </div>
             <thead>
                 <tr style="color: #202A6A">
                     <th scope="col">[<i class="fa-solid fa-arrow-down-1-9"></i>] STT</th>
@@ -46,6 +66,12 @@ require_once __DIR__ . '/../layouts/header.php';
                     <th scope="col">[<i class="fa-solid fa-money-bill-wave"></i>] GIÁ SÁNG(<17H) </th>
                     <th scope="col">[<i class="fa-solid fa-money-bill-1-wave"></i>] GIÁ TỐI(>17H)</th>
                     <th scope="col">[<i class="fa-solid fa-arrow-down-wide-short"></i>] SL SÂN</th>
+                    <?php if (isset($sportFields[0]['countUnpaidBookings'])): ?>
+                        <th scope="col">[<i class="fa-regular fa-square-minus"></i>] CHƯA TT</th>
+                    <?php endif; ?>
+                    <?php if (isset($sportFields[0]['countPaidBookings'])): ?>
+                        <th scope="col">[<i class="fa-regular fa-square-plus"></i>] ĐÃ TT</th>
+                    <?php endif; ?>
                     <th scope="col">[<i class="fa-solid fa-chart-line"></i>] THỐNG KÊ </th>
                 </tr>
             </thead>
@@ -58,6 +84,16 @@ require_once __DIR__ . '/../layouts/header.php';
                         <td> <?= $sportField['PriceDay'] ?> </td>
                         <td> <?= $sportField['PriceEvening'] ?> </td>
                         <td> <?= $sportField['NumberOfFields'] ?> </td>
+                        <?php if (isset($sportField['countUnpaidBookings'])): ?>
+                            <td>
+                                <?= $sportField['countUnpaidBookings'] ?> (bookings)
+                            </td>
+                        <?php endif; ?>
+                        <?php if (isset($sportField['countPaidBookings'])): ?>
+                            <td>
+                                <?= $sportField['countPaidBookings'] ?> (bookings)
+                            </td>
+                        <?php endif; ?>
                         <td>
                             <a href="/sport-court-rental-system/public/statistical/getBookingOfSportField/<?= $sportField["ID"] ?>" class="btn btn-outline-info"> XEM THỐNG KÊ </a>
                         </td>
@@ -69,7 +105,6 @@ require_once __DIR__ . '/../layouts/header.php';
 </section>
 
 <script src="/sport-court-rental-system/public/js/statistics.js"></script>
-
 <?php
 require_once __DIR__ . '/../layouts/footer.php';
 ?>

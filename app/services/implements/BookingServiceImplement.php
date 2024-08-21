@@ -29,8 +29,13 @@ class BookingServiceImplement implements BookingServiceInterface
         return $this->bookingRepositoryInterface->getBookingByUserID($userID);
     }
 
-    public function getBookingBySportFieldID($sportField)
+    public function getBookingBySportFieldID($sportField, $ownerID)
     {
-        return $this->bookingRepositoryInterface->getBookingBySportFieldID($sportField);
+        return $this->bookingRepositoryInterface->getBookingBySportFieldID($sportField, $ownerID);
+    }
+
+    public function getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter)
+    {
+        return $this->bookingRepositoryInterface->getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter);
     }
 }

@@ -35,7 +35,10 @@ class App
             SportFieldServiceImplement::class,
             CloudinaryService::class,
         ],
-        'FieldOwnerController' => [FieldOwnerServiceImplement::class, SendMessageViaSMS::class],
+        'FieldOwnerController' => [
+            FieldOwnerServiceImplement::class,
+            SendMessageViaSMS::class
+        ],
         'SportFieldController' => [
             SportFieldServiceImplement::class,
             SportTypeServiceImplement::class,
@@ -58,7 +61,8 @@ class App
         'StatisticalController' => [
             SportFieldServiceImplement::class,
             BookingServiceImplement::class,
-            StatisticsServiceImplement::class
+            StatisticsServiceImplement::class,
+            FieldOwnerServiceImplement::class,
         ]
     ];
 

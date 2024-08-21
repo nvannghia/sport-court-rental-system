@@ -31,6 +31,7 @@ const handleLogin = (evt) => {
       title: 'custom-title',
       confirmButton: 'custom-confirm-button',
     },
+    footer: '<div>Bạn chưa có tài khoản?</div><a href="#" onclick="handleRegister()">Đăng Ký Ngay</a>',
     preConfirm: async () => {
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
@@ -185,6 +186,7 @@ const customerRegister = () => {
       title: 'custom-title',
       confirmButton: 'custom-confirm-button',
     },
+    footer: '<div>Bạn đã có tài khoản?</div><a href="#" onclick="handleLogin()">Đăng Nhập Ngay</a>',
     preConfirm: async () => {
       const fullname = document.getElementById('fullname').value;
       const email = document.getElementById('email').value;
@@ -299,7 +301,7 @@ const handleLogout = () => {
           toast: true,
           position: "top-end",
           showConfirmButton: false,
-          timer: 3000,
+          timer: 2000,
           timerProgressBar: true,
           didOpen: (toast) => {
             toast.onmouseenter = Swal.stopTimer;

@@ -103,12 +103,6 @@ class InvoiceController extends Controller
         }
     }
 
-    public function test()
-    {
-        $invoice = $this->invoiceServiceInterface->getInvoiceByBookingID(54);
-        var_dump($invoice);
-    }
-
     public function getInvoiceOfBooking($bookingID)
     {
         if ($bookingID) {

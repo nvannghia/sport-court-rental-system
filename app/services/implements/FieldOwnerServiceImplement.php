@@ -33,4 +33,9 @@ class FieldOwnerServiceImplement implements FieldOwnerServiceInterface
     {
         return $this->fieldOwnerRepositoryInterface->updateOwnerStatus($ownerID);
     }
+
+    public function getFieldOwnerByOwnerID($ownerID)
+    {
+        return $this->fieldOwnerRepositoryInterface->getFieldOwnerByOwnerID($ownerID);
+    }
 }

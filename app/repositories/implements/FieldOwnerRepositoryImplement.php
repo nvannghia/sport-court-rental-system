@@ -53,4 +53,9 @@ class FieldOwnerRepositoryImplement implements FieldOwnerRepositoryInterface
             return false;
         }
     }
+
+    public function getFieldOwnerByOwnerID($ownerID)
+    {
+        return FieldOwner::where('OwnerID', $ownerID)->first();
+    }
 }

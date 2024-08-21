@@ -10,5 +10,7 @@ interface BookingRepositoryInterface
 
     public function getBookingByUserID($userID);
 
-    public function getBookingBySportFieldID($sportFieldID);
+    public function getBookingBySportFieldID($sportFieldID, $ownerID);
+
+    public function getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter);
 }

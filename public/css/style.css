@@ -72,7 +72,7 @@ a:focus {
   height: 100vh;
   display: flex;
   flex-direction: column;
-  background-image: linear-gradient(to right, rgba(8, 19, 92, 0.9), rgba(8, 19, 92, 0.9)), url(../images/slider-bg.jpg);
+  background-image: linear-gradient(to right, rgba(8, 19, 92, 0.9), rgba(8, 19, 92, 0.9)), url('/sport-court-rental-system/public/images/header-bg-img.png');
   background-size: cover;
 }
 

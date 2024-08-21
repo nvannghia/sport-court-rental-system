@@ -1,8 +1,11 @@
 <?php
 
 use App\Services\BookingServiceInterface;
+use App\Services\FieldOwnerServiceInterface;
 use App\Services\SportFieldServiceInterface;
 use App\Services\StatisticsServiceInterface;
+
+require_once realpath(dirname(__FILE__) . '/../utils/RemoveVietnameseAccents.php');
 
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
@@ -17,22 +20,44 @@ class StatisticalController extends Controller
 
     private $statisticsServiceInterface;
 
+    private $fieldOwnerServiceInterface;
+
     public function __construct(
         SportFieldServiceInterface $sportFieldServiceInterface,
         BookingServiceInterface $bookingServiceInterface,
-        StatisticsServiceInterface $statisticsServiceInterface
+        StatisticsServiceInterface $statisticsServiceInterface,
+        FieldOwnerServiceInterface $fieldOwnerServiceInterface
     ) {
         $this->sportFieldServiceInterface = $sportFieldServiceInterface;
         $this->bookingServiceInterface = $bookingServiceInterface;
         $this->statisticsServiceInterface = $statisticsServiceInterface;
+        $this->fieldOwnerServiceInterface = $fieldOwnerServiceInterface;
     }
 
-    public function getOwnerOfSportField()
+
+    function test()
+    {
+        echo "<pre>";
+        print_r($this->bookingServiceInterface->getBookingBySportFieldIDWithFilter(100, 13, "PAID")->toArray());
+        echo "</pre>";
+    }
+
+    public function fetchOwnerWithSportFields()
     {
         $ownerID = $_SESSION['userInfo']['ID'] ?? null;
         $userRole = $_SESSION['userInfo']['Role'] ?? null;
         if ($userRole == 'OWNER' && $ownerID) {
-            $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerID($ownerID)->toArray();
+            $filter = $_GET['status'] ?? null;
+            $filter = strtoupper($filter);
+            if (!$filter || $filter == 'ALL')
+                $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerID('none' ,$ownerID)->toArray();
+            else if ($filter == 'UNPAID') 
+                $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerIDWithFilter($ownerID, $filter)->toArray();
+            else if ($filter == 'PAID')
+                $sportFields = $this->sportFieldServiceInterface->getSportFieldByOwnerIDWithFilter($ownerID, $filter)->toArray();
+            else
+                die("Invalid Request!");
+
             //get statistics
             $statistics = $this->getStatistics();
             return $this->view('statistical/show_sport_field', [
@@ -45,33 +70,82 @@ class StatisticalController extends Controller
 
     public function getBookingOfSportField($sportFieldID)
     {
-        if ($sportFieldID && is_numeric($sportFieldID)) {
-            $bookings = $this->bookingServiceInterface->getBookingBySportFieldID($sportFieldID)->toArray();
+        $ownerID = $_SESSION['userInfo']['ID'] ?? null;
+        if ($ownerID) {
+            $fieldOwner = $this->fieldOwnerServiceInterface->getFieldOwnerByOwnerID($ownerID)->toArray();
+            //remove Vietnamese Accents
+            $fieldOwner['BusinessName'] = removeVietnameseAccents($fieldOwner['BusinessName']);
+            $fieldOwner['BusinessAddress'] = removeVietnameseAccents($fieldOwner['BusinessAddress']);
 
-            // format date booking, date rental, total amount
-            foreach ($bookings as $bookingKey => $bookingValue) {
-                // format date booking, date rental, total amount
-                $date = new DateTime($bookingValue['created_at']);
-                $formattedDateCreatedAt = $date->format('d/m/Y');
+            if ($sportFieldID && is_numeric($sportFieldID)) {
 
-                $date = new DateTime($bookingValue['BookingDate']);
-                $formattedBookingDate = $date->format('d/m/Y');
+                $filter = $_GET['status'] ??  null;
+                $filter = strtoupper($filter);
+                
+                if (!$filter || $filter == 'ALL') {
+                    $bookings = $this->bookingServiceInterface->getBookingBySportFieldID($sportFieldID, $ownerID)->toArray();
+                } else if ($filter == 'PAID')
+                    $bookings = $this->bookingServiceInterface->getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter)->toArray();
+                else if ($filter == 'UNPAID')
+                    $bookings = $this->bookingServiceInterface->getBookingBySportFieldIDWithFilter($sportFieldID, $ownerID, $filter)->toArray();
+                else
+                    die("Invalid Request!");
 
-                $startTime = $bookingValue['StartTime'];
-                $rentalDuration = $bookingValue['EndTime']; //rental: 1,1.5,2 hours
-                $priceDay = $bookingValue['sport_field']['PriceDay'];
-                $priceEvening = $bookingValue['sport_field']['PriceEvening'];
-                $pricePerHour = $startTime < 17 ? $priceDay : $priceEvening;
-                $totalAmount = $rentalDuration * $pricePerHour;
-                //replace date booking, date rental, total amount for each booking
-                $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;
-                $bookings[$bookingKey]['created_at'] = $formattedDateCreatedAt;
-                $bookings[$bookingKey]['TotalAmount'] = $totalAmount;
+                //total amount revenue of each sport field
+                $totalRevenue = 0;
+
+                // format booking: date booking, date rental/ format invoice: payment date, totalAmount
+                foreach ($bookings as $bookingKey => $bookingValue) {
+                    // format date booking, date rental
+                    $date = new DateTime($bookingValue['created_at']);
+                    $formattedDateCreatedAt = $date->format('d/m/Y');
+                    $date = new DateTime($bookingValue['BookingDate']);
+                    $formattedBookingDate = $date->format('d/m/Y');
+
+                    //format invoice payment date, total amount
+                    if (isset($bookingValue['invoice'])) {
+                        $date = new DateTime($bookingValue['invoice']['PaymentDate']);
+                        $formattedInvoicePaymentDate = $date->format('d/m/Y');
+                        $bookings[$bookingKey]['invoice']['PaymentDate'] = $formattedInvoicePaymentDate;
+                        $bookings[$bookingKey]['invoice']['TotalAmount'] = number_format($bookingValue['invoice']['TotalAmount'], 0, '', '.');
+                        $totalRevenue += (float)$bookingValue['invoice']['TotalAmount'];
+                    }
+
+                    $startTime = $bookingValue['StartTime'];
+                    $rentalDuration = $bookingValue['EndTime']; //rental: 1,1.5,2 hours
+                    $priceDay = $bookingValue['sport_field']['PriceDay'];
+                    $priceEvening = $bookingValue['sport_field']['PriceEvening'];
+                    $pricePerHour = $startTime < 17 ? $priceDay : $priceEvening;
+                    $totalAmount = $rentalDuration * $pricePerHour;
+
+                    $endTime = '';
+                    switch ($bookingValue['EndTime']):
+                        case 1:
+                            $endTime = $bookingValue['StartTime'] + 1 . ':00';
+                            break;
+                        case 1.5:
+                            $endTime = $bookingValue['StartTime'] + 1 . ':30';
+                            break;
+                        case 2:
+                            $endTime = $bookingValue['StartTime'] + 2 . ':00';
+                            break;
+                        default:
+                    endswitch;
+
+                    $rentalHours = "$startTime - $endTime";
+                    //replace date booking, date rental, rental hours, paymentdate for each booking
+                    $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;
+                    $bookings[$bookingKey]['created_at'] = $formattedDateCreatedAt;
+                    $bookings[$bookingKey]['TotalAmount'] = $totalAmount;
+                    $bookings[$bookingKey]['RentalHours'] = $rentalHours;
+                }
+
+                return $this->view('statistical/show_sport_field_booking', [
+                    'bookings' => $bookings,
+                    'totalRevenue' => number_format($totalRevenue, 0, '', '.'),
+                    'businessInfo' => $fieldOwner
+                ]);
             }
-
-            return $this->view('statistical/show_sport_field_booking', [
-                'bookings' => $bookings
-            ]);
         }
 
         return "400 Bad Request!";
@@ -94,11 +168,5 @@ class StatisticalController extends Controller
             ];
         }
         return "400 Bad Request!";
-    }
-
-    function test ()
-    {
-        $ownerID = $_SESSION['userInfo']['ID'] ?? null;
-        var_dump($this->statisticsServiceInterface->getUnpaidBookingsStatistics($ownerID));
     }
 }

@@ -7,23 +7,34 @@ $hiddenSliderSection = true;
 $hiddenCategory = true;
 
 require_once __DIR__ . '/../layouts/header.php';
+echo "<pre>";
+print_r($fieldReivewImagesUrl);
+echo "</pre>";
 
 ?>
 <section class="bg-white">
     <div class="container d-flex">
         <div class="left" style="min-width: 70%;">
             <!-- Slider main container -->
-            <div class="container swiper swiper-container">
+            <div class="container swiper swiper-container rounded shadow-lg">
                 <div class="swiper-wrapper">
-                    <div class="swiper-slide">
-                        <img src="https://ieltsxuanphi.edu.vn/wp-content/uploads/2021/06/sports-New-Brunswick.jpg" alt="">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://media.istockphoto.com/id/949190756/photo/various-sport-equipments-on-grass.webp?b=1&s=170667a&w=0&k=20&c=0du9Ul5NHOHDjpolTa8GKvLVSdOCoRPN-JGI_chUOsI=" alt="">
-                    </div>
-                    <div class="swiper-slide">
-                        <img src="https://ieltsxuanphi.edu.vn/wp-content/uploads/2021/06/sports-New-Brunswick.jpg" alt="">
-                    </div>
+                    <?php if (count($fieldReivewImagesUrl) > 0): ?>
+                        <?php foreach ($fieldReivewImagesUrl as $imageReview): ?>
+                            <div class="swiper-slide">
+                                <img class="w-100" src="<?= $imageReview ?>" alt="images-review">
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <div class="swiper-slide">
+                            <img  class="w-100" style="object-fit: cover;" src="/sport-court-rental-system/public/images/thumbail-football.jpg" alt="thum-football">
+                        </div>
+                        <div class="swiper-slide">
+                            <img class="w-100" style="object-fit: cover;" src="/sport-court-rental-system/public/images/thumbail-basketball.jpg" alt="thumb-basketball">
+                        </div>
+                        <div class="swiper-slide">
+                            <img  class="w-100" src="/sport-court-rental-system/public/images/thumbail-volleyball.jpg" alt="thumb-volleyball">
+                        </div>
+                    <?php endif; ?>
                 </div>
                 <!-- Nếu bạn muốn thêm nút điều hướng -->
                 <div class="swiper-button-prev"></div>
@@ -49,11 +60,18 @@ require_once __DIR__ . '/../layouts/header.php';
                     });
                 </script>
             </div>
-             
-            <div class="mt-3 d-flex align-items-center justify-content-end">
-                <i class="fa-solid fa-calendar-week mr-2 h2" style="color: #E41A2B;"></i>
-                <a target="_blank" href="/sport-court-rental-system/public/booking/fieldSchedule/<?= $sportField["ID"] ?>" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐẶT SÂN NGAY</a>
-            </div>
+
+            <?php if (isset($_SESSION['userInfo'])): ?>
+                <div class="mt-3 d-flex align-items-center justify-content-end">
+                    <i class="fa-solid fa-calendar-week mr-2 h2" style="color: #E41A2B;"></i>
+                    <a target="_blank" href="/sport-court-rental-system/public/booking/fieldSchedule/<?= $sportField["ID"] ?>" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐẶT SÂN NGAY</a>
+                </div>
+            <?php else: ?>
+                <div class="mt-3 d-flex align-items-center justify-content-end">
+                    <i class="fa-solid fa-calendar-week mr-2 h2" style="color: #E41A2B;"></i>
+                    <a onclick="handleLogin()" class="btn text-white font-weight-bold" style="background-color: #E41A2B;">ĐĂNG NHẬP ĐỂ ĐẶT SÂN</a>
+                </div>
+            <?php endif; ?>
 
             <div class="mt-5">
                 <span class="rounded h4 shadow font-weight-bold" style="padding:20px">
@@ -103,7 +121,7 @@ require_once __DIR__ . '/../layouts/header.php';
 require_once __DIR__ . '/../layouts/footer.php';
 ?>
 
-<script>
+<!-- <script>
     function replaceImagesSrc() {
         const images = document.getElementsByTagName("img");
         [...images].forEach((img) => {
@@ -114,7 +132,7 @@ require_once __DIR__ . '/../layouts/footer.php';
     }
 
     replaceImagesSrc();
-</script>
+</script> -->
 
 <!-- // field review js -->
 <script src="../../../public/js/field-review.js"></script>

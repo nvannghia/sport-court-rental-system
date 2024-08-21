@@ -25,4 +25,9 @@ class Booking extends Eloquent
     {
         return $this->belongsTo(SportField::class, 'SportFieldID', 'ID');
     }
+
+    public function invoice()
+    {
+        return $this->hasOne(Invoice::class, "BookingID", "ID");
+    }
 }

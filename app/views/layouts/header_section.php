@@ -15,25 +15,48 @@
                     <li class="nav-item active">
                         <a class="nav-link" href="/sport-court-rental-system/public/home/">Trang chủ</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="about.html"> Về chúng tôi</a>
-                    </li>
-                    
+
                     <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['Role'] === 'CUSTOMER') : ?>
                         <li class="nav-item">
                             <a class="nav-link" href="/sport-court-rental-system/public/booking/showBooking">Sân đã đặt</a>
                         </li>
-                    <?php endif;?>
+                    <?php endif; ?>
 
                     <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['Role'] === 'OWNER') : ?>
                         <li class="nav-item">
-                            <a class="nav-link" href="/sport-court-rental-system/public/statistical/getOwnerOfSportField">THỐNG KÊ</a>
+                            <a class="nav-link" href="/sport-court-rental-system/public/statistical/fetchOwnerWithSportFields">THỐNG KÊ</a>
                         </li>
-                    <?php endif;?>
+                    <?php endif; ?>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="freelancer.html">Tự do làm việc</a>
-                    </li>
+                    <?php if (isset($_SESSION['userInfo'])): ?>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/sport-court-rental-system/public/user/getProfile">
+                                Hồ Sơ
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
+                    <?php if (isset($_SESSION['userInfo'])) : ?>
+                        <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['Role'] != 'SYSTEMADMIN') : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="handleOwnerRegister(<?php echo $_SESSION['userInfo']['ID']; ?>)">
+                                    Bạn Là Chủ Sân?
+                                </a>
+                            </li>
+                        <?php else : ?>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="handleBusiness()">
+                                    Các Doanh Nghiệp
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" onclick="handleSportType()">
+                                    Thể Loại Sân
+                                </a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
                     <?php if (!isset($_SESSION['userInfo'])) : ?>
                         <li class="nav-item" onclick="handleLogin()">
                             <a class="nav-link" href="#">
@@ -73,7 +96,6 @@
                                             <i class="fa-regular fa-building" style="min-width: 15%;"></i>
                                             <span> Bạn Là Chủ Sân? </span>
                                         </div>
-
                                     <?php else : ?>
                                         <div class="dropdown-item" href="#" onclick="handleBusiness()">
                                             <i class="fa-regular fa-building" style="min-width: 15%;"></i>

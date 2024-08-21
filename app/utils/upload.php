@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 if ($_FILES['file']['error'] === UPLOAD_ERR_OK) {
     
     $tempFile = $_FILES['file']['tmp_name'];
-    $ownerID = $_SESSION["userInfo"]["OwnerID"];
+    $ownerID = $_SESSION["userInfo"]["field_owner"]["OwnerID"];
     $targetDirectory = "uploads/description-image/$ownerID/";
 
     // Tạo thư mục nếu chưa tồn tại
