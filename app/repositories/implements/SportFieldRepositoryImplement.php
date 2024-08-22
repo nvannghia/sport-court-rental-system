@@ -13,6 +13,8 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
 
     private const ITEM_PER_PAGE_OWNER = 4;
 
+    private const ITEM_REVIEW_PER_PAGE = 2;
+
     public function create(array $arrayCheck, array $arrayInsert): sportField
     {
         return SportField::firstOrCreate($arrayCheck, $arrayInsert);
@@ -23,16 +25,16 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
         //for none-paigation
         if ($offset == 'none') {
             return SportField::where('OwnerID', $owerID)
-            ->with(['sportType']) // fetching relationship: eager loading
-            ->orderBy('created_at', 'desc')
-            ->get();
+                ->with(['sportType']) // fetching relationship: eager loading
+                ->orderBy('created_at', 'desc')
+                ->get();
         }
 
         //query for pagination
         $query =  SportField::where('OwnerID', $owerID)
             ->with(['sportType']) // fetching relationship: eager loading
             ->orderBy('created_at', 'desc');
-            
+
         //for paginate
         $totalRecords =  $query->count();
         $totalPages = ceil($totalRecords / self::ITEM_PER_PAGE_OWNER);
@@ -40,7 +42,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
         $sportFields = $query->offset($offset)
             ->limit(self::ITEM_PER_PAGE_OWNER)
             ->get();
-            
+
         return [
             'sportFields' => $sportFields,
             'totalPages' => $totalPages,
@@ -81,9 +83,59 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
         return SportField::find($sportFieldID);
     }
 
-    public function getSportFieldByIDWithReviews($sportFieldID)
+    public function getTotalReviewsOfSportField($sportFieldID)
     {
-        return SportField::with(['fieldReviews.user', 'fieldReviews.usersLikedReview'])->find($sportFieldID);
+        $totalRecords = SportField::find($sportFieldID)
+            ->fieldReviews()
+            ->count();
+        return $totalRecords;
+    }
+
+    public function getSportFieldByIDWithReviews($offset, $orderBy = null, $sportFieldID)
+    {
+        if (!$orderBy) {
+            
+            $sportField = SportField::with(
+                [
+                    'fieldReviews' => function ($query) use ($offset) {
+                        $query->skip($offset)->take(self::ITEM_REVIEW_PER_PAGE);
+                    },
+                    'fieldReviews.user',
+                    'fieldReviews.usersLikedReview'
+                ]
+            )->find($sportFieldID);
+
+        } else {
+            $orderByArray = [];
+
+            if ($orderBy == 'created_at') {
+                $orderByArray[0] = $orderBy;
+                $orderByArray[1] = 'DESC';
+            } else {
+                $orderByArray = explode('_', $orderBy);
+            }
+
+            $sportField = SportField::with(
+                [
+                    'fieldReviews' => function ($query) use ($orderByArray, $offset) {
+                        $query->orderBy($orderByArray[0], $orderByArray[1])
+                            ->skip($offset)
+                            ->take(self::ITEM_REVIEW_PER_PAGE);
+                    },
+                    'fieldReviews.user',
+                    'fieldReviews.usersLikedReview'
+                ]
+            )
+                ->find($sportFieldID);
+        }
+        //for pagination
+        $totalRecordsReview = $this->getTotalReviewsOfSportField($sportFieldID);
+        $totalPages = ceil($totalRecordsReview / self::ITEM_REVIEW_PER_PAGE);
+
+        return [
+            'sportField' => $sportField,
+            'totalPages' => $totalPages,
+        ];
     }
 
     public function update($sportFieldID, array $attributes)

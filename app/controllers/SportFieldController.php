@@ -23,6 +23,8 @@ class SportFieldController extends Controller
 
     private const STATUS = ["ACTIVE", "INACTIVE"];
 
+    const ITEM_REVIEW_PER_PAGE = 2;
+
     public function __construct(
         SportFieldServiceInterface $sportFieldServiceInterface,
         SportTypeServiceInterface $sportTypeServiceInterface,
@@ -188,12 +190,37 @@ class SportFieldController extends Controller
         ];
     }
 
+    public function test()
+    {
+        $orderByArray = ['created_at', 'Rating_desc', 'Rating_asc'];
+
+        $orderBy = in_array($_GET['orderBy'], $orderByArray)
+            ? $_GET['orderBy']
+            : null;
+
+        var_dump($orderBy);
+
+        $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews(null,$orderBy, 91)->toArray();
+    }
+
     public function detail($sportFieldID)
     {
         if (isset($sportFieldID) && is_numeric($sportFieldID)) {
 
-            //get sport field
-            $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($sportFieldID);
+            //get sport field with pagination
+            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+            $offset = ($currentPage - 1) * self::ITEM_REVIEW_PER_PAGE;
+
+            $orderByArray = ['created_at', 'Rating_desc', 'Rating_asc'];
+            $orderBy = isset($_GET['orderBy']) && in_array($_GET['orderBy'], $orderByArray)
+                ? $_GET['orderBy']
+                : null;
+
+            $results = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($offset ,$orderBy, $sportFieldID);
+            $sportField = $results['sportField'];
+            $totalPages = $results['totalPages'];
+
+
             //calculate percentage of each star and total star
             $stars = $this->fieldReviewServiceInterface->calculateStarCountsSportFieldByID($sportFieldID);
             //destructuring array 
@@ -208,11 +235,18 @@ class SportFieldController extends Controller
                 $sportField = $sportField->toArray();
                 $fieldReviews =  $sportField['field_reviews'];
                 $fieldReivewImagesUrl = [];
+
                 foreach ($fieldReviews as $index => $fieldReview) {
+                    //format created_at
+                    $dateString = $fieldReview['created_at'];
+                    $date = new DateTime($dateString);
+                    $formattedCreatedAt = $date->format('d/m/Y');
+
                     //append image review to  $fieldReivewImagesUrl
                     $imageReview = $fieldReview['ImageReview'] ?? null;
                     if ($imageReview)
                         $fieldReivewImagesUrl[] = $imageReview;
+
                     //flatten array 'users_liked_review'
                     $usersLikeReviews = $fieldReview['users_liked_review'];
                     $usersLikeReviewID = [];
@@ -221,6 +255,7 @@ class SportFieldController extends Controller
                     }
 
                     $sportField['field_reviews'][$index]['users_liked_review'] = $usersLikeReviewID;
+                    $sportField['field_reviews'][$index]['created_at'] = $formattedCreatedAt;
                 }
 
                 return $this->view('sport_field/detail', [
@@ -229,7 +264,9 @@ class SportFieldController extends Controller
                     'averagePoint' => $averagePoint,
                     'percents' => $percents,
                     'totalReviews' => $totalReviews,
-                    'fieldReivewImagesUrl' => $fieldReivewImagesUrl
+                    'fieldReivewImagesUrl' => $fieldReivewImagesUrl,
+                    'totalPages' => $totalPages,
+                    'currentPage' => $currentPage,
                 ]);
             } else {
                 return $this->view('404');

@@ -49,8 +49,8 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
         return $this->sportFieldRepositoryInterface->filterSportFieldsByConditions($offset, $sportType,  $fieldName, $zoneName);
     }
 
-    public function getSportFieldByIDWithReviews($sportFieldID)
+    public function getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID)
     {
-        return $this->sportFieldRepositoryInterface->getSportFieldByIDWithReviews($sportFieldID);
+        return $this->sportFieldRepositoryInterface->getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
     }
 }

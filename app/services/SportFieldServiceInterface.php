@@ -12,7 +12,7 @@ interface SportFieldServiceInterface
 
     public function getSportFieldByID($sportFieldID);
 
-    public function getSportFieldByIDWithReviews($sportFieldID);
+    public function getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
 
     public function update($sportFieldID, array $attributes);
 

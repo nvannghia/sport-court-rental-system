@@ -1,13 +1,6 @@
 <?php 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-// $config = require_once '../config/config.php';
-
-// $dbDriver = $config['database']['driver'];
-// $dbHost = $config['database']['host'];
-// $dbName = $config['database']['database_name'];
-// $username = $config['database']['username'];
-// $password = $config['database']['password'];
 $config = $GLOBALS['config'];
 
 $dbDriver = $config['database']['driver'];
