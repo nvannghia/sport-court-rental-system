@@ -91,10 +91,11 @@ const showInvoice = async (bookingID) => {
     const response = await fetch(getInvoiceUrl);
 
     const data = await response.json();
-    console.log(data)
+ 
     if (data.statusCode === 200) {
+        
         const invoiceData = data.invoice;
-        console.log(invoiceData)
+        
         Swal.fire({
             title: 'THÔNG TIN CHI TIẾT',
             imageAlt: "Custom image",
@@ -157,10 +158,6 @@ const generatePDFStatistics = (buttonElement) => {
     // Chuyển đổi JSON string thành đối tượng JavaScript
     const bookings = JSON.parse(bookingsData);
     const businessInfo = JSON.parse(businessInfoData);
-
-    // console.log('Bookings:', bookings);
-    // console.log('TotalRevenue:', totalRevenue);
-    // console.log('Business Info:', businessInfo);
 
     // Report Date
     const now = new Date();

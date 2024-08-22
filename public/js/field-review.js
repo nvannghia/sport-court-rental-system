@@ -1,6 +1,7 @@
 const urlFieldReview = '/sport-court-rental-system/public/fieldreview';
 
 
+//add review
 document.addEventListener('DOMContentLoaded', (event) => {
     //Rating
     btnRating = document.getElementById('type-rating');
@@ -391,4 +392,41 @@ const editReview = async (fieldReviewID) => {
         }
     });
 }
+
+
+//sort review by created_at, rating-desc, rating-acs
+const sortReviews = (evt) => {
+    $sortBy = evt.value;
+    const currentUrl = new URL(window.location.href);
+    const params = new URLSearchParams();
+    params.set('orderBy', $sortBy);
+    //set param
+    currentUrl.search = params.toString();
+    //reload with new URL
+    window.location.href = currentUrl.toString();
+}
+
+// pagination review
+document.addEventListener('DOMContentLoaded', () => {
+    // get current url
+    const currentUrl = new URL(window.location.href);
+
+    // get all <a> tags have class "page-link"
+    const pageLinks = document.querySelectorAll('.page-link');
+
+    // update href for each <a> tag
+    pageLinks.forEach(link => {
+        const page = link.getAttribute('data-page');
+        const newUrl = new URL(currentUrl);
+
+        // delete `page` param
+        newUrl.searchParams.delete('page');
+
+        // add new `page` param
+        newUrl.searchParams.set('page', page);
+
+        // update href attribute of <a> tag
+        link.href = newUrl.toString();
+    });
+});
 

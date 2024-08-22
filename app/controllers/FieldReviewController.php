@@ -19,15 +19,6 @@ class FieldReviewController extends Controller
         $this->cloudinaryService = $cloudinaryService;
     }
 
-    public function test()
-    {
-        $fieldReview = FieldReview::find(64);
-
-        echo "<pre>";
-        print_r($fieldReview->usersLikedReview()->get()->toArray());
-        echo "</pre>";
-    }
-
     public function addFieldReivew()
     {
         if (isset($_POST['action']) && $_POST['action'] == 'addFieldReview') {

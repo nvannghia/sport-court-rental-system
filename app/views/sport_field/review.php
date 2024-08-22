@@ -139,13 +139,12 @@
                     </div>
                     <div class="d-flex align-items-center border-left p-3">
                         <i class="fa-solid fa-sort mr-2"></i>
-                        <select name="cars" id="cars">
-                            <option>Sắp xếp theo</option>
-                            <option value="volvo">Mới nhất</option>
-                            <option value="saab">Thấp đến cao</option>
-                            <option value="mercedes">Cao đến thấp</option>
+                        <select onchange="sortReviews(this)" name="cars" id="cars">
+                            <option disabled selected value>Sắp xếp theo</option>
+                            <option value="created_at">Mới nhất</option>
+                            <option value="Rating_asc">Thấp đến cao</option>
+                            <option value="Rating_desc">Cao đến thấp</option>
                         </select>
-
                     </div>
                 </div>
             </div>
@@ -174,18 +173,23 @@
                     <?php foreach ($reviews as $review) :  ?>
                         <div class="ml-3 mt-3" id="review-id-<?= $review['ID'] ?>">
                             <!-- //number of star -->
-                            <div class="">
-                                <?php
-                                $rating = $review['Rating'];
-                                $notRating = 5 - $rating;
-                                ?>
-                                <?php for ($i = 1; $i <= $rating; $i++) : ?>
-                                    <i class="text-warning fa-solid fa-star"></i>
-                                <?php endfor; ?>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <div>
+                                    <?php
+                                    $rating = $review['Rating'];
+                                    $notRating = 5 - $rating;
+                                    ?>
+                                    <?php for ($i = 1; $i <= $rating; $i++) : ?>
+                                        <i class="text-warning fa-solid fa-star"></i>
+                                    <?php endfor; ?>
 
-                                <?php for ($j = 1; $j <= $notRating; $j++) : ?>
-                                    <i class="fa-solid fa-star" style="color: #b0acac"></i>
-                                <?php endfor; ?>
+                                    <?php for ($j = 1; $j <= $notRating; $j++) : ?>
+                                        <i class="fa-solid fa-star" style="color: #b0acac"></i>
+                                    <?php endfor; ?>
+                                </div>
+                                <div class="mr-2" style="color: #878787">
+                                    <?= $review['created_at'] ?>
+                                </div>
                             </div>
                             <!-- // name of user review -->
                             <div class="mt-2" style="color: #878787">
@@ -242,8 +246,41 @@
 
                             </div>
                             <hr style="border: 1px solid #787474">
+
+
                         </div>
                     <?php endforeach; ?>
+                    <!-- //paginate -->
+                    <div class="d-flex justify-content-center">
+                        <nav>
+                            <ul class="pagination">
+                                <li class="page-item <?php echo $currentPage - 1 < 1 ? "d-none" : ''; ?>">
+                                    <a
+                                        class="page-link"
+                                        data-page=<?= $currentPage - 1 ?>>
+                                        Trước
+                                    </a>
+                                </li>
+                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                                    <li class="page-item">
+                                        <a
+                                            class="page-link"
+                                            data-page=<?= $i ?>>
+                                            <?= $i ?>
+                                        </a>
+                                    </li>
+                                <?php endfor; ?>
+                                <li class="page-item <?php echo $currentPage + 1 > $totalPages ? "d-none" : ''; ?>">
+                                    <a
+                                        class="page-link"
+                                        data-page=<?= $currentPage + 1 ?>>
+                                        Sau
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
                 <?php else : ?>
                     <div style="padding: 8px; text-align: center;">
                         <span style="text-align: center;font-size: 22px;">Chưa có đánh giá nào!</span>
