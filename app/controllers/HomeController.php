@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
+use App\Utils\CaptchaUtils;
 
 class HomeController extends Controller
 {

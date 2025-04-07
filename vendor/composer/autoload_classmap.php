@@ -6,7 +6,12 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Models\\Booking' => $baseDir . '/app/models/Booking.php',
     'App\\Models\\FieldOwner' => $baseDir . '/app/models/FieldOwner.php',
+    'App\\Models\\FieldReview' => $baseDir . '/app/models/FieldReview.php',
+    'App\\Models\\Invoice' => $baseDir . '/app/models/Invoice.php',
+    'App\\Models\\Liked' => $baseDir . '/app/models/Liked.php',
+    'App\\Models\\SportField' => $baseDir . '/app/models/SportField.php',
     'App\\Models\\SportType' => $baseDir . '/app/models/SportType.php',
     'App\\Models\\UserModel' => $baseDir . '/app/models/UserModel.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',

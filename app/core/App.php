@@ -98,7 +98,8 @@ class App
             if (file_exists("../app/controllers/" . $this->controller . ".php")) {
                 unset($url[0]);
             }
-        }
+        } else 
+            $this->controller = $this->controllerMapping['home']; // home controller for first time visit website
 
         require_once '../app/controllers/' . ($this->controller) . '.php';
 

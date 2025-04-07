@@ -6,6 +6,7 @@ if (session_status() == PHP_SESSION_NONE) {
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
 use App\Services\UserServiceInterface;
+use App\Utils\CaptchaUtils;
 use App\Utils\SendMessageViaSMS;
 use App\Utils\CloudinaryService;
 
@@ -39,11 +40,139 @@ class UserController extends Controller
         $this->cloudinaryService = $cloudinaryService;
     }
 
-    function verifyOTPandSaveData()
-    {
-        if (isset($_POST['action']) && $_POST['action'] == 'getOTP') {
+    // old function for register by OTP    
+    // function verifyOTPandSaveData()
+    // {
+    //     if (isset($_POST['action']) && $_POST['action'] == 'getOTP') {
 
-            // if email already exits, prevent create
+    //         // if email already exits, prevent create
+    //         if (isset($_POST['email'])) {
+    //             $user = $this->userServiceInterface->findByEmail($_POST['email']);
+    //             if ($user) {
+    //                 echo json_encode([
+    //                     "statusCode" => 409,
+    //                     "emailExisted" => $_POST['email'],
+    //                     "message" => "Email already exists"
+    //                 ]);
+    //                 return;
+    //             }
+    //         }
+
+    //         $otp = $this->sendMessageViaSMS->generateOTP();
+    //         $this->sendMessageViaSMS->saveOTP($_POST['phoneNumber'], $otp); // tương ứng mỗi sdt sẽ có otp, được lưu trong session
+
+    //         //save data for next request
+    //         $_SESSION['fullname'] = $_POST['fullname'];
+    //         $_SESSION['email'] = $_POST['email'];
+    //         $_SESSION['password'] = $_POST['password'];
+    //         $_SESSION['phoneNumber'] = $_POST['phoneNumber'];
+    //         $_SESSION['address'] = $_POST['address'];
+
+    //         $receiveNumber = $_POST['phoneNumber'];
+    //         $message = "Your OTP code is: " .  $otp;
+    //         $isPending = $this->sendMessageViaSMS->sendSMS($receiveNumber, $message);
+
+    //         if ($isPending)
+    //             echo json_encode([
+    //                 "status" => 'success',
+    //             ]);
+    //         else
+    //             echo json_encode([
+    //                 "status" => 'failed',
+    //             ]);
+    //         return;
+    //     }
+
+    //     if (isset($_POST['action']) && $_POST['action'] == 'verifyOTP') {
+
+    //         $otp = $_POST['otp'] ?? null;
+
+    //         if ($this->sendMessageViaSMS->verifyOTP($_SESSION['phoneNumber'], $otp)) {
+
+    //             $user = $this->create();
+    //             if ($user->wasRecentlyCreated) {
+
+    //                 echo json_encode([
+    //                     "statusCode" => 201,
+    //                     "message" => "User Created Successfully"
+    //                 ]);
+    //                 //clear sesssion
+    //                 $_SESSION = array();
+    //                 return;
+    //             } else {
+    //                 echo json_encode([
+    //                     "statusCode" => 409,
+    //                     "message" => "Resource with email:" . $_SESSION['email'] .  " already exists"
+    //                 ]);
+    //                 return;
+    //             }
+    //         }
+
+    //         echo json_encode([
+    //             "statusCode" => 500,
+    //             "message" => "Server Internal Error"
+    //         ]);
+    //     }
+    // }
+
+    // old create user funtion (with OTP code)
+    // public function create()
+    // {
+    //     $fullname = $_SESSION['fullname'] ?? null;
+    //     $email = $_SESSION['email'] ?? null;
+    //     $password = $_SESSION['password'] ?? null;
+    //     $phoneNumber = $_SESSION['phoneNumber'] ?? null;
+    //     $address = $_SESSION['address'] ?? null;
+
+    //     $isInvalidInfo = !empty($fullname) && !empty($email)
+    //         && !empty($password) && !empty($phoneNumber)
+    //         && !empty($address);
+
+    //     if (!$isInvalidInfo) {
+    //         echo json_encode([
+    //             "errorMessage" => "Please enter all information in the form!",
+    //         ]);
+    //         return;
+    //     }
+
+    //     return $this->userServiceInterface->create(
+    //         ["Email" => $email], //if exits Email throw exception
+    //         [
+    //             'Role' => self::ROLES[0],
+    //             'FullName' => $fullname,
+    //             'Email' => $email,
+    //             'Password' => password_hash($password, PASSWORD_BCRYPT),
+    //             'PhoneNumber' => $phoneNumber,
+    //             'Address' => $address,
+    //         ]
+    //     );
+    // }
+
+    // new create user function
+    public function create()
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $fullname = $_POST['fullname'] ?? null;
+            $email    = $_POST['email'] ?? null;
+            $password = $_POST['password'] ?? null;
+            $address  = $_POST['address'] ?? null;
+            $captcha  = $_POST['captcha'] ?? null;
+
+            // BEGIN - Validate data
+
+            $isInvalidInfo = !empty($fullname)
+                && !empty($email)
+                && !empty($password)
+                && !empty($address)
+                && !empty($captcha);
+
+            if (!$isInvalidInfo) {
+                echo json_encode([
+                    "errorMessage" => "Vui lòng điền đầy đủ thông tin mẫu!",
+                ]);
+                return;
+            }
+
             if (isset($_POST['email'])) {
                 $user = $this->userServiceInterface->findByEmail($_POST['email']);
                 if ($user) {
@@ -56,93 +185,40 @@ class UserController extends Controller
                 }
             }
 
-            $otp = $this->sendMessageViaSMS->generateOTP();
-            $this->sendMessageViaSMS->saveOTP($_POST['phoneNumber'], $otp); // tương ứng mỗi sdt sẽ có otp, được lưu trong session
-
-            //save data for next request
-            $_SESSION['fullname'] = $_POST['fullname'];
-            $_SESSION['email'] = $_POST['email'];
-            $_SESSION['password'] = $_POST['password'];
-            $_SESSION['phoneNumber'] = $_POST['phoneNumber'];
-            $_SESSION['address'] = $_POST['address'];
-
-            $receiveNumber = $_POST['phoneNumber'];
-            $message = "Your OTP code is: " .  $otp;
-            $isPending = $this->sendMessageViaSMS->sendSMS($receiveNumber, $message);
-
-            if ($isPending)
+            if (!CaptchaUtils::validateCaptcha($captcha)) {
                 echo json_encode([
-                    "status" => 'success',
+                    "errorMessage" => "Mã CAPTCHA không hợp lệ!"
                 ]);
-            else
-                echo json_encode([
-                    "status" => 'failed',
-                ]);
-            return;
-        }
-
-        if (isset($_POST['action']) && $_POST['action'] == 'verifyOTP') {
-
-            $otp = $_POST['otp'] ?? null;
-
-            if ($this->sendMessageViaSMS->verifyOTP($_SESSION['phoneNumber'], $otp)) {
-
-                $user = $this->create();
-                if ($user->wasRecentlyCreated) {
-
-                    echo json_encode([
-                        "statusCode" => 201,
-                        "message" => "User Created Successfully"
-                    ]);
-                    //clear sesssion
-                    $_SESSION = array();
-                    return;
-                } else {
-                    echo json_encode([
-                        "statusCode" => 409,
-                        "message" => "Resource with email:" . $_SESSION['email'] .  " already exists"
-                    ]);
-                    return;
-                }
+                return;
             }
 
-            echo json_encode([
-                "statusCode" => 500,
-                "message" => "Server Internal Error"
-            ]);
-        }
-    }
+            // END - Validate data
 
-    public function create()
-    {
-        $fullname = $_SESSION['fullname'] ?? null;
-        $email = $_SESSION['email'] ?? null;
-        $password = $_SESSION['password'] ?? null;
-        $phoneNumber = $_SESSION['phoneNumber'] ?? null;
-        $address = $_SESSION['address'] ?? null;
-
-        $isInvalidInfo = !empty($fullname) && !empty($email)
-            && !empty($password) && !empty($phoneNumber)
-            && !empty($address);
-
-        if (!$isInvalidInfo) {
-            echo json_encode([
-                "errorMessage" => "Please enter all information in the form!",
-            ]);
+            $user = $this->userServiceInterface->create(
+                ["Email" => $email], //if exits Email throw exception
+                [
+                    'Role'     => self::ROLES[0],
+                    'FullName' => $fullname,
+                    'Email'    => $email,
+                    'Password' => password_hash($password, PASSWORD_BCRYPT),
+                    'Address'  => $address,
+                ]
+            );
+            if ($user->wasRecentlyCreated) {
+                echo json_encode([
+                    "statusCode" => 201,
+                    "message" => "User Created Successfully"
+                ]);
+                //clear session
+                $_SESSION = [];
+            } else {
+                echo json_encode([
+                    "statusCode" => 500,
+                    "message" => "500 - SERVER INTERNAL ERROR!"
+                ]);
+            }
             return;
         }
-
-        return $this->userServiceInterface->create(
-            ["Email" => $email], //if exits Email throw exception
-            [
-                'Role' => self::ROLES[0],
-                'FullName' => $fullname,
-                'Email' => $email,
-                'Password' => password_hash($password, PASSWORD_BCRYPT),
-                'PhoneNumber' => $phoneNumber,
-                'Address' => $address,
-            ]
-        );
     }
 
     public function login()
