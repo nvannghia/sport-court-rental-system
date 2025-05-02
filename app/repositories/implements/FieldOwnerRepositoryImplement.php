@@ -39,7 +39,7 @@ class FieldOwnerRepositoryImplement implements FieldOwnerRepositoryInterface
 
             $fieldOwner = FieldOwner::where("OwnerID", $ownerID)->first(); // get first records
             if ($fieldOwner) {
-                $fieldOwner->Status = ($fieldOwner->Status === "INACTIVE") ? "ACTIVE" : "INACTIVE";
+                $fieldOwner->Status = !$fieldOwner->Status;
                 $fieldOwner->save();
             }
 

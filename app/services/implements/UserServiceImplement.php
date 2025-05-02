@@ -23,5 +23,10 @@ class UserServiceImplement implements UserServiceInterface {
     {
         return $this->userRepositoryInterface->updateAvatar($userID, $url);
     }
+
+    public function changeProfileLink($userID, $typeLink, $valueLink)
+    {
+        return $this->userRepositoryInterface->changeProfileLink($userID, $typeLink, $valueLink);
+    }
 }
 ?>

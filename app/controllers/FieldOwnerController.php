@@ -4,6 +4,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 
 use App\Services\FieldOwnerServiceInterface;
+use App\Utils\CaptchaUtils;
 use App\Utils\SendMessageViaSMS;
 
 class FieldOwnerController extends Controller
@@ -22,26 +23,36 @@ class FieldOwnerController extends Controller
     public function createBusiness()
     {
         if (!empty($_POST) && $_POST['action'] === 'ownerRegister') {
-            $businessName = $_POST['businessName'] ?? null;
+            $businessName    = $_POST['businessName'] ?? null;
             $businessAddress = $_POST['businessAddress'] ?? null;
-            $businessPhone = $_POST['businessPhone'] ?? null;
+            $businessPhone   = $_POST['businessPhone'] ?? null;
+            $captcha         = $_POST['captcha'] ?? null;
 
-            $isValidInfo = !empty($businessName) && !empty($businessAddress)
-                && !empty($businessPhone);
+            $isValidInfo = !empty($businessName)  && !empty($businessAddress)
+                && !empty($businessPhone) && !empty($captcha);
 
             if (!$isValidInfo) {
                 echo json_encode([
+                    "statusCode" => 400,
                     "errorMessage" => "Please enter all information in the form!",
                 ]);
                 return;
             }
 
+            if (!CaptchaUtils::validateCaptcha($captcha)) {
+                echo json_encode([
+                    "statusCode" => 422,
+                    "errorMessage" => "Mã captcha không hợp lệ!",
+                ]);
+                return;
+            }
+
             $fieldonwer = $this->fieldOwnerServiceInterface->createBusiness([
-                'OwnerID' => $_SESSION['userInfo']['ID'],
-                'Status' => self::STATUS[1],
-                'BusinessName' => $businessName,
-                'BusinessAddress'  => $businessAddress,
-                'PhoneNumber' => $businessPhone
+                'OwnerID'         => $_SESSION['userInfo']['ID'],
+                'Status'          => self::STATUS[1],
+                'BusinessName'    => $businessName,
+                'BusinessAddress' => $businessAddress,
+                'PhoneNumber'     => $businessPhone
             ]);
 
             if ($fieldonwer) {
@@ -96,15 +107,14 @@ class FieldOwnerController extends Controller
             if ($ownerID) {
                 $fieldOwner = $this->fieldOwnerServiceInterface->updateOwnerStatus($ownerID);
                 if ($fieldOwner) {
-
-                    $isPending = $this->sendStatusUpdateMessage($fieldOwner);
-
-                    if ($isPending)
-                        echo json_encode([
-                            "statusCode" => 200,
-                            "message" => "Owner Updated Successfully",
-                            "fieldOnwerStatus" => $fieldOwner->Status,
-                        ]);
+                    // THIS OLD CODE LINES FOR SEND STATUS FIELD TO OWNER
+                    // $isPending = $this->sendStatusUpdateMessage($fieldOwner);
+                    // if ($isPending)
+                    echo json_encode([
+                        "statusCode" => 200,
+                        "message" => "Owner Updated Successfully",
+                        "fieldOwnerStatus" => $fieldOwner->Status,
+                    ]);
                 } else {
                     echo json_encode([
                         "statusCode" => 500,

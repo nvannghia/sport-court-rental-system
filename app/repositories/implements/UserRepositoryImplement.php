@@ -37,4 +37,13 @@ class UserRepositoryImplement implements UserRepositoryInterface
 
         return null;
     }
+
+    
+    public function changeProfileLink($userID, $typeLink, $valueLink) 
+    {
+        $user            = UserModel::find($userID);
+        $user->$typeLink = $valueLink;
+        $isUpdated       = $user->save();
+        return $isUpdated;
+    }
 }

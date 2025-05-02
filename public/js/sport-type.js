@@ -365,7 +365,7 @@ const handleSportType = async () => {
         </tr>
       </thead>
       <tbody id="tbodyContent">
-       ${rowsContent ? rowsContent : ' <td id="noSportType" class="h4 text-danger" colspan="5"> Không Có Thể Loại Sân Nào!</td>'}
+       ${rowsContent ? rowsContent : ' <td id="noSportType" class="text-danger font-weight-bold" colspan="5"> CHƯA CÓ DỮ LIỆU!</td>'}
       </tbody>
     </table>
     `;

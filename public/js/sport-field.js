@@ -233,8 +233,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (data.statusCode === 201) {
 
                 await Swal.fire({
-                    title: "Thành Công!",
-                    text: "Thêm Sân Thành Công!",
+                    title: "THÀNH CÔNG!",
+                    text: "Bạn đã thêm thành công sân của mình!",
                     icon: "success",
                     customClass: {
                         popup: 'my-custom-popup',

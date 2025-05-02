@@ -19,8 +19,8 @@ const handleLogin = (evt) => {
       `
     },
     html: `
-        <input id="email" class="swal2-input" placeholder="Email...">
-        <input id="password" class="swal2-input" type="password" placeholder="Mật khẩu...">
+        <input id="email" class="swal2-input" placeholder="Email..." value="@gmail.com">
+        <input id="password" class="swal2-input" type="password" placeholder="Mật khẩu..." value="123456">
       `,
     focusConfirm: false,
     showCancelButton: true,
@@ -325,7 +325,7 @@ const customerRegister = () => {
                 // console.log(captchaImage);
                 if (captchaImage) {
                   document.getElementById('captchaImage').src = 'data:image/png;base64,' + captchaImage;
-                } else 
+                } else
                   alert("ERROR: The captcha is not available!");
               });
           });
@@ -352,7 +352,7 @@ const customerRegister = () => {
             Swal.showValidationMessage('Mật khẩu không khớp.');
             return false;
           }
-          
+
           try {
             const registerUrl = `${urlRequest}/create`;
 
@@ -393,7 +393,7 @@ const customerRegister = () => {
               Swal.fire({
                 title: 'Đăng ký thành công!',
                 text: 'Vui lòng đăng nhập để sử dụng dịch vụ.',
-                icon:'success',
+                icon: 'success',
                 confirmButtonText: 'Đăng nhập ngay',
                 customClass: {
                   title: 'custom-title',
@@ -407,10 +407,6 @@ const customerRegister = () => {
             } else {
               Swal.showValidationMessage('Đăng ký thất bại, vui lòng thử lại sau!');
             }
-              
-
-
-
           } catch (error) {
             Swal.showValidationMessage(`Request failed: ${error}`);
           }

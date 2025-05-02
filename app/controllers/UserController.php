@@ -24,7 +24,7 @@ class UserController extends Controller
 
     private $cloudinaryService;
 
-    private const ITEM_PER_PAGE_OWNER = 4;
+    private const ITEM_PER_PAGE_OWNER = 3;
 
     public function __construct(
         UserServiceInterface $userServiceInterface,
@@ -335,6 +335,9 @@ class UserController extends Controller
                 $userUpdated = $this->userServiceInterface->updateAvatar($userID, $urlUploaded);
 
                 if ($userUpdated) {
+                    // update session user avatar link
+                    $_SESSION['userInfo']['Avatar'] = $urlUploaded;
+
                     echo json_encode([
                         "statusCode" => 200,
                         "url" => $urlUploaded,
@@ -353,5 +356,43 @@ class UserController extends Controller
         } else {
             echo "No file uploaded.";
         }
+    }
+
+    public function changeProfileLink ()
+    {
+        $userID = $_SESSION['userInfo']['ID'];
+        if (empty($userID)) {
+            return "<h5>VUI LÒNG ĐĂNG NHẬP TRƯỚC!</h5>";
+            exit();
+        }
+
+        $linkName  = $_POST['linkName'] ?? null;
+        $linkValue = $_POST['linkValue'] ?? null;
+
+        if (empty($linkName) || empty($linkValue)) {
+            echo json_encode([
+                'statusCode' => 400,
+                'message'    => 'Thiếu dữ liệu cần thiết để cập nhật!'
+            ]);
+            exit();
+        }
+
+        $isChange = $this->userServiceInterface->changeProfileLink($userID, $linkName, $linkValue);
+        if ($isChange) {
+            //SAVE SESSION LINK FOR USER
+            $_SESSION['userInfo'][$linkName] = $linkValue;
+            http_response_code(200);
+            echo json_encode([
+                "statusCode" => 200,
+                "message"    => "Profile link change successfully!"
+            ]);
+            exit();
+        }
+
+        http_response_code(500);
+        echo json_encode([
+            "statusCode" => 500,
+            "message"    => "500 - SERVER INTERNAL ERROR!"
+        ]);
     }
 }

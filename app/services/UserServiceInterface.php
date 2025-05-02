@@ -9,4 +9,6 @@ interface UserServiceInterface
     public function findByEmail($username);
 
     public function updateAvatar($userID, $url);
+
+    public function changeProfileLink($userID, $typeLink, $valueLink);
 }

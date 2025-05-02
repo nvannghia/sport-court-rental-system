@@ -45,6 +45,9 @@
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
     <!-- swiperjs.com -->
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <!-- jQery -->
+    <script src="/sport-court-rental-system/public/js/jquery-3.4.1.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
         .swiper {
@@ -136,6 +139,26 @@
         body.swal2-shown>[aria-hidden='true'] {
             transition: 0.1s filter;
             filter: blur(10px);
+        }
+
+        .breadcrumb-item.active {
+            color: #3b5998;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 1.25rem;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            padding: 10px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            background-color: #f0f4f8;
+            transition: all 0.3s ease;
+        }
+
+        .breadcrumb-item.active:hover {
+            background-color: #e1e9f3;
+            color: #2d4373;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
     </style>
 

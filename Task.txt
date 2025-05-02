@@ -1,2 +1,13 @@
 Task:
- + Làm lại phần login, nếu cần thiết bỏ đăng nhập OTP -> đổi thành cho login bằng mã cho user nhập lại
+
+ * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
+  - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
+  - CHO PHÉP cập nhật lại sdt của user ====> LOADING
+  - SUY NGHĨ THÊM về phần các thông tin như fb, github, linkin... ======> DONE
+
+ - Phần Admin approve business: 
+    + Làm thêm cho xác nhận hoàng loạt doanh nghiệp
+    + Làm thêm thanh search theo tên business
+    + Lọc theo trạng thái    
+
+

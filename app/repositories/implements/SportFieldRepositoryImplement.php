@@ -11,7 +11,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
 {
     private const ITEM_PER_PAGE = 6;
 
-    private const ITEM_PER_PAGE_OWNER = 4;
+    private const ITEM_PER_PAGE_OWNER = 3;
 
     private const ITEM_REVIEW_PER_PAGE = 2;
 

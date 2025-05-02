@@ -1,4 +1,4 @@
-<section class="info_section ">
+<section class="info_section">
   <div class="container">
     <div class="row">
       <div class="col-md-2 info_links">
@@ -97,9 +97,6 @@
 </footer>
 <!-- footer section -->
 
-
-<!-- jQery -->
-<script src="/sport-court-rental-system/public/js/jquery-3.4.1.min.js"></script>
 <!-- bootstrap js -->
 <script src="/sport-court-rental-system/public/js/bootstrap.js"></script>
 <!-- nice select -->
@@ -108,7 +105,7 @@
 <script src="/sport-court-rental-system/public/js/custom.js"></script>
 <!-- sweet alert -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <!-- auth -->
 <script src="/sport-court-rental-system/public/js/auth.js"></script>
 

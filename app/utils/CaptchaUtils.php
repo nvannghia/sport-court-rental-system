@@ -41,7 +41,7 @@ class CaptchaUtils {
     }    
 
     public static function validateCaptcha($input) {
-        return isset($_SESSION['captcha_code']) && strcasecmp($input, $_SESSION['captcha_code']) === 0;
+        return isset($_SESSION['captcha_code']) && strcmp($input, $_SESSION['captcha_code']) === 0;
     }
 }
 ?>

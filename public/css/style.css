@@ -69,10 +69,10 @@ a:focus {
 /*header section*/
 .hero_area {
   position: relative;
-  height: 100vh;
+  height: 100%;
   display: flex;
   flex-direction: column;
-  background-image: linear-gradient(to right, rgba(8, 19, 92, 0.9), rgba(8, 19, 92, 0.9)), url('/sport-court-rental-system/public/images/header-bg-img.png');
+  background-image: linear-gradient(to right, rgba(8, 19, 92, 0.9), rgba(8, 19, 92, 0.9)), url(../images/header-bg-img.png);
   background-size: cover;
 }
 

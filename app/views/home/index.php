@@ -1,7 +1,7 @@
 <?php
 require_once __DIR__ . '/../layouts/header.php';
 ?>
-
+<link rel="stylesheet" type="text/css" href="/sport-court-rental-system/public/css/table.css" />
 
 <?php if (isset($sportFields)) : ?>
 

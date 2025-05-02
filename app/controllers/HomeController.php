@@ -22,7 +22,10 @@ class HomeController extends Controller
 
     function test()
     {
-
+        
+        echo "<pre>";
+        var_dump(($_SESSION['userInfo']['Role'] === 'OWNER'));
+        die();
     }
     public function index()
     {
