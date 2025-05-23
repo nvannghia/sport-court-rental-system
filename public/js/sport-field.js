@@ -3,7 +3,24 @@ const addSportFiledBtn = document.getElementById("addSportFieldBtn");
 const formAddContainer = document.getElementById('formAddContainer');
 const formEditContainer = document.getElementById('formEditContainer');
 const infoView = document.getElementById('infoView');
+
+// SPORT TYPE FOOTBALL 
+const FOOTBALL_ID = 5;
+
 addSportFiledBtn.addEventListener("click", () => {
+
+
+
+    // Swal.fire({
+
+    //     customClass: {
+    //         popup: 'warn-alert',
+    //         confirmButton: 'btn btn-outline-warning'
+    //     },
+    //     confirmButtonText: "Đóng",
+    // });
+
+
 
     //hide edit form and display add form
     const formEditContainer = document.getElementById('formEditContainer');
@@ -85,7 +102,7 @@ const displayFieldSize = (e, action) => {
         wrapFieldSize = wrapFieldSizeEdit;
     }
     let sportTypeID = e.value;
-    if (sportTypeID == 108) {
+    if (sportTypeID == FOOTBALL_ID) {
         if (wrapFieldSize.classList.contains('d-none')) {
             wrapFieldSize.classList.remove('d-none');
             wrapFieldSize.classList.add('d-block');
@@ -98,6 +115,35 @@ const displayFieldSize = (e, action) => {
     }
 }
 
+// ARRAY FOR IMAGE AND TITLE SPORT FIELD 
+const SPORT_FIELD_INFO = [
+    [],
+    [
+        '/sport-court-rental-system/public/images/category/basketball.png',
+        'Bóng Rổ'
+    ],
+    [
+        '/sport-court-rental-system/public/images/category/volleyball.png',
+        'Bóng Chuyền'
+    ],
+    [
+        '/sport-court-rental-system/public/images/category/tennis.png',
+        'Tennis'
+    ],
+    [
+        '/sport-court-rental-system/public/images/category/badminton.png',
+        'Cầu Lông'
+    ],
+    [
+        '/sport-court-rental-system/public/images/category/football.png',
+        'Bóng đá'
+    ],
+    [
+        '/sport-court-rental-system/public/images/category/golf.png',
+        'Golf'
+    ]
+];
+
 //===================== add sport field
 document.addEventListener('DOMContentLoaded', function () {
     const form = document.getElementById('addSportFieldForm');
@@ -108,13 +154,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const closingTime = document.getElementById('closingTime');
     const status = document.getElementById('status');
     const numberOfField = document.getElementById('numberOfField');
-    const sportTypeID = document.getElementById('sportTypeID'); // sportTypeID là select box, sportTypeID.value là value của option
+    const sportTypeID = document.getElementById('sportTypeID');
     const address = document.getElementById('address');
-    const description = document.getElementById('description');
     const wrapTinyMCE = document.getElementById('wrap-tinyMCE');
-    const wrapSportTypeID = document.getElementById('wrap-sportTypeID');
     const btnSubmitFormAdd = document.querySelector('form#addSportFieldForm #btnAddForm');
-    const fieldSize = document.getElementById('fieldSize'); // fieldSize là select box, fieldSize.value là value của option
+    const fieldSize = document.getElementById('fieldSize');
 
     //Định dạng đầu vào cho giá tiền trước và sau 17:00
     priceDay.addEventListener("input", formatCurrency);
@@ -178,13 +222,6 @@ document.addEventListener('DOMContentLoaded', function () {
             numberOfField.classList.remove('is-invalid');
         }
 
-        if (sportTypeID.value == "-1") {
-            sportTypeID.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            sportTypeID.classList.remove('is-invalid');
-        }
-
         if (!address.value.trim()) {
             address.classList.add('is-invalid');
             isValid = false;
@@ -200,14 +237,38 @@ document.addEventListener('DOMContentLoaded', function () {
             wrapTinyMCE.classList.remove('is-invalid');
         }
 
-        // Nếu form hợp lệ
+        if (!status.value) {
+            $('div.status-wrapper').css("border", "1px solid red");
+            isValid = false;
+        } else {
+            $('div.status-wrapper').css("border", "none");
+        }
+
+        if (!sportTypeID.value) {
+            $('div.sporttype-wrapper').css("border", "1px solid red");
+            isValid = false;
+        } else {
+            $('div.sporttype-wrapper').css("border", "none");
+        }
+
+        if (sportTypeID.value == FOOTBALL_ID) {
+            if (!fieldSize.value) {
+                $('div.fieldsize-wrapper').css("border", "1px solid red");
+                isValid = false;
+            } else {
+                $('div.fieldsize-wrapper').css("border", "none");
+            }
+        }
+
+
+        // VALID FORM 
         if (isValid) {
             btnSubmitFormAdd.setAttribute("disabled", "disabled");
 
             const formData = new FormData();
             formData.append('action', 'addSportField');
             formData.append('sportTypeID', sportTypeID.value);
-            if (sportTypeID.value == 108) {
+            if (sportTypeID.value == FOOTBALL_ID) {
                 formData.append('fieldSize', fieldSize.value)
             }
             formData.append('fieldName', fieldName.value);
@@ -219,7 +280,14 @@ document.addEventListener('DOMContentLoaded', function () {
             formData.append('address', address.value);
             formData.append('description', editorContent);
             formData.append('fieldImage', fileImage);
+            formData.append('status', status.value);
 
+            Swal.fire({
+                html: '<img src="/sport-court-rental-system/public/images/soccer.gif" width="100%" height="100%"/>',
+                background: 'rgba(255, 255, 255, 0)',
+                showConfirmButton: false,
+                allowOutsideClick: false
+            })
             const addSportFieldUrl = `${sportFieldUrl}/storeSportField`;
             const response = await fetch(addSportFieldUrl, {
                 method: 'POST',
@@ -229,39 +297,69 @@ document.addEventListener('DOMContentLoaded', function () {
             //disabled button submit 
             const data = await response.json();
 
+            console.log(data);
+
+
 
             if (data.statusCode === 201) {
-
+                // DELETE MESSAGE NO SPORT FIELD ALERT
+                if ($('#display-no-field'))
+                    $('#display-no-field').remove();
                 await Swal.fire({
-                    title: "THÀNH CÔNG!",
-                    text: "Bạn đã thêm thành công sân của mình!",
-                    icon: "success",
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-check-double h1 rounded-circle border border-success mb-3" style="padding: 10px 13px"></i>
+                            <div class="font-weight-bold h5">THÊM THÀNH CÔNG</div>
+                            <div>Sân của bạn đã được thêm vào hệ thống. Chi tiết xem thêm tại mục QUẢN LÝ SÂN.</div>
+                        </div>
+                    `,
                     customClass: {
-                        popup: 'my-custom-popup',
+                        popup: 'success-alert',
+                        confirmButton: 'btn btn-outline-success'
                     },
+                    confirmButtonText: "Đóng",
                 });
 
 
                 const containerSportField = document.getElementById("container-sportField");
+
+                // DELETE FIRST CHILD IF CONTAINER HAVE GREATER THAN 3 ELEMENT INSIDE
+                const numberOfChildren = containerSportField.children.length;
+                if (numberOfChildren >= 3)
+                    containerSportField.removeChild(containerSportField.firstElementChild);
+
                 containerSportField.insertAdjacentHTML('afterbegin', `
-                 <div id="sportField-${data.sportField.ID}">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <p class="ellipsis mb-1" id="display-typename-sportfield-${data.sportField.ID}"> Sân ${data.sportField.TypeName} ${data.sportField.FieldName} </p>
-                        <div>
-                            <a href="../sportfield/detail/${data.sportField.ID}" class="btn btn-default border border-info shadow-sm mb-2" title="Chi Tiết Sân">
-                                <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
-                            </a>
-                            <a onclick="fillDataToEditForm(${data.sportField.ID})" class="btn btn-default border border-warning shadow-sm mb-2" title="Cập Nhật Sân">
-                                <i class="fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
-                            </a>
-                            <a onclick="destroySportField(${data.sportField.ID})" class="btn btn-default border-danger border shadow-sm mb-2" title="Xóa Sân">
-                                <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
-                            </a>
+                    <div id="sportField-${data.sportField.ID}">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="mb-1 d-flex justify-content-between align-items-center">
+                                <div class="d-flex rounded" style="background-color: #e41a2b;">
+                                    <img 
+                                        width  = "34px"
+                                        height = "32px"
+                                        alt    = "sport_type_image"
+                                        src    = "${SPORT_FIELD_INFO[data.sportField.SportTypeID][0]}"
+                                        title  = "${SPORT_FIELD_INFO[data.sportField.SportTypeID][1]}"
+                                    />
+                                </div>
+                                <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>" class="ellipsis">
+                                    ${data.sportField.FieldName}
+                                </span>
+                            </div>
+                            <div>
+                                <a href="../sportfield/detail/${data.sportField.ID}" class="btn btn-default border border-info shadow-sm mb-2" style="padding: 3px 6px;" title="Chi Tiết Sân">
+                                    <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
+                                </a>
+                                <a onclick="fillDataToEditForm(${data.sportField.ID})" class="btn btn-default border border-warning shadow-sm mb-2" style="padding: 3px 6px;" title="Cập Nhật Sân">
+                                    <i class="fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
+                                </a>
+                                <a onclick="destroySportField(${data.sportField.ID})" class="btn btn-default border-danger border shadow-sm mb-2" style="padding: 3px 6px;" title="Xóa Sân">
+                                    <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
+                                </a>
+                            </div>
                         </div>
+                        <hr />
                     </div>
-                    <hr>
-                </div>
-            `);
+                `);
 
                 //enabled button
                 btnSubmitFormAdd.removeAttribute('disabled');
@@ -277,28 +375,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
             } else if (data.statusCode === 400) {
                 Swal.fire({
-                    icon: "error",
-                    title: "Lỗi !",
-                    text: "Vui lòng nhập đầy đủ các thông tin!",
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                            <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                            <div>Vui lòng kiểm tra thông tin nhập chính xác và đầy đủ các trường thông tin!</div>
+                        </div>
+                    `,
+                    customClass: {
+                        popup: 'error-alert',
+                        confirmButton: 'btn btn-outline-danger'
+                    },
+                    confirmButtonText: "Đóng"
                 });
                 btnSubmitFormAdd.removeAttribute('disabled');
 
             } else if (data.statusCode === 409) {
                 Swal.fire({
-                    icon: "error",
-                    title: "Lỗi !",
-                    text: `Tên sân \`${data.sportField.FieldName}\` đã tồn tại!`,
+                    html: `
+                        <div>
+                        <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                        <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                        <div>Tên sân \`${data.sportField.FieldName}\` đã tồn tại!</div>
+                        </div>
+                    `,
+                    confirmButtonText: "Đóng",
+                    customClass: {
+                        popup: 'error-alert',
+                        confirmButton: 'btn btn-outline-danger',
+                    }
                 });
                 btnSubmitFormAdd.removeAttribute('disabled');
 
             } else {
                 Swal.fire({
-                    icon: "error",
-                    title: "Lỗi !",
-                    text: "Lỗi phía máy chủ, vui lòng liên hệ QTV!",
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                            <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                            <div>Lỗi phía máy chủ, vui lòng liên hệ QTV!</div>
+                        </div>
+                    `,
+                    customClass: {
+                        popup: 'error-alert',
+                        confirmButton: 'btn btn-outline-danger'
+                    },
+                    confirmButtonText: "Đóng"
                 });
                 btnSubmitFormAdd.removeAttribute('disabled');
-
             }
         }
     });
@@ -312,11 +436,8 @@ document.addEventListener('DOMContentLoaded', function () {
 //==================Edit sport field
 //script for get sport field by id
 const getFieldSportByID = async (sportFieldID) => {
-
     const editSportFieldUrl = `${sportFieldUrl}/edit/${sportFieldID}`;
-
     const response = await fetch(`${editSportFieldUrl}`);
-
     const data = await response.json();
 
     switch (data.statusCode) {
@@ -381,60 +502,42 @@ const fillDataToEditForm = async (sportFieldID) => {
             FieldSize
         } = data.sportField;
 
-
         const form = document.getElementById('editSportFieldForm');
-        const sportFieldID = document.querySelector('form#editSportFieldForm #sportFieldID');
-        const sportTypeID = document.querySelector('form#editSportFieldForm #sportTypeID');
-        const fieldName = document.querySelector('form#editSportFieldForm #fieldName');
-        const pricePerHour = document.querySelector('form#editSportFieldForm #pricePerHour');
-        const numberOfField = document.querySelector('form#editSportFieldForm #numberOfField');
-        const address = document.querySelector('form#editSportFieldForm #address');
-        const description = document.querySelector('form#editSportFieldForm #description');
-        const wrapTinyMCE = document.querySelector('form#editSportFieldForm #wrap-tinyMCE');
-        const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
-        const openingTime = document.querySelector('form#editSportFieldForm #openingTime');
-        const closingTime = document.querySelector('form#editSportFieldForm #closingTime');
-        const priceDay = document.querySelector('form#editSportFieldForm #priceDay');
-        const priceEvening = document.querySelector('form#editSportFieldForm #priceEvening');
-        const fieldSize = document.querySelector('form#editSportFieldForm #fieldSize');
+        const sportFieldID = form.querySelector('form#editSportFieldForm #sportFieldID');
+        const sportTypeID = form.querySelector('form#editSportFieldForm #sportTypeID');
+        const fieldName = form.querySelector('form#editSportFieldForm #fieldName');
+        const numberOfField = form.querySelector('form#editSportFieldForm #numberOfField');
+        const address = form.querySelector('form#editSportFieldForm #address');
+        const imagePreview = form.querySelector('form#editSportFieldForm #imagePreview');
+        const openingTime = form.querySelector('form#editSportFieldForm #openingTime');
+        const closingTime = form.querySelector('form#editSportFieldForm #closingTime');
+        const priceDay = form.querySelector('form#editSportFieldForm #priceDay');
+        const priceEvening = form.querySelector('form#editSportFieldForm #priceEvening');
+        const fieldSize = form.querySelector('form#editSportFieldForm #fieldSize');
+        const status = form.querySelector('form#editSportFieldForm #status');
 
         // Cập nhật giá trị của thẻ <select>
         fieldSize.value = FieldSize;
         sportTypeID.value = SportTypeID;
+        status.value = Status;
         // Khởi tạo Nice Select
         $(fieldSize).niceSelect();
         $(sportTypeID).niceSelect();
+        $(status).niceSelect();
 
         // Khởi tạo lại Nice Select sau khi cập nhật giá trị
         $(fieldSize).niceSelect('update');
         $(sportTypeID).niceSelect('update');
+        $(status).niceSelect('update');
 
         //setting value for hidden input, ID of sport field need edit
         sportFieldID.value = ID;
 
-        //Nếu đang edit sân bóng thì hiển thị kích cỡ sân(5,7,11)
-        const wrapFieldSize = document.querySelector('form#editSportFieldForm #wrapFieldSize');
-        if (SportTypeID == 108) {
-            if (wrapFieldSize.classList.contains('d-none')) {
-                wrapFieldSize.classList.remove('d-none');
-                wrapFieldSize.classList.add('d-block');
-            }
+        if (SportTypeID == FOOTBALL_ID) {
+            $('form#editSportFieldForm #wrapFieldSize').removeClass('d-none');
         } else {
-            if (wrapFieldSize.classList.contains('d-block')) {
-                wrapFieldSize.classList.remove('d-block');
-                wrapFieldSize.classList.add('d-none');
-            }
+            $('form#editSportFieldForm #wrapFieldSize').addClass('d-none');
         }
-
-        //status setting value
-        const radiosStatus = form.elements['status'];
-        radiosStatus.forEach(radio => {
-            if (radio.defaultValue === Status) {
-                radio.checked = true;
-            } else {
-                radio.checked = false;
-            }
-        });
 
         fieldName.value = FieldName;
         numberOfField.value = NumberOfFields;
@@ -445,9 +548,9 @@ const fillDataToEditForm = async (sportFieldID) => {
         closingTime.value = ClosingTime;
         priceDay.value = PriceDay;
         priceEvening.value = PriceEvening;
-        fieldSize.value = FieldSize;
     }
 }
+
 
 
 //================= EDIT
@@ -477,13 +580,10 @@ form.addEventListener('submit', async function (event) {
 
     const sportFieldID = document.querySelector('form#editSportFieldForm #sportFieldID');
     const fieldName = document.querySelector('form#editSportFieldForm #fieldName');
-    const status = document.querySelector('form#editSportFieldForm input[type=radio][name="status"]:checked');
+    const status = document.querySelector('form#editSportFieldForm #status');
     const numberOfField = document.querySelector('form#editSportFieldForm #numberOfField');
     const address = document.querySelector('form#editSportFieldForm #address');
-    const description = document.querySelector('form#editSportFieldForm #description');
-    const wrapStatus = document.querySelector('form#editSportFieldForm #wrap-status');
     const wrapTinyMCE = document.querySelector('form#editSportFieldForm #wrap-tinyMCE');
-    const wrapSportTypeID = document.querySelector('form#editSportFieldForm #wrap-sportTypeID');
     const sportTypeID = document.querySelector('form#editSportFieldForm #sportTypeID');
     const fileImage = document.querySelector('form#editSportFieldForm #fieldImage');
     const imagePreview = document.querySelector('form#editSportFieldForm #imagePreview');
@@ -492,6 +592,7 @@ form.addEventListener('submit', async function (event) {
     const closingTime = document.querySelector('form#editSportFieldForm #closingTime');
     const priceDay = document.querySelector('form#editSportFieldForm #priceDay');
     const priceEvening = document.querySelector('form#editSportFieldForm #priceEvening');
+    const fieldSize = document.querySelector('form#editSportFieldForm #fieldSize');
 
     // Validate các trường
     let isValid = true;
@@ -502,7 +603,6 @@ form.addEventListener('submit', async function (event) {
     } else {
         sportFieldID.classList.remove('is-invalid');
     }
-
 
     if (!fieldName.value.trim()) {
         fieldName.classList.add('is-invalid');
@@ -540,10 +640,10 @@ form.addEventListener('submit', async function (event) {
     }
 
     if (!status.value) {
-        wrapStatus.classList.add('is-invalid');
+        $('div.status-wrapper').css('border', '1px solid red');
         isValid = false;
     } else {
-        wrapStatus.classList.remove('is-invalid');
+        $('div.status-wrapper').css('border', 'none');
     }
 
     if (!numberOfField.value.trim()) {
@@ -575,10 +675,24 @@ form.addEventListener('submit', async function (event) {
         wrapTinyMCE.classList.remove('is-invalid');
     }
 
+    if (sportTypeID.value == FOOTBALL_ID) {
+        if (!fieldSize.value) {
+            $('div.fieldsize-wrapper').css("border", "1px solid red");
+            isValid = false;
+        } else {
+            $('div.fieldsize-wrapper').css("border", "none");
+        }
+    }
+
+    if (!status.value) {
+        $('div.status-wrapper').css("border", "1px solid red");
+        isValid = false;
+    } else {
+        $('div.status-wrapper').css("border", "none");
+    }
 
     // Nếu form hợp lệ
     if (isValid) {
-
         //disabled button submit to edit
         btnSubmitFormEdit.setAttribute('disabled', 'disabled');
 
@@ -586,7 +700,7 @@ form.addEventListener('submit', async function (event) {
         formData.append('action', 'updateSportField');
         formData.append('sportFieldID', sportFieldID.value);
         formData.append('sportTypeID', sportTypeID.value);
-        if (sportTypeID.value == 108) {
+        if (sportTypeID.value == FOOTBALL_ID) {
             formData.append('fieldSize', fieldSize.value)
         }
         formData.append('fieldName', fieldName.value);
@@ -598,19 +712,20 @@ form.addEventListener('submit', async function (event) {
         formData.append('numberOfField', numberOfField.value);
         formData.append('address', address.value);
         formData.append('description', editorContent);
-
-        // // Lặp qua tất cả các cặp key-value và in ra
-        for (const [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
-        // return;
+        formData.append('status', status.value);
 
         if (fileImage.files[0]) // have photos uploaded
             formData.append('fieldImage', fileImage.files[0]);
         else
             formData.append('oldImage', imagePreview.src);
 
+
+        Swal.fire({
+            html: '<img src="/sport-court-rental-system/public/images/soccer.gif" width="100%" height="100%"/>',
+            background: 'rgba(255, 255, 255, 0)',
+            showConfirmButton: false,
+            allowOutsideClick: false
+        });
         const updateSportFieldUrl = `${sportFieldUrl}/update/${sportFieldID.value}`;
         const response = await fetch(updateSportFieldUrl, {
             method: 'POST',
@@ -620,14 +735,18 @@ form.addEventListener('submit', async function (event) {
         const data = await response.json();
 
         if (data.statusCode === 200) {
-            await Swal.fire({
-                title: "Thành Công!",
-                text: "Cập Nhật Sân Thành Công!",
-                icon: "success",
+            Swal.fire({
+                html: `
+                    <div>
+                        <i class="fa-solid fa-check-double h1 rounded-circle border border-success mb-3" style="padding: 10px 13px"></i>
+                        <div class="font-weight-bold h5">CẬP NHẬT SÂN THÀNH CÔNG</div>
+                    </div>
+                `,
                 customClass: {
-                    popup: 'my-custom-popup',
-                    title: 'custom-success-title'
+                    popup: 'success-alert',
+                    confirmButton: 'btn btn-outline-success'
                 },
+                confirmButtonText: "Đóng",
             });
 
             //enabled button submit to edit
@@ -646,16 +765,20 @@ form.addEventListener('submit', async function (event) {
             viewMangeField.scrollIntoView(true);
 
         } else {
-            await Swal.fire({
-                title: "Thất Bại!",
-                text: "Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!",
-                icon: "error",
+            Swal.fire({
+                html: `
+                    <div>
+                        <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                        <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                        <div>Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!</div>
+                    </div>
+                `,
                 customClass: {
-                    popup: 'my-custom-popup',
-                    title: 'custom-error-title'
+                    popup: 'error-alert',
+                    confirmButton: 'btn btn-outline-danger'
                 },
+                confirmButtonText: "Đóng"
             });
-
             btnSubmitFormEdit.removeAttribute('disabled');
         }
 
@@ -664,20 +787,24 @@ form.addEventListener('submit', async function (event) {
 
 
 
-
-
 //delete sport field
 const destroySportField = (sportFieldID) => {
-
     Swal.fire({
-        title: "Bạn Đã Chắc Chắn?",
-        text: "Dữ Liệu Về Sân Sẽ Bị Xóa!",
-        icon: "warning",
+        html: `
+            <div>
+                <i class="fa-solid fa-exclamation h1 rounded-circle border border-warning mb-3" style="padding: 10px 27px"></i>
+                <div class="font-weight-bold h5">XÁC NHẬN XÓA</div>
+                <div>Xóa sân sẽ mất toàn bộ dữ liệu. Bạn chắc chắn muốn xóa?</div>
+            </div>
+         `,
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Xóa!",
-        cancelButtonText: "Hủy"
+        confirmButtonText: "Xóa",
+        cancelButtonText: "Hủy",
+        customClass: {
+            popup: 'warn-alert',
+            confirmButton: 'btn btn-outline-danger',
+            cancelButton: 'btn btn-outline-secondary'
+        }
     }).then(async (result) => {
 
         if (result.isConfirmed) {
@@ -689,13 +816,21 @@ const destroySportField = (sportFieldID) => {
             });
 
             const data = await response.json();
-
+            
             if (data.statusCode === 204) {
-
                 Swal.fire({
-                    title: "Xóa Thành Công!",
-                    text: "Đã Xóa Sân.",
-                    icon: "success"
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-check-double h1 rounded-circle border border-success mb-3" style="padding: 10px 13px"></i>
+                            <div class="font-weight-bold h5">XÓA SÂN THÀNH CÔNG</div>
+                            <div>Sân của bạn đã được xóa khỏi hệ thống. Chi tiết xem thêm tại mục QUẢN LÝ SÂN.</div>
+                        </div>
+                    `,
+                    customClass: {
+                        popup: 'success-alert',
+                        confirmButton: 'btn btn-outline-success'
+                    },
+                    confirmButtonText: "Đóng",
                 });
 
                 //remove element sport fiele deleted
@@ -704,23 +839,33 @@ const destroySportField = (sportFieldID) => {
 
             } else if (data.statusCode === 400) {
                 Swal.fire({
-                    title: "Thất Bại!",
-                    text: "Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!",
-                    icon: "error",
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                            <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                            <div>Vui Lòng Kiểm Tra Lại Các Thông Tin, Hoặc Thử Lại Sau!</div>
+                        </div>
+                    `,
+                    confirmButtonText: "Đóng",
                     customClass: {
-                        popup: 'my-custom-popup',
-                        title: 'custom-error-title'
-                    },
+                        popup: 'error-alert',
+                        confirmButton: 'btn btn-outline-danger',
+                    }
                 });
             } else {
                 Swal.fire({
-                    title: "Thất Bại!",
-                    text: "Lỗi Phía Server, Vui Lòng Liên Hệ QTV!",
-                    icon: "error",
+                    html: `
+                        <div>
+                            <i class="fa-solid fa-triangle-exclamation h1 rounded-circle border border-danger" style="padding: 10px"></i>
+                            <div class="font-weight-bold h5">XẢY RA LỖI</div>
+                            <div>Lỗi Phía Server, Vui Lòng Liên Hệ QTV!</div>
+                        </div>
+                    `,
+                    confirmButtonText: "Đóng",
                     customClass: {
-                        popup: 'my-custom-popup',
-                        title: 'custom-error-title'
-                    },
+                        popup: 'error-alert',
+                        confirmButton: 'btn btn-outline-danger',
+                    }
                 });
             }
         }

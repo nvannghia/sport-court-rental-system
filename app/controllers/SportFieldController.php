@@ -21,7 +21,9 @@ class SportFieldController extends Controller
 
     private $fieldReviewServiceInterface;
 
-    private const STATUS = ["ACTIVE", "INACTIVE"];
+    private const STATUS = [0, 1];
+
+    private const FOOTBALL_ID = 5;
 
     const ITEM_REVIEW_PER_PAGE = 2;
 
@@ -58,99 +60,102 @@ class SportFieldController extends Controller
     public function storeSportField()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['action'] === "addSportField") {
-            // Lấy giá trị từng trường và kiểm tra isset
-            $sportTypeID = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
-            $fieldName = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
-            $status = isset($_POST['status']) ? $_POST['status'] : '';
+            $sportTypeID   = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
+            $fieldName     = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
+            $status        = isset($_POST['status']) ? $_POST['status'] : '';
             $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
-            $address = isset($_POST['address']) ? $_POST['address'] : '';
-            $description = isset($_POST['description']) ? $_POST['description'] : '';
-            $priceDay = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
-            $priceEvening = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
-            $openingTime = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
-            $closingTime = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
-            $fieldSize = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
-            $image = null;
+            $address       = isset($_POST['address']) ? $_POST['address'] : '';
+            $description   = isset($_POST['description']) ? $_POST['description'] : '';
+            $priceDay      = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
+            $priceEvening  = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
+            $openingTime   = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
+            $closingTime   = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
+            $fieldSize     = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
+            $image         = null;
+
+            // var_dump($sportTypeID);
+            // die;
 
             //Upload image of sport field to cloudinary
             if (isset($_FILES['fieldImage'])) {
-                $file = $_FILES['fieldImage']['tmp_name'];
+                $file  = $_FILES['fieldImage']['tmp_name'];
                 $image = $this->uploadRepresentation($file);
             }
 
-            // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
-            $isValidInfo = empty($fieldName)
-                && empty($pricePerHour)
-                && empty($sportTypeID)
-                && empty($status)
-                && empty($numberOfField)
-                && empty($address)
-                && empty($description)
-                && empty($priceDay)
-                && empty($priceEvening)
-                && empty($openingTime)
-                && empty($closingTime);
+            $isInvalidInfo = empty($fieldName)
+                || empty($sportTypeID)
+                || empty($numberOfField)
+                || empty($address)
+                || empty($description)
+                || empty($priceDay)
+                || empty($priceEvening)
+                || empty($openingTime)
+                || empty($closingTime)
+                || !in_array($status, self::STATUS);
 
+            if ($sportTypeID === self::FOOTBALL_ID)
+                $isInvalidInfo = $isInvalidInfo || empty($fieldSize);
 
-            if (!$isValidInfo) {
-                $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'];
-                $sportField = $this->sportFieldServiceInterface->create(
-                    ["FieldName" => $fieldName],
-                    [
-                        "OwnerID" => $ownerID,
-                        "SportTypeID" => $sportTypeID,
-                        "FieldName" => $fieldName,
-                        "Status" => self::STATUS[0],
-                        "NumberOfFields" => $numberOfField,
-                        "Address" => $address,
-                        "Description" => $description,
-                        "PriceDay" => $priceDay,
-                        "PriceEvening" => $priceEvening,
-                        "OpeningTime" => $openingTime,
-                        "ClosingTime" => $closingTime,
-                        "FieldSize" => $fieldSize,
-                        "Image" => $image
-                    ]
-                );
-
-                if ($sportField) {
-
-                    if ($sportField->wasRecentlyCreated) {
-
-                        $sportType = $sportField->sportType->toArray();
-                        unset($sportType['ID']);
-
-                        $sportField = $sportField->toArray();
-
-                        echo json_encode([
-                            'statusCode' => 201,
-                            "message" => 'Sport Field Created Successfully',
-                            "sportField" => [...$sportField, ...$sportType]
-                        ]);
-                    } else
-                        echo json_encode([
-                            'statusCode' => 409,
-                            "message" => "Sport Field already exist",
-                            "sportField" => $sportField
-                        ]);
-                } else {
-                    echo json_encode([
-                        'statusCode' => 500,
-                        "message" => 'Server Internal Error',
-                    ]);
-                }
-            } else {
+            if ($isInvalidInfo) {
                 echo json_encode([
                     'statusCode' => 400,
                     "message" => 'Bad Request',
                 ]);
+                exit();
             }
+
+            // CREATE NEW SPORT FIELD
+            $ownerID    = $_SESSION['userInfo']['field_owner']['OwnerID'];
+            $sportField = $this->sportFieldServiceInterface->create(
+                ["FieldName" => $fieldName],
+                [
+                    "OwnerID"        => $ownerID,
+                    "SportTypeID"    => $sportTypeID,
+                    "FieldName"      => $fieldName,
+                    "Status"         => $status,
+                    "NumberOfFields" => $numberOfField,
+                    "Address"        => $address,
+                    "Description"    => $description,
+                    "PriceDay"       => $priceDay,
+                    "PriceEvening"   => $priceEvening,
+                    "OpeningTime"    => $openingTime,
+                    "ClosingTime"    => $closingTime,
+                    "FieldSize"      => $fieldSize,
+                    "Image"          => $image
+                ]
+            );
+
+            if (!$sportField) {
+                echo json_encode([
+                    'statusCode' => 500,
+                    "message"    => 'Server Internal Error',
+                ]);
+            }
+
+            if (!$sportField->wasRecentlyCreated) {
+                echo json_encode([
+                    'statusCode' => 409,
+                    "message"    => "Sport Field already exist",
+                    "sportField" => $sportField
+                ]);
+                exit();
+            }
+
+            $sportField = [
+                'ID'          => $sportField->ID,
+                'FieldName'   => $sportField->FieldName,
+                'SportTypeID' => $sportField->SportTypeID,
+            ];
+            echo json_encode([
+                'statusCode' => 201,
+                "message"    => 'Sport Field Created Successfully',
+                "sportField" => $sportField
+            ]);
         }
     }
 
-    public function calculateStarPercentageTotal(
-        array $stars
-    ) {
+    public function calculateStarPercentageTotal(array $stars)
+    {
         $star1  = $stars[0];
         $star2  = $stars[1];
         $star3  = $stars[2];
@@ -190,19 +195,6 @@ class SportFieldController extends Controller
         ];
     }
 
-    public function test()
-    {
-        $orderByArray = ['created_at', 'Rating_desc', 'Rating_asc'];
-
-        $orderBy = in_array($_GET['orderBy'], $orderByArray)
-            ? $_GET['orderBy']
-            : null;
-
-        var_dump($orderBy);
-
-        $sportField = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews(null,$orderBy, 91)->toArray();
-    }
-
     public function detail($sportFieldID)
     {
         if (isset($sportFieldID) && is_numeric($sportFieldID)) {
@@ -216,7 +208,7 @@ class SportFieldController extends Controller
                 ? $_GET['orderBy']
                 : null;
 
-            $results = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($offset ,$orderBy, $sportFieldID);
+            $results = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
             $sportField = $results['sportField'];
             $totalPages = $results['totalPages'];
 
@@ -276,150 +268,150 @@ class SportFieldController extends Controller
 
     public function edit($sportFieldID)
     {
-        if (isset($sportFieldID) && is_numeric($sportFieldID)) {
-
-            $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
-
-            $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes() ?? null;
-
-            if ($sportField) {
-
-                echo json_encode([
-                    'statusCode' => 200,
-                    "sportField" => $sportField,
-                    "sportTypes" => $sportTypes
-                ]);
-            } else {
-
-                echo json_encode([
-                    'statusCode' => 404,
-                    "message" => 'Sport Field Not Found!',
-                ]);
-            }
-        } else {
+        if (!isset($sportFieldID) || !is_numeric($sportFieldID)) {
             echo json_encode([
                 'statusCode' => 400,
                 "message" => 'Bad Request',
             ]);
+            exit();
         }
+
+        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
+        $sportTypes = $this->sportTypeServiceInterface->getAllSportTypes() ?? null;
+        if (!$sportField) {
+            echo json_encode([
+                'statusCode' => 404,
+                "message" => 'Sport Field Not Found!',
+            ]);
+            exit();
+        }
+
+        echo json_encode([
+            'statusCode' => 200,
+            "sportField" => $sportField,
+            "sportTypes" => $sportTypes
+        ]);
     }
 
     public function update($sportFieldID)
     {
-        if (isset($sportFieldID) && is_numeric($sportFieldID)) {
-
-            if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['action'] === "updateSportField") {
-                // Lấy giá trị từng trường và kiểm tra empty
-                $sportTypeID = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
-                $fieldName = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
-                $pricePerHour = isset($_POST['pricePerHour']) ? $_POST['pricePerHour'] : '';
-                $status = isset($_POST['status']) ? $_POST['status'] : '';
-                $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
-                $address = isset($_POST['address']) ? $_POST['address'] : '';
-                $description = isset($_POST['description']) ? $_POST['description'] : '';
-                $priceDay = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
-                $priceEvening = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
-                $openingTime = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
-                $closingTime = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
-                $fieldSize = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
-                $image = null;
-
-                //Upload new image of sport field to cloudinary, otherwise use old image
-                if (isset($_FILES['fieldImage'])) {
-                    $file = $_FILES['fieldImage']['tmp_name'];
-                    $image = $this->uploadRepresentation($file);
-                } else {
-                    $image = isset($_POST['oldImage']) ? $_POST['oldImage'] : '';
-                }
-
-                // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
-                $isValidInfo = !empty($fieldName)
-                    && !empty($pricePerHour)
-                    && !empty($sportTypeID)
-                    && !empty($status)
-                    && !empty($numberOfField)
-                    && !empty($address)
-                    && !empty($description)
-                    && !empty($priceDay)
-                    && !empty($priceEvening)
-                    && !empty($openingTime)
-                    && !empty($closingTime)
-                    && !empty($fieldSize);
-
-                if ($isValidInfo) {
-
-                    $sportFieldUpdated = $this->sportFieldServiceInterface->update($sportFieldID, [
-                        "SportTypeID" => $sportTypeID,
-                        "FieldName" => $fieldName,
-                        "Status" => $status,
-                        "PricePerHour" => $pricePerHour,
-                        "NumberOfFields" => $numberOfField,
-                        "Address" => $address,
-                        "Description" => $description,
-                        "PriceDay" => $priceDay,
-                        "PriceEvening" => $priceEvening,
-                        "OpeningTime" => $openingTime,
-                        "ClosingTime" => $closingTime,
-                        "FieldSize" => $fieldSize,
-                        "Image" => $image
-                    ]);
-
-                    if ($sportFieldUpdated)
-                        echo json_encode([
-                            'statusCode' => 200,
-                            'sportFieldUpdated' => [...$sportFieldUpdated->toArray(), ...$sportFieldUpdated->sportType->toArray()]
-                        ]);
-                    else {
-                        echo json_encode([
-                            'statusCode' => 404,
-                            'message' => 'Sport Field Not Found!'
-                        ]);
-                    }
-                } else {
-                    echo json_encode([
-                        'statusCode' => 400,
-                        'message' => 'Bad Request!'
-                    ]);
-                }
-            } else {
-                echo json_encode([
-                    'statusCode' => 400,
-                    'message' => 'Bad Request!'
-                ]);
-            }
-        } else {
+        if (
+            !isset($sportFieldID)
+            || !is_numeric($sportFieldID)
+            || $_SERVER["REQUEST_METHOD"] != "POST"
+            || $_POST['action'] !== "updateSportField"
+        ) {
             echo json_encode([
                 'statusCode' => 400,
-                'message' => 'Bad Request!'
+                'message' => 'Bad Request 1!'
             ]);
+            exit();
         }
+
+        // Lấy giá trị từng trường và kiểm tra empty
+        $sportTypeID   = isset($_POST['sportTypeID']) ? $_POST['sportTypeID'] : '';
+        $fieldName     = isset($_POST['fieldName']) ? $_POST['fieldName'] : '';
+        $status        = isset($_POST['status']) ? $_POST['status'] : '';
+        $numberOfField = isset($_POST['numberOfField']) ? $_POST['numberOfField'] : '';
+        $address       = isset($_POST['address']) ? $_POST['address'] : '';
+        $description   = isset($_POST['description']) ? $_POST['description'] : '';
+        $priceDay      = isset($_POST['priceDay']) ? $_POST['priceDay'] : '';
+        $priceEvening  = isset($_POST['priceEvening']) ? $_POST['priceEvening'] : '';
+        $openingTime   = isset($_POST['openingTime']) ? $_POST['openingTime'] : '';
+        $closingTime   = isset($_POST['closingTime']) ? $_POST['closingTime'] : '';
+        $fieldSize     = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
+        $image         = null;
+
+        //Upload new image of sport field to cloudinary, otherwise use old image
+        if (isset($_FILES['fieldImage'])) {
+            $file = $_FILES['fieldImage']['tmp_name'];
+            $image = $this->uploadRepresentation($file);
+        } else {
+            $image = isset($_POST['oldImage']) ? $_POST['oldImage'] : '';
+        }
+
+        $isInvalidInfo = empty($fieldName)
+            || empty($sportTypeID)
+            || empty($numberOfField)
+            || empty($address)
+            || empty($description)
+            || empty($priceDay)
+            || empty($priceEvening)
+            || empty($openingTime)
+            || empty($closingTime)
+            || !in_array($status, self::STATUS);
+
+        if ($sportTypeID === self::FOOTBALL_ID)
+            $isInvalidInfo = $isInvalidInfo || empty($fieldSize);
+
+        if ($isInvalidInfo) {
+            echo json_encode([
+                'statusCode' => 400,
+                'message' => 'Bad Request 2!'
+            ]);
+            exit();
+        }
+
+        $sportFieldUpdated = $this->sportFieldServiceInterface->update($sportFieldID, [
+            "SportTypeID" => $sportTypeID,
+            "FieldName" => $fieldName,
+            "Status" => $status,
+            "NumberOfFields" => $numberOfField,
+            "Address" => $address,
+            "Description" => $description,
+            "PriceDay" => $priceDay,
+            "PriceEvening" => $priceEvening,
+            "OpeningTime" => $openingTime,
+            "ClosingTime" => $closingTime,
+            "FieldSize" => $fieldSize,
+            "Image" => $image
+        ]);
+
+        if (!$sportFieldUpdated) {
+            echo json_encode([
+                'statusCode' => 404,
+                'message' => 'Sport Field Not Found!'
+            ]);
+            exit();
+        }
+
+        echo json_encode([
+            'statusCode' => 200,
+            'sportFieldUpdated' => [...$sportFieldUpdated->toArray(), ...$sportFieldUpdated->sportType->toArray()]
+        ]);
     }
 
     public function destroy($sportFieldID)
     {
-        if (isset($sportFieldID) && is_numeric($sportFieldID)) {
-
-            if ($_SERVER["REQUEST_METHOD"] == "POST") {
-
-                $deletedCount = $this->sportFieldServiceInterface->destroy($sportFieldID);
-
-                if ($deletedCount != null)
-                    echo json_encode([
-                        'statusCode' => 204,
-                        'message' => 'Delete Sport Field Success!'
-                    ]);
-                else
-                    echo json_encode([
-                        'statusCode' => 500,
-                        'message' => 'Server Internal Error!'
-                    ]);
-            }
-        } else {
+        if (!isset($sportFieldID) || !is_numeric($sportFieldID)) {
             echo json_encode([
                 'statusCode' => 400,
                 'message' => 'Bad Request!'
             ]);
+            exit();
         }
+
+        if ($_SERVER["REQUEST_METHOD"] != "POST") {
+            echo json_encode([
+                'statusCode' => 405,
+                'message' => 'Method Not Allowed'
+            ]);
+            exit();
+        }
+
+        $deletedCount = $this->sportFieldServiceInterface->destroy($sportFieldID);
+        if (!$deletedCount) {
+            echo json_encode([
+                'statusCode' => 500,
+                'message' => 'Server Internal Error!'
+            ]);
+            exit();
+        }
+
+        echo json_encode([
+            'statusCode' => 204,
+            'message' => 'Delete Sport Field Success!'
+        ]);
     }
 }
 ?>

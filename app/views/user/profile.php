@@ -35,7 +35,7 @@ require_once __DIR__ . '/../layouts/header.php';
         <div class="row">
             <div class="col">
                 <ol class="breadcrumb mb-4 border-left border-info rounded-right" style="border-left-width: 20px !important;">
-                <li class="breadcrumb-item active" aria-current="page">THÔNG TIN NGƯỜI DÙNG</li>
+                    <li class="breadcrumb-item active" aria-current="page">THÔNG TIN NGƯỜI DÙNG</li>
                 </ol>
             </div>
         </div>
@@ -130,8 +130,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <i class="fab mr-3 fa-facebook-f fa-lg" style="color: #3b5998; width: 20px"></i>
                                     <a
                                         href="<?= !empty($userFacebookLink) ? $userFacebookLink : '#' ?>"
-                                        class="mb-0 display-link"
-                                    >
+                                        class="mb-0 display-link">
                                         <?= !empty($userFacebookLink) ? $userFacebookLink : 'NULL' ?>
                                     </a>
                                 </div>
@@ -181,7 +180,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                 <p class="mb-0">SĐT</p>
                             </div>
                             <div class="col-sm-9 d-flex justify-content-between">
-                                <p class="mb-0 text-danger"> <?= !empty($userPhoneNumber) ? $userPhoneNumber : 'Chưa cập nhật'; ?> </p>
+                                <p class="mb-0 text-info font-weight-bold"> <?= !empty($userPhoneNumber) ? $userPhoneNumber : 'Chưa cập nhật'; ?> </p>
                                 <button
                                     data-type="phone"
                                     data-prompt-text="VUI LÒNG NHẬP SỐ ĐIỆN THOẠI:"
@@ -209,42 +208,42 @@ require_once __DIR__ . '/../layouts/header.php';
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card mb-4 mb-md-0" style="height: 405px">
-                                <div class="card-body " style="padding-bottom: 29px;font-family: 'Times New Roman', Times, serif;">
-                                    <p class="mb-4 p-2 font-weight-bold border border-left border-primary rounded-right" style="border-left-width: 5px !important">
+                                <div class="card-body " style="padding-bottom: 29px;">
+                                    <div class="mb-4 p-2 font-weight-bold border border-left border-primary rounded-right" style="border-left-width: 5px !important">
                                         <?php echo mb_strtoupper($businessName); ?>
-                                    </p>
+                                    </div>
                                     <div class="mb-1 d-flex align-items-center">
                                         <i class="fa-regular fa-circle-dot text-success mr-2"></i>
-                                        <span class="mr-2">TRẠNG THÁI:</span>
-                                        <span class="font-weight-bold <?php echo $businessStatus ? 'text-success' : 'text-danger'; ?>">
+                                        <div class="mr-2">Trạng thái:</div>
+                                        <div class="font-weight-bold <?php echo $businessStatus ? 'text-success' : 'text-danger'; ?>">
                                             <?php echo $businessStatus ? "ĐANG HOẠT ĐỘNG" : "TẠM NGƯNG"; ?>
-                                        </span>
+                                        </div>
                                     </div>
                                     <hr>
                                     <div class="mt-4 mb-1 d-flex align-items-center flex-wrap">
                                         <i class="fa-solid fa-map-pin text-success mr-2 fa-lg"></i>
-                                        <span class="mr-2"> ĐỊA CHỈ: </span>
-                                        <span> <?php echo $businessAddress; ?> </span>
+                                        <div class="mr-2"> Địa chỉ: </div>
+                                        <div> <?php echo $businessAddress; ?> </div>
                                     </div>
                                     <hr>
-                                    <p class="mt-4 mb-1 d-flex align-items-center">
+                                    <div class="mt-4 mb-1 d-flex align-items-center flex-row">
                                         <i class="fa-solid fa-mobile-screen-button text-success mr-2"></i>
-                                        <span class="mr-2">SĐT:</span>
-                                        <span><?php echo $businessPhone; ?></span>
-                                    </p>
+                                        <div class="mr-2">SĐT:</div>
+                                        <div><?php echo $businessPhone; ?></div>
+                                    </div>
                                     <hr>
-                                    <p class="mt-4 mb-1">
+                                    <div class="mt-4 mb-1  d-flex align-items-center flex-row">
                                         <i class="fa-solid fa-clock text-success mr-1"></i>
-                                        <span class="mr-2">NGÀY ĐK TRÊN HỆ THỐNG:</span>
-                                        <span>
+                                        <div class="mr-2">Ngày đăng ký trên HT:</div>
+                                        <div>
                                             <?php
                                             $iso8601String = $businessCreatedAt;
                                             $timestamp = strtotime($iso8601String);
                                             $formattedDate = date("d/m/Y ", $timestamp);
                                             echo $formattedDate;
                                             ?>
-                                        </span>
-                                    </p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -262,33 +261,14 @@ require_once __DIR__ . '/../layouts/header.php';
                                     </div>
 
                                     <hr class="mt-0">
+
+                                    <!-- VIEW SPORT FIELD -->
                                     <div id="container-sportField">
-                                        <?php foreach ($sportFields as $spf) : ?>
-                                            <div id="sportField-<?php echo $spf['ID']; ?>">
-                                                <div class="d-flex justify-content-between align-items-center">
-                                                    <p class="ellipsis mb-1 ">
-                                                        Sân
-                                                        <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>">
-                                                            <?php echo $spf['sport_type']['TypeName'] . " " .  $spf['FieldName']; ?>
-                                                        </span>
-                                                    </p>
-                                                    <div>
-                                                        <a href="../sportfield/detail/<?php echo $spf['ID']; ?>" class="btn btn-default border border-info shadow-sm mb-2" title="Chi Tiết Sân">
-                                                            <i class="fa-sm fa-solid fa-eye text-info" style="min-width: 20px;"></i>
-                                                        </a>
-                                                        <a onclick="fillDataToEditForm(<?php echo $spf['ID']; ?>)" class="btn btn-default border border-warning shadow-sm mb-2" title="Cập Nhật Sân">
-                                                            <i class="fa-sm fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
-                                                        </a>
-                                                        <a onclick="destroySportField(<?php echo  $spf['ID']; ?>)" class="btn btn-default border-danger border shadow-sm mb-2" title="Xóa Sân">
-                                                            <i class="fa-sm fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
-                                                        </a>
-                                                    </div>
-                                                </div>
-                                                <hr>
-                                            </div>
-                                        <?php endforeach; ?>
+                                        <?php require_once(__DIR__ . '/../sport_field/index.php'); ?>
                                     </div>
-                                    <!-- //paginate -->
+
+
+                                    <!-- //PAGINATION -->
                                     <div class="d-flex justify-content-center" style="max-height: 50px">
                                         <nav>
                                             <ul class="pagination">

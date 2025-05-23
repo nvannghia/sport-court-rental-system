@@ -1,4 +1,4 @@
-<div id="formEditContainer" class="d-none mt-3" style="background-color:#29378f; padding: 10px; border-radius:4px">
+<div id="formEditContainer" class="d-none mt-3 border border-primary" style="background-color: rgba(255, 255, 255, 0.1); padding: 10px; border-radius:4px">
     <form id="editSportFieldForm" class=" mt-3" method="POST" enctype="multipart/form-data">
         <div class="form-group d-flex flex-wrap justify-content-between">
             <label for="fieldName" class="text-white">Tên Sân</label>
@@ -36,7 +36,8 @@
 
                 <div style="max-width: 150px;" class="d-none" id="wrapFieldSize">
                     <label for="fieldSize" class="text-white">Cỡ Sân(5/7/11)</label>
-                    <select class="wide" name="fieldSize" id="fieldSize">
+                    <select class="wide fieldsize-wrapper" name="fieldSize" id="fieldSize">
+                        <option value>Vui lòng chọn</option>
                         <option value="5">5</option>
                         <option value="7">7</option>
                         <option value="11">11</option>
@@ -51,16 +52,11 @@
                 <div style="max-width: 150px;">
                     <label for="status" class="text-white">Trạng Thái</label>
                     <br>
-                    <div id="wrap-status">
-                        <div class="bg-white border border-success rounded" style="max-height: 40px;">
-                            <input type="radio" id="ACTIVE" name="status" value="ACTIVE">
-                            <label for="ACTIVE" class="text-success" style="padding:5px; min-width: 125px ;">ACTIVE</label><br>
-                        </div>
-                        <div class="bg-white border border-danger rounded mt-2" style="max-height: 40px;">
-                            <input type="radio" id="INACTIVE" name="status" value="INACTIVE">
-                            <label for="INACTIVE" class=" text-danger " style="padding:5px; min-width: 125px">INACTIVE</label><br>
-                        </div>
-                    </div>
+                    <select class="wide status-wrapper" name="status" id="status">
+                        <option value>Vui lòng chọn</option>
+                        <option value="1" >Hoạt động</option>
+                        <option value="0" >Tạm ngưng</option>
+                    </select>
                 </div>
             </div>
         </div>

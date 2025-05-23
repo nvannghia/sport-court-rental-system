@@ -40,3 +40,21 @@
 .my-custom-backdrop {
     width: 150px;
 }
+
+.success-alert {
+    width    : 25% !important;
+    color    : green;
+    font-size: 14px;
+}
+
+.error-alert {
+    width    : 25% !important;
+    color    : red ;
+    font-size: 14px;
+}
+
+.warn-alert {
+    width    : 25% !important;
+    color    : #FFC107;
+    font-size: 14px;
+}

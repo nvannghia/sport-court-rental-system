@@ -11,7 +11,6 @@ const uploadUserAvatar = () => {
 
         let userAvatar = document.getElementById('userAvatar');
         userAvatar.src = '';
-        // userAvatar.classList.add('spinner-border', 'text-primary', 'border-5');
         userAvatar.outerHTML = `
         <svg id="loading" role="img" aria-label="Mouth and eyes come from 9:00 and rotate clockwise into position, right eye blinks, then all parts rotate and merge into 3:00" class="smiley" viewBox="0 0 128 128" width="128px" height="128px">
             <defs>

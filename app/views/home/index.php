@@ -5,16 +5,16 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <?php if (isset($sportFields)) : ?>
 
-    <section class="container">
+    <section class="">
         <div class="d-flex">
             <!-- //sport type -->
-            <div class="mr-4 shadow p-3 bg-body rounded-bottom" style="min-width: 250px;max-height: 400px;background-color: #F9F9F9;">
-                <h5 class="font-weight-bold" style="color: #19458A;">Thể loại sân</h5>
+            <div class=" p-3 bg-body" style="min-width: 250px;max-height: 400px;background-color: white;">
+                <h5 class="font-weight-bold" style="color: #19458A; margin-top: 14px">THỂ LOẠI</h5>
                 <hr>
                 <?php foreach ($sportTypes as $sportType) :
                     $color = '#19458A';
                     if ($_GET['sportType'] == $sportType['ID'])
-                        $color = '#F9BC18';
+                        $color = 'rgb(228, 26, 43)';
                 ?>
                     <div class="d-flex border-bottom mb-3">
                         <a onclick="handleFilterBySportType(this, <?= $sportType['ID']; ?>)" class="sporttype-hover">
@@ -33,8 +33,8 @@ require_once __DIR__ . '/../layouts/header.php';
 
             <!-- //sport field -->
             <div class="w-100" id="view-sport-field">
-                <div class="mt-3 mb-3">
-                    <h2 class="font-weight-bold shadow p-3 bg-body rounded" style="color:#19458A; text-align:center">Danh sách sân bãi</h2>
+                <div class="mb-3">
+                    <h2 class="font-weight-bold p-3 bg-body bg-white" style="color:#19458A; text-align:center">DANH SÁCH SÂN BÃI</h2>
                     <hr>
                 </div>
                 <?php foreach ($sportFields as $key => $sportField) :

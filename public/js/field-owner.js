@@ -352,9 +352,7 @@ const handleBusiness = async () => {
     html             : htmlContent,
     showCancelButton : false,
     showConfirmButton: true,
-    confirmButtonText: 'Đóng',
-    didOpen: () => {
-    }
+    confirmButtonText: 'Đóng'
   });
 
 }

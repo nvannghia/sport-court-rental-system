@@ -1,9 +1,12 @@
 Task:
 
  * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
+  - check laị chỗ edit và add sport field
+  - Nếu sân đang tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
   - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
-  - CHO PHÉP cập nhật lại sdt của user ====> LOADING
-  - SUY NGHĨ THÊM về phần các thông tin như fb, github, linkin... ======> DONE
+ 
+ ---NOTED: GENERATE DB 
+
 
  - Phần Admin approve business: 
     + Làm thêm cho xác nhận hoàng loạt doanh nghiệp

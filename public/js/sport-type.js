@@ -181,10 +181,10 @@ const getAllSportTypes = async () => {
           <td scope="col" id="col-typeName-${spT.ID}">${spT.TypeName}</td>
           <td scope="col">${parseToTime(spT.created_at)}</td>
           <td scope="col" id="col-updatedAt-${spT.ID}">${parseToTime(spT.updated_at)}</td>
-          <td scope="col">
-            <i id="edit-sporttype-${spT.ID}" style="cursor:pointer" onclick="displayComponentEditSportType(${spT.ID},'${spT.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning"></i>
-            <span class="h3">|</span>
-            <i style="cursor:pointer" onclick="deleteSportType(${spT.ID})" class="fa-solid fa-trash-can h3 text-danger"></i>
+          <td scope="col d-flex">
+            <i id="edit-sporttype-${spT.ID}" style="cursor:pointer" onclick="displayComponentEditSportType(${spT.ID},'${spT.TypeName}')" class="fa-solid fa-pen-to-square h3 text-warning fa-lg"></i>
+            <span>|</span>
+            <i style="cursor:pointer" onclick="deleteSportType(${spT.ID})" class="fa-solid fa-trash-can h3 text-danger fa-lg"></i>
           </td>
         </tr>
       `;
@@ -354,38 +354,40 @@ const handleSportType = async () => {
         </div>
     </div>
 
-    <table class="table shadow-lg" style="border-radius:5px">
-      <thead style="color:#123366">
-        <tr class="bg-light ">
-          <th scope="col">ID</th>
-          <th scope="col">Tên Loại Sân</th>
-          <th scope="col">Ngày Tạo</th>
-          <th scope="col">Ngày Sửa</th>
-          <th scope="col">Sửa | Xóa</th>
-        </tr>
-      </thead>
-      <tbody id="tbodyContent">
-       ${rowsContent ? rowsContent : ' <td id="noSportType" class="text-danger font-weight-bold" colspan="5"> CHƯA CÓ DỮ LIỆU!</td>'}
-      </tbody>
-    </table>
+    <div class="table-container">
+      <table class="table">
+        <thead style="color:#123366">
+          <tr class="bg-light ">
+            <th scope="col">ID</th>
+            <th scope="col">TÊN LOẠI SÂN</th>
+            <th scope="col">NGÀY TẠO</th>
+            <th scope="col">NGÀY SỬA</th>
+            <th scope="col">SỬA | XÓA</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyContent">
+        ${rowsContent ? rowsContent : ' <td id="noSportType" style="font-family: sans-serif;" class="text-danger font-weight-bold" colspan="5"> CHƯA CÓ DỮ LIỆU!</td>'}
+        </tbody>
+      </table>
+    </div>
     `;
 
   Swal.fire({
-    title: "Thể Loại Sân",
-    width: '60%',
-    padding: "1em",
-    color: "#716add",
-    background: "#fff  no-repeat center center / contain ", //url(https://i.gifer.com/OnVZ.gif)
-    backdrop: `
+    title     : "QUẢN LÝ LOẠI SÂN",
+    width     : '60%',
+    padding   : "1em",
+    color     : "#716add",
+    background: "#fff  no-repeat center center / contain ", 
+    backdrop  : `
         rgba(0,0,123,0.4)
         url("/sport-court-rental-system/public/images/gif/sport-type-management_1.gif")
         left top
         no-repeat
       `,
     html: htmlContent,
-    customClass: {
-      title: 'custom-title'
-    }
+    showCancelButton : false,
+    showConfirmButton: true,
+    confirmButtonText: 'Đóng',
   });
 
 
