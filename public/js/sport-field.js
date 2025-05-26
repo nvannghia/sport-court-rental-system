@@ -8,20 +8,6 @@ const infoView = document.getElementById('infoView');
 const FOOTBALL_ID = 5;
 
 addSportFiledBtn.addEventListener("click", () => {
-
-
-
-    // Swal.fire({
-
-    //     customClass: {
-    //         popup: 'warn-alert',
-    //         confirmButton: 'btn btn-outline-warning'
-    //     },
-    //     confirmButtonText: "Đóng",
-    // });
-
-
-
     //hide edit form and display add form
     const formEditContainer = document.getElementById('formEditContainer');
     if (formEditContainer.classList.contains("d-block"))
@@ -297,10 +283,6 @@ document.addEventListener('DOMContentLoaded', function () {
             //disabled button submit 
             const data = await response.json();
 
-            console.log(data);
-
-
-
             if (data.statusCode === 201) {
                 // DELETE MESSAGE NO SPORT FIELD ALERT
                 if ($('#display-no-field'))
@@ -319,48 +301,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     confirmButtonText: "Đóng",
                 });
-
-
-                const containerSportField = document.getElementById("container-sportField");
-
-                // DELETE FIRST CHILD IF CONTAINER HAVE GREATER THAN 3 ELEMENT INSIDE
-                const numberOfChildren = containerSportField.children.length;
-                if (numberOfChildren >= 3)
-                    containerSportField.removeChild(containerSportField.firstElementChild);
-
-                containerSportField.insertAdjacentHTML('afterbegin', `
-                    <div id="sportField-${data.sportField.ID}">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div class="mb-1 d-flex justify-content-between align-items-center">
-                                <div class="d-flex rounded" style="background-color: #e41a2b;">
-                                    <img 
-                                        width  = "34px"
-                                        height = "32px"
-                                        alt    = "sport_type_image"
-                                        src    = "${SPORT_FIELD_INFO[data.sportField.SportTypeID][0]}"
-                                        title  = "${SPORT_FIELD_INFO[data.sportField.SportTypeID][1]}"
-                                    />
-                                </div>
-                                <span id="display-typename-sportfield-<?php echo $spf['ID']; ?>" class="ellipsis">
-                                    ${data.sportField.FieldName}
-                                </span>
-                            </div>
-                            <div>
-                                <a href="../sportfield/detail/${data.sportField.ID}" class="btn btn-default border border-info shadow-sm mb-2" style="padding: 3px 6px;" title="Chi Tiết Sân">
-                                    <i class="fa-solid fa-eye text-info" style="min-width: 20px;"></i>
-                                </a>
-                                <a onclick="fillDataToEditForm(${data.sportField.ID})" class="btn btn-default border border-warning shadow-sm mb-2" style="padding: 3px 6px;" title="Cập Nhật Sân">
-                                    <i class="fa-regular fa-pen-to-square text-warning" style="min-width: 20px;"></i>
-                                </a>
-                                <a onclick="destroySportField(${data.sportField.ID})" class="btn btn-default border-danger border shadow-sm mb-2" style="padding: 3px 6px;" title="Xóa Sân">
-                                    <i class="fa-solid fa-trash-can text-danger" style="min-width: 20px;"></i>
-                                </a>
-                            </div>
-                        </div>
-                        <hr />
-                    </div>
-                `);
-
+        
+                // reload component for display new item sport field
+                loadPage(1);
+                
                 //enabled button
                 btnSubmitFormAdd.removeAttribute('disabled');
 
@@ -759,11 +703,10 @@ form.addEventListener('submit', async function (event) {
 
             //update sport field name
             const displayTypeNameAndFieldName = document.getElementById(`display-typename-sportfield-${sportFieldID.value}`);
-            displayTypeNameAndFieldName.innerText = `${data?.sportFieldUpdated?.TypeName} ${data?.sportFieldUpdated?.FieldName} `;
+            displayTypeNameAndFieldName.innerText = `${data?.sportFieldUpdated?.FieldName} `;
 
             const viewMangeField = document.getElementById('viewManageField');
             viewMangeField.scrollIntoView(true);
-
         } else {
             Swal.fire({
                 html: `
@@ -834,9 +777,11 @@ const destroySportField = (sportFieldID) => {
                 });
 
                 //remove element sport fiele deleted
-                sportFieldElement = document.getElementById(`sportField-${sportFieldID}`);
-                sportFieldElement.remove();
-
+                let pageActive = $('.active');
+                if (pageActive) {
+                    let dataPage = pageActive.data('page');
+                    loadPage(dataPage);
+                }
             } else if (data.statusCode === 400) {
                 Swal.fire({
                     html: `

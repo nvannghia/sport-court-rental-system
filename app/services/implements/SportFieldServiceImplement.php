@@ -53,4 +53,9 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
     {
         return $this->sportFieldRepositoryInterface->getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
     }
+
+    public function getPagination($offset, $owerID) 
+    {
+        return $this->sportFieldRepositoryInterface->getPagination($offset, $owerID);
+    }
 }

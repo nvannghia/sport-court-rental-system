@@ -196,4 +196,26 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
             ];
         }
     }
+
+    public function getPagination($offset, $owerID)
+    {
+        $query =  SportField::where('OwnerID', $owerID)
+              // ->with(['sportType']) // fetching relationship: eager loading
+            ->orderBy('created_at', 'desc');
+
+        //for paginate
+        $totalRecords = $query->count();
+        $totalPages   = ceil($totalRecords / self::ITEM_PER_PAGE_OWNER);
+
+        $sportFields = $query
+            ->select('ID', 'SportTypeID', 'FieldName')
+            ->offset($offset)
+            ->limit(self::ITEM_PER_PAGE_OWNER)
+            ->get();
+
+        return [
+            'items'      => $sportFields->toArray(),
+            'totalPages' => $totalPages
+        ];
+    }
 }

@@ -1,10 +1,11 @@
 Task:
 
  * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
-  - check laị chỗ edit và add sport field
+  - Check lại chỗ link social, làm thế nào mà nó có thể ấn vào là nhảy đúng link
   - Nếu sân đang tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
   - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
  
+  - Giới hạn việc tạo sân của các owner business
  ---NOTED: GENERATE DB 
 
 

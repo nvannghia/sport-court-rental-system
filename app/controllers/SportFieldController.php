@@ -27,6 +27,8 @@ class SportFieldController extends Controller
 
     const ITEM_REVIEW_PER_PAGE = 2;
 
+    const ITEM_SPORTFIELD_PER_PAGE = 3;
+
     public function __construct(
         SportFieldServiceInterface $sportFieldServiceInterface,
         SportTypeServiceInterface $sportTypeServiceInterface,
@@ -411,6 +413,26 @@ class SportFieldController extends Controller
         echo json_encode([
             'statusCode' => 204,
             'message' => 'Delete Sport Field Success!'
+        ]);
+    }
+
+    public function apiPagination()
+    {
+        $ownerID = $_SESSION['userInfo']['field_owner']['OwnerID'];
+        $page = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * self::ITEM_SPORTFIELD_PER_PAGE;
+
+        $rs          = $this->sportFieldServiceInterface->getPagination($offset, $ownerID);
+        $totalPages  = !empty($rs) ? $rs['totalPages'] : [];
+        $sportFields = !empty($rs) ? $rs['items'] : [];
+
+        header('Content-Type: application/json');
+        echo json_encode([
+            'items' => $sportFields,
+            'pagination' => [
+                'current'    => $page,
+                'totalPages' => $totalPages
+            ]
         ]);
     }
 }

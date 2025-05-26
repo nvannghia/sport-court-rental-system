@@ -19,4 +19,6 @@ interface SportFieldServiceInterface
     public function destroy($sportFieldID);
 
     public function filterSportFieldsByConditions($offset ,$sportType = null,  $fieldName = null, $zoneName = null);
+
+    public function getPagination($offset, $owerID);
 }

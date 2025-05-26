@@ -299,7 +299,7 @@ class UserController extends Controller
             //PAGINATION
             $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
             $offset = ($currentPage - 1) * self::ITEM_PER_PAGE_OWNER;
-            //END PAGINATIONs
+            //END PAGINATION
 
             // IMAGE FOR DISPLAY SPORTTYPE
             $imagesMapping = [
@@ -341,7 +341,7 @@ class UserController extends Controller
                 'sportFields'    => $sportFields,
                 'totalPages'     => $totalPages,
                 'currentPage'    => $currentPage,
-                'imagesMapping' => $imagesMapping
+                'imagesMapping'  => $imagesMapping
             ]);
         }
         echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";

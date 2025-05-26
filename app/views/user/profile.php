@@ -255,7 +255,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                         QUẢN LÝ SÂN
                                     </p>
                                     <div class="text-right">
-                                        <button id="addSportFieldBtn" type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-primary ms-1 mb-1">
+                                        <button id="addSportFieldBtn" type="button" class="btn btn-outline-primary ms-1 mb-1">
                                             Thêm Sân
                                         </button>
                                     </div>
@@ -263,42 +263,14 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <hr class="mt-0">
 
                                     <!-- VIEW SPORT FIELD -->
-                                    <div id="container-sportField">
-                                        <?php require_once(__DIR__ . '/../sport_field/index.php'); ?>
+                                    <div id="list-sport-field">
                                     </div>
 
-
-                                    <!-- //PAGINATION -->
-                                    <div class="d-flex justify-content-center" style="max-height: 50px">
-                                        <nav>
-                                            <ul class="pagination">
-                                                <li class="page-item <?php echo $currentPage - 1 < 1 ? "d-none" : ''; ?>">
-                                                    <a
-                                                        class="page-link"
-                                                        data-page=<?= $currentPage - 1 ?>>
-                                                        Trước
-                                                    </a>
-                                                </li>
-                                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                                    <li class="page-item">
-                                                        <a
-                                                            class="page-link"
-                                                            data-page=<?= $i ?>>
-                                                            <?= $i ?>
-                                                        </a>
-                                                    </li>
-                                                <?php endfor; ?>
-                                                <li class="page-item <?php echo $currentPage + 1 > $totalPages ? "d-none" : ''; ?>">
-                                                    <a
-                                                        class="page-link"
-                                                        data-page=<?= $currentPage + 1 ?>>
-                                                        Sau
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-
+                                    <!-- PAGINATION -->
+                                    <nav class="position-absolute" style="left: 25%; top: 85%">
+                                        <ul id="pagination" class="pagination">                                           
+                                        </ul>
+                                    </nav>
                                 </div>
                             </div>
                         </div>
@@ -324,28 +296,9 @@ require_once __DIR__ . '/../layouts/header.php';
 <script src="../../public/js/sport-field.js"></script>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Lấy URL hiện tại
-        const currentUrl = new URL(window.location.href);
-
-        // Lấy tất cả các thẻ <a> với class "page-link"
-        const pageLinks = document.querySelectorAll('.page-link');
-
-        // Cập nhật giá trị href cho từng thẻ <a>
-        pageLinks.forEach(link => {
-            const page = link.getAttribute('data-page'); // Lấy số trang từ thuộc tính data-page
-            const newUrl = new URL(currentUrl); // Tạo một đối tượng URL mới để sửa đổi
-
-            // Xóa tham số page nếu có
-            newUrl.searchParams.delete('page');
-
-            // Thêm tham số page mới
-            newUrl.searchParams.set('page', page);
-
-            // Cập nhật thuộc tính href của thẻ <a>
-            link.href = newUrl.toString();
-        });
-    })
+    const API_URL_PAGINATION = "/sport-court-rental-system/public/sportfield/apiPagination";
+    const TYPE_CONFIG_PAGINATION = "sport_field_template";
 </script>
+<script src="../../public/js/paginate.js"></script>
 
 <?php require_once __DIR__ . '/../layouts/footer.php'; ?>
