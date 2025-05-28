@@ -66,7 +66,12 @@ const loadPage = (page = 1) => {
 
 const renderItems = (items, TYPE_CONFIG_PAGINATION) => {
     const html = items.map(configPagination[TYPE_CONFIG_PAGINATION].render).join('');
-    document.querySelector(configPagination[TYPE_CONFIG_PAGINATION].container).innerHTML = html;
+    if (html) {
+        document.querySelector(configPagination[TYPE_CONFIG_PAGINATION].container).innerHTML = html;
+        return;
+    } 
+
+    document.querySelector(configPagination[TYPE_CONFIG_PAGINATION].container).innerHTML = '<small id="display-no-field" class="text-danger">Hệ thống chưa ghi nhận sân nào thuộc doanh nghiệp của bạn!</small>';
 }
 
 const renderPagination = (pagination) => {

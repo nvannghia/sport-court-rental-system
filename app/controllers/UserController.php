@@ -295,53 +295,10 @@ class UserController extends Controller
             if ($role === "CUSTOMER")
                 return $this->view('user/profile', []);
 
-            //==== role owner
-            //PAGINATION
-            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $offset = ($currentPage - 1) * self::ITEM_PER_PAGE_OWNER;
-            //END PAGINATION
-
-            // IMAGE FOR DISPLAY SPORTTYPE
-            $imagesMapping = [
-                [],
-                [
-                        '/sport-court-rental-system/public/images/category/basketball.png',
-                        'Bóng Rổ'
-                ],
-                [
-                        '/sport-court-rental-system/public/images/category/volleyball.png',
-                        'Bóng Chuyền'
-                ],
-                [
-                        '/sport-court-rental-system/public/images/category/tennis.png',
-                        'Tennis'
-                ],
-                [
-                        '/sport-court-rental-system/public/images/category/badminton.png',
-                        'Cầu Lông'
-                ],
-                [
-                        '/sport-court-rental-system/public/images/category/football.png',
-                        'Bóng đá'
-                ],
-                [
-                        '/sport-court-rental-system/public/images/category/golf.png',
-                        'Golf'
-                ]
-            ];
-            // END IMAGE
-
+            //==== ROLE OWNER
             $sportTypes  = $this->sportTypeServiceInterface->getAllSportTypes()->toArray();
-            $ownerID     = $_SESSION['userInfo']['field_owner']['OwnerID'] ?? null;
-            $results     = $this->sportFieldServiceInterface->getSportFieldByOwnerID($offset, $ownerID);
-            $sportFields = $results['sportFields']->toArray();
-            $totalPages  = $results['totalPages'];
             return $this->view('user/profile', [
-                'sportTypes'     => $sportTypes,
-                'sportFields'    => $sportFields,
-                'totalPages'     => $totalPages,
-                'currentPage'    => $currentPage,
-                'imagesMapping'  => $imagesMapping
+                'sportTypes'     => $sportTypes
             ]);
         }
         echo "<h1 style='color:red'> Vui lòng đăng nhập </h1>";

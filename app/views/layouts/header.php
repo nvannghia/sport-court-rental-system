@@ -66,6 +66,16 @@
             /* Thêm khoảng cách bên trong */
         }
 
+        .ellipsis_social_link {
+            max-width: 250px;
+            /* Điều chỉnh độ rộng của phần tử theo ý muốn */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 5px;
+            /* Thêm khoảng cách bên trong */
+        }
+
         /* //sweet alert custom  */
         .custom-success-title {
             color: #A5DC86

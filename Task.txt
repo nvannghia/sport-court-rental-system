@@ -1,11 +1,11 @@
 Task:
 
  * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
-  - Check lại chỗ link social, làm thế nào mà nó có thể ấn vào là nhảy đúng link
   - Nếu sân đang tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
   - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
- 
   - Giới hạn việc tạo sân của các owner business
+
+  - Phần đóng góp ý kiến ở cuối website nên làm một bảng và sẽ làm thêm mục thông báo cho super admin của hệ thống
  ---NOTED: GENERATE DB 
 
 

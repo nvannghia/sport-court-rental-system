@@ -82,6 +82,16 @@ const uploadUserAvatar = () => {
 // twitter  : 2
 // instagram: 3
 // fb       : 4
+
+function isValidURL(url) {
+  try {
+    new URL(url); // sẽ throw nếu URL không hợp lệ
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 const changeProfileLink = (buttonClicked) => {
     buttonClicked.classList.add('d-none');
     let container = buttonClicked.parentElement.previousElementSibling;
@@ -114,7 +124,7 @@ const cancelProfileLink = (oldLinkValue, cancelBtn, saveBtn, editBtn) => {
     // CREATE NEW ELEMENT FOR TYPE `LINK`
     const oldLink = document.createElement('a');
     oldLink.name = 'display-link';
-    oldLink.className = 'display-link';
+    oldLink.className = 'display-link ellipsis_social_link';
     oldLink.textContent = oldLinkValue;
     oldLink.href = oldLinkValue === "NULL" ? "#" : oldLinkValue;
 
@@ -142,13 +152,18 @@ const saveProfileLink = async (btnSaveClicked, linkName) => {
         return;
     }
 
+    if (!isValidURL(linkValue)) {
+        alert("Vui lòng nhập đúng đường dẫn của website! VD: https://www.facebook.com/...");
+        return;
+    }
+
     // CALL API UPDATE PROFILE LINK
     const data = await callSaveProfileLinkAPI(linkName, linkValue);
     if (data.statusCode === 200) {
         alert("Thay đổi dữ liệu thành công!");
         const newLink             = document.createElement('a');
-              newLink.name        = 'display-link';
               newLink.className   = 'display-link';
+              newLink.className   = 'display-link ellipsis_social_link';
               newLink.href        = linkValue;
               newLink.textContent = linkValue;
         inputLink.replaceWith(newLink);
@@ -223,7 +238,6 @@ $(document).ready(function() {
             success: function(response) {
                 alert(validators[dataType].success);
                 displayText.text(dataTypeText);
-                // LỖI: CHƯA CẬP NHẬT ĐƯỢC GIÁ TRỊ MỚI CHO THUỘC TÍNH SAU KHI UPDATE THÀNH CÔNG
                 $(buttonEdit).attr("data-old-text", dataTypeText); 
             },
             error: function(xhr, status, error) {

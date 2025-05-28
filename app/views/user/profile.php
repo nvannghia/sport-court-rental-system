@@ -1,6 +1,6 @@
 <?php
 $hiddenSliderSection = true;
-$hiddenCategory = true;
+$hiddenCategory      = true;
 if (empty($_SESSION)) {
     echo "<h1 class='text-danger'>VUI LÒNG ĐĂNG NHẬP TRƯỚC!</h1>";
     die();
@@ -76,15 +76,15 @@ require_once __DIR__ . '/../layouts/header.php';
                         </div>
                     </div>
                 </div>
-                <div class="card mb-4 mb-lg-0" style="padding-bottom: 35px">
+                <div class="card mb-4 mb-lg-0" style="padding-bottom: 35px; height: 284px">
                     <div class="card-body p-0">
                         <ul class="list-group list-group-flush rounded-3 d-flex jusity-content-center">
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3" style="height:65px">
                                 <div class="d-flex flex-row align-items-center wrapper-link w-75">
                                     <i class="fas fa-globe fa-lg text-warning mr-3" style="width: 20px"></i>
                                     <a
                                         href="<?= !empty($userWWWLink) ? $userWWWLink : '#' ?>"
-                                        class="mb-0 display-link">
+                                        class="mb-0 display-link ellipsis_social_link">
                                         <?= !empty($userWWWLink) ? $userWWWLink : 'NULL' ?>
                                     </a>
                                 </div>
@@ -94,12 +94,12 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <button class="rounded btn-danger d-none" title="Hủy"><i class=" fa-solid fa-ban"></i></button>
                                 </div>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3" style="height:65px">
                                 <div class="d-flex flex-row align-items-center wrapper-link w-75">
                                     <i class="fab mr-3 fa-twitter fa-lg" style="color: #55acee; width: 20px"></i>
                                     <a
                                         href="<?= !empty($userTwitterLink) ? $userTwitterLink : '#' ?>"
-                                        class="mb-0 display-link">
+                                        class="mb-0 display-link ellipsis_social_link">
                                         <?= !empty($userTwitterLink) ? $userTwitterLink : 'NULL' ?>
                                     </a>
 
@@ -110,12 +110,12 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <button class="rounded btn-danger d-none" title="Hủy"><i class=" fa-solid fa-ban"></i></button>
                                 </div>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3" style="height:65px">
                                 <div class="d-flex flex-row align-items-center wrapper-link w-75">
                                     <i class="fab mr-3 fa-instagram fa-lg" style="color: #ac2bac; width: 20px"></i>
                                     <a
                                         href="<?= !empty($userInstagramLink) ? $userInstagramLink : '#' ?>"
-                                        class="mb-0 display-link">
+                                        class="mb-0 display-link ellipsis_social_link">
                                         <?= !empty($userInstagramLink) ? $userInstagramLink : 'NULL' ?>
                                     </a>
                                 </div>
@@ -125,12 +125,12 @@ require_once __DIR__ . '/../layouts/header.php';
                                     <button class="rounded btn-danger d-none" title="Hủy"><i class=" fa-solid fa-ban"></i></button>
                                 </div>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center p-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center p-3" style="height:65px">
                                 <div class="d-flex flex-row align-items-center wrapper-link w-75">
-                                    <i class="fab mr-3 fa-facebook-f fa-lg" style="color: #3b5998; width: 20px"></i>
+                                    <i class="fab mr-3 fa-facebook-f fa-lg" style="color: #3b5998; width: 35px"></i>
                                     <a
                                         href="<?= !empty($userFacebookLink) ? $userFacebookLink : '#' ?>"
-                                        class="mb-0 display-link">
+                                        class="mb-0 display-link ellipsis_social_link">
                                         <?= !empty($userFacebookLink) ? $userFacebookLink : 'NULL' ?>
                                     </a>
                                 </div>
