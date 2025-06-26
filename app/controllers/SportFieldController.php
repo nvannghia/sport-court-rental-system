@@ -435,5 +435,11 @@ class SportFieldController extends Controller
             ]
         ]);
     }
+
+    public function getSportFieldByTypePagination() 
+    {
+        $sportTypeId = $_POST['sportTypeId'] ?? null;
+        
+    }
 }
 ?>

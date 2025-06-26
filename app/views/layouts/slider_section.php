@@ -18,7 +18,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col">
-                        <form action="<?php $_SERVER['PHP_SELF'];?>">
+                        <form action="" method="get" id="formSearch">
                             <div class="form-row ">
                                 <div class="form-group col-lg-3">
                                     <select name="sportType" class="form-control wide" id="inputDoctorName">
@@ -33,12 +33,12 @@
                                 </div>
 
                                 <div class="form-group col-lg-3">
-                                    <input type="text" class="form-control" name="inputZoneName" id="inputZoneName" placeholder="Nhập khu vực">
+                                    <input type="text" class="form-control" name="inputAreaName" id="inputAreaName" placeholder="Nhập khu vực">
                                 </div>
 
                                 <div class="form-group col-lg-3">
                                     <div class="btn-box">
-                                        <button onclick="localStorage.setItem('scrollTo', 'view-sport-field');" type="submit" class="btn ">Tìm sân</button>
+                                        <button type="submit" class="btn ">Tìm sân</button>
                                     </div>
                                 </div>
                             </div>

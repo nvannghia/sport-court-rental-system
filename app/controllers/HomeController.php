@@ -2,6 +2,7 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
+
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
 use App\Utils\CaptchaUtils;
@@ -22,49 +23,44 @@ class HomeController extends Controller
 
     function test()
     {
-        
-        echo "<pre>";
-        var_dump(($_SESSION['userInfo']['Role'] === 'OWNER'));
-        die();
     }
     public function index()
     {
         //get sportType and quantity of each type.
         $sportTypes = $this->sportTypeServiceInterface->getAllSportTypesWithCount()->toArray();
+        return $this->view('home/index', [
+            'sportTypes' => $sportTypes
+        ]);
+    }
 
-        if (!empty($_GET) && count($_GET) > 1) { // $_GET always have the "url" data, var_dump to see
+    public function getPaginatedSportFieldsForHomepage()
+    {
+        header('Content-Type: application/json');
 
-            $sportType = $_GET['sportType'] ?? null;
-            $sportFieldName = $_GET['inputSportFieldName'] ?? null;
-            $zoneName = $_GET['inputZoneName'] ?? null;
-
-            //pagination
-            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $offset = ($currentPage - 1) * self::ITEM_PER_PAGE;
-
-            $results = $this->sportFieldServiceInterface->filterSportFieldsByConditions($offset , $sportType, $sportFieldName, $zoneName);
-            $sportFields = $results['sportFields'];
-            $totalPages = $results['totalPages'];
-
-            if ($sportFields != null) {
-                $sportFields = $sportFields->load('owner')->toArray();
-
-                return $this->view('home/index', [
-                    'sportTypes' => $sportTypes,
-                    'sportFields' => $sportFields,
-                    'totalPages' => $totalPages,
-                    'currentPage' => $currentPage,
-                ]);
-            }
-
-            return $this->view('home/index', [
-                'sportTypes' => $sportTypes
+        $fieldName   = $_GET['fieldName'] ?? null;
+        $area        = $_GET['area'] ?? null;
+        $sportTypeId = $_GET['sportTypeId'] ?? null;
+        if (!$sportTypeId || !is_numeric($sportTypeId)) {
+            http_response_code(400);
+            echo json_encode([
+                'statusCode' => 400,
+                'message'    => "Missing required field: 'sportTypeId'"
             ]);
-            
-        } else {
-            $this->view('home/index', [
-                'sportTypes' => $sportTypes
-            ]);
+            exit();
         }
+
+        $page        = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset      = ($page - 1) * self::ITEM_PER_PAGE;
+        $rs          = $this->sportFieldServiceInterface->getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area);
+        $totalPages  = !empty($rs) ? $rs['totalPages'] : [];
+        $sportFields = !empty($rs) ? $rs['items'] : [];
+
+        echo json_encode([
+            'items' => $sportFields,
+            'pagination' => [
+                'current'    => $page,
+                'totalPages' => $totalPages
+            ]
+        ]);
     }
 }

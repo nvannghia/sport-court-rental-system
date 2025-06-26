@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,1)" class="box">
+                <a data-sport-type-id="1" style="background-color: #b51623" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/basketball.png" sty alt="basketball.png">
                     </div>
@@ -14,7 +14,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,2)" class="box">
+                <a data-sport-type-id="2" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/volleyball.png" alt="">
                     </div>
@@ -26,7 +26,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,3)" class="box">
+                <a data-sport-type-id="3" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/tennis.png" alt="">
                     </div>
@@ -38,7 +38,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,4)" class="box">
+                <a data-sport-type-id="4" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/badminton.png" alt="">
                     </div>
@@ -50,7 +50,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,5)" class="box">
+                <a data-sport-type-id="5" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/football.png" alt="">
                     </div>
@@ -62,7 +62,7 @@
                 </a>
             </div>
             <div class="col-sm-6 col-md-4 col-xl-2 px-0">
-                <a onclick="handleFilterBySportType(this,6)" class="box">
+                <a data-sport-type-id="6" class="box sport_type_category cate_section">
                     <div class="img-box">
                         <img src="/sport-court-rental-system/public/images/category/golf.png" alt="">
                     </div>

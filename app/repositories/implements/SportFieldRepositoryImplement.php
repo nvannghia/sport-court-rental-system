@@ -94,7 +94,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
     public function getSportFieldByIDWithReviews($offset, $orderBy = null, $sportFieldID)
     {
         if (!$orderBy) {
-            
+
             $sportField = SportField::with(
                 [
                     'fieldReviews' => function ($query) use ($offset) {
@@ -104,7 +104,6 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
                     'fieldReviews.usersLikedReview'
                 ]
             )->find($sportFieldID);
-
         } else {
             $orderByArray = [];
 
@@ -200,7 +199,7 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
     public function getPagination($offset, $owerID)
     {
         $query =  SportField::where('OwnerID', $owerID)
-              // ->with(['sportType']) // fetching relationship: eager loading
+            // ->with(['sportType']) // fetching relationship: eager loading
             ->orderBy('created_at', 'desc');
 
         //for paginate
@@ -215,6 +214,45 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
 
         return [
             'items'      => $sportFields->toArray(),
+            'totalPages' => $totalPages
+        ];
+    }
+
+    public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area)
+    {
+        $data = SportField::select('ID', 'FieldName', 'SportTypeID', 'Image')
+            ->with([
+                'fieldReviews' => function ($query) {
+                    $query->select('SportFieldID', 'UserID', 'Rating', 'ImageReview', 'Content')
+                        ->whereNotNull('ImageReview')
+                        ->orderByDesc('Rating')
+                        ->limit(5)
+                        ->with(['user' => function ($userQuery) {
+                            $userQuery->select('ID', 'FullName', 'Avatar');
+                        }]);
+                }
+            ])
+            ->where('SportTypeID', $sportTypeId)
+            ->orderByDesc('ID');
+
+        if (!empty($fieldName)) {
+            $data->where('FieldName', 'like', '%' . $fieldName . '%');
+        }
+
+        if (!empty($area)) {
+            $data->where('Address', 'like', '%' . $area . '%');
+        }
+
+        //for paginate
+        $totalRecords = $data->count();
+        $totalPages   = ceil($totalRecords / self::ITEM_PER_PAGE);
+
+        $data = $data->skip($offset)
+            ->take(self::ITEM_PER_PAGE)
+            ->get();
+
+        return [
+            'items'      => $data->toArray(),
             'totalPages' => $totalPages
         ];
     }

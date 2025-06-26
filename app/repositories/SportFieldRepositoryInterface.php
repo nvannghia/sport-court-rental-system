@@ -21,4 +21,6 @@ interface SportFieldRepositoryInterface
     public function filterSportFieldsByConditions($offset, $sportType = null,  $fieldName = null, $zoneName = null);
 
     public function getPagination($offset, $owerID);
+
+    public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area);
 }

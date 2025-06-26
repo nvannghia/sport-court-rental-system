@@ -76,6 +76,18 @@
             /* Thêm khoảng cách bên trong */
         }
 
+        .ellipsis_user_comment {
+            max-width: 500px;
+            max-height: 4em;
+            line-height: 1.5em;
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            padding: 5px;
+        }
+
+
         /* //sweet alert custom  */
         .custom-success-title {
             color: #A5DC86
@@ -109,11 +121,11 @@
 
         /* // sport type hover effect */
         .sporttype-hover:hover p {
-            color: #F9BC18 !important;
+            color: #e3192a !important;
         }
 
         .sporttype-hover:hover~p {
-            color: #F9BC18 !important;
+            color: #e3192a !important;
         }
 
 

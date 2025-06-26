@@ -58,4 +58,9 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
     {
         return $this->sportFieldRepositoryInterface->getPagination($offset, $owerID);
     }
+
+    public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area) 
+    {
+        return $this->sportFieldRepositoryInterface->getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area);
+    }
 }
