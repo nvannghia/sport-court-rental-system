@@ -4,8 +4,13 @@ Task:
 
  * PEDING TASK: 
    Tomorrow task:
-      + chỉnh cho xong thanh bar trái, có thể SN thêm các logic lọc dữ liệu
-      + fix lại phần hình nền cho nó ăn hết trang web
+      + Chỉnh tiếp homepage: 
+         3/ Chỉnh lại paginate css
+
+      + CHECK TIẾP CÁC CHỖ:
+         - bình luận
+         - đặt sân
+         - ...
 
 
  CÁC TASK CHƯA GẤP   

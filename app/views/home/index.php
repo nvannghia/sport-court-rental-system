@@ -135,7 +135,7 @@ require_once __DIR__ . '/../layouts/header.php';
 
 <!-- paginate -->
 <script>
-    var API_URL_PAGINATION = "/sport-court-rental-system/public/home/getPaginatedSportFieldsForHomepage?sportTypeId=1";
+    var   API_URL_PAGINATION     = "/sport-court-rental-system/public/home/getPaginatedSportFieldsForHomepage?sportTypeId=1";
     const TYPE_CONFIG_PAGINATION = "homepage_template";
 
     $(document).ready(function() {

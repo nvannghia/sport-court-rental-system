@@ -159,6 +159,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Validate các trường
         let isValid = true;
+
+        if (!fileImage) {
+            fieldImage.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            fieldImage.classList.remove('is-invalid');
+        }
+
         if (!fieldName.value.trim()) {
             fieldName.classList.add('is-invalid');
             isValid = false;
@@ -301,10 +309,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     },
                     confirmButtonText: "Đóng",
                 });
-        
+
                 // reload component for display new item sport field
                 loadPage(1);
-                
+
                 //enabled button
                 btnSubmitFormAdd.removeAttribute('disabled');
 
@@ -759,7 +767,7 @@ const destroySportField = (sportFieldID) => {
             });
 
             const data = await response.json();
-            
+
             if (data.statusCode === 204) {
                 Swal.fire({
                     html: `

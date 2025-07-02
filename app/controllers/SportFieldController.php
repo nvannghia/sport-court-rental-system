@@ -75,15 +75,6 @@ class SportFieldController extends Controller
             $fieldSize     = isset($_POST['fieldSize']) ? $_POST['fieldSize'] : null;
             $image         = null;
 
-            // var_dump($sportTypeID);
-            // die;
-
-            //Upload image of sport field to cloudinary
-            if (isset($_FILES['fieldImage'])) {
-                $file  = $_FILES['fieldImage']['tmp_name'];
-                $image = $this->uploadRepresentation($file);
-            }
-
             $isInvalidInfo = empty($fieldName)
                 || empty($sportTypeID)
                 || empty($numberOfField)
@@ -93,7 +84,8 @@ class SportFieldController extends Controller
                 || empty($priceEvening)
                 || empty($openingTime)
                 || empty($closingTime)
-                || !in_array($status, self::STATUS);
+                || !in_array($status, self::STATUS)
+                || !isset($_FILES['fieldImage']);
 
             if ($sportTypeID === self::FOOTBALL_ID)
                 $isInvalidInfo = $isInvalidInfo || empty($fieldSize);
@@ -104,6 +96,12 @@ class SportFieldController extends Controller
                     "message" => 'Bad Request',
                 ]);
                 exit();
+            }
+
+            //Upload image of sport field to cloudinary
+            if (isset($_FILES['fieldImage'])) {
+                $file  = $_FILES['fieldImage']['tmp_name'];
+                $image = $this->uploadRepresentation($file);
             }
 
             // CREATE NEW SPORT FIELD
@@ -436,10 +434,9 @@ class SportFieldController extends Controller
         ]);
     }
 
-    public function getSportFieldByTypePagination() 
+    public function getSportFieldByTypePagination()
     {
         $sportTypeId = $_POST['sportTypeId'] ?? null;
-        
     }
 }
 ?>
