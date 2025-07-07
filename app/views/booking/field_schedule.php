@@ -77,13 +77,16 @@
     </div>
 
     <?php
-    $openingTime = $sportField['OpeningTime'];
-    $closingTime = $sportField['ClosingTime'];
-    $priceDay = $sportField['PriceDay'];
-    $priceEvening = $sportField['PriceEvening'];
-    $fieldSize = $sportField['FieldSize'];
+    $openingTime    = $sportField['OpeningTime'];
+    $closingTime    = $sportField['ClosingTime'];
+    // var_dump($openingTime);
+    // var_dump($closingTime);
+    // die;
+    $priceDay       = $sportField['PriceDay'];
+    $priceEvening   = $sportField['PriceEvening'];
+    $fieldSize      = $sportField['FieldSize'];
     $numberOfFields = $sportField['NumberOfFields'];
-    $sportFieldID = $sportField['ID'];
+    $sportFieldID   = $sportField['ID'];
     ?>
 
     <table style="color: #73879C">

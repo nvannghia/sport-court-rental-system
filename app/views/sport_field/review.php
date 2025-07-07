@@ -164,128 +164,14 @@
 
             <!-- reviews -->
             <div id="view-reviews">
-                <!-- //each review -->
-                <?php
-                $reviews = $sportField['field_reviews'];
 
-                if (count($reviews) > 0) :
-                ?>
-                    <?php foreach ($reviews as $review) :  ?>
-                        <div class="ml-3 mt-3" id="review-id-<?= $review['ID'] ?>">
-                            <!-- //number of star -->
-                            <div class="d-flex align-items-center justify-content-between">
-                                <div>
-                                    <?php
-                                    $rating = $review['Rating'];
-                                    $notRating = 5 - $rating;
-                                    ?>
-                                    <?php for ($i = 1; $i <= $rating; $i++) : ?>
-                                        <i class="text-warning fa-solid fa-star"></i>
-                                    <?php endfor; ?>
-
-                                    <?php for ($j = 1; $j <= $notRating; $j++) : ?>
-                                        <i class="fa-solid fa-star" style="color: #b0acac"></i>
-                                    <?php endfor; ?>
-                                </div>
-                                <div class="mr-2" style="color: #878787">
-                                    <?= $review['created_at'] ?>
-                                </div>
-                            </div>
-                            <!-- // name of user review -->
-                            <div class="mt-2" style="color: #878787">
-                                <?= $review['user']['FullName']; ?>
-                            </div>
-                            <!-- // content of review -->
-                            <div class="mt-2" style="font-size: small">
-                                <!-- //content -->
-                                <span>
-                                    <?= $review['Content']; ?>
-                                </span>
-
-                                <!-- //image review -->
-                                <?php if ($review['ImageReview']) : ?>
-                                    <div class="mr-2">
-                                        <img src="<?= $review['ImageReview'] ?>" style="max-height: 150px;" class="border rounded w-100" alt=" field image review">
-                                    </div>
-
-                                <?php endif; ?>
-                            </div>
-                            <hr>
-
-                            <!-- //number of like -->
-                            <div class="mt-2 d-flex align-items-center justify-content-between">
-                                <div>
-                                    <button onclick="likeReview(<?= $review['ID'] ?>)" id="btn-like-review" class="btn btn-warning border rounded" style="min-width: 40px; min-height: 40px;" title="Hữu ích">
-                                        <i id="icon-like-review-id-<?= $review['ID'] ?>" class="
-                                        <?php
-                                        if (isset($_SESSION['userInfo']))
-                                            echo in_array($_SESSION['userInfo']['ID'], $review['users_liked_review']) ? 'text-primary' : 'text-white';
-                                        ?> 
-                                        fa-regular 
-                                        fa-thumbs-up 
-                                        like-hover
-                                        ">
-                                        </i>
-                                    </button>
-                                    <span class="mt-2 ml-2" id="number-like-id-<?= $review['ID'] ?>">
-                                        <?= count($review['users_liked_review']) > 0 ? count($review['users_liked_review']) : 0; ?>
-                                    </span>
-                                </div>
-
-                                <!-- //edit and delete review action -->
-                                <?php if (isset($_SESSION['userInfo']) && $_SESSION['userInfo']['ID'] == $review['user']['ID']) : ?>
-                                    <div class="mr-2">
-                                        <button onclick="editReview(<?= $review['ID'] ?>)" name="btn-edit-review" class="btn btn-info" title="Sửa đánh giá">
-                                            <i class="fa-regular fa-pen-to-square"></i>
-                                        </button>
-                                        <button onclick="deleteReview(<?= $review['ID'] ?>)" name="btn-delete-review" class="btn btn-danger" title="Xóa đánh giá">
-                                            <i class="fa-regular fa-trash-can"></i>
-                                        </button>
-                                    </div>
-                                <?php endif; ?>
-
-                            </div>
-                            <hr style="border: 1px solid #787474">
-
-
-                        </div>
-                    <?php endforeach; ?>
-                    <!-- //paginate -->
-                    <div class="d-flex justify-content-center">
-                        <nav>
-                            <ul class="pagination">
-                                <li class="page-item <?php echo $currentPage - 1 < 1 ? "d-none" : ''; ?>">
-                                    <a
-                                        class="page-link"
-                                        data-page=<?= $currentPage - 1 ?>>
-                                        Trước
-                                    </a>
-                                </li>
-                                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                                    <li class="page-item">
-                                        <a
-                                            class="page-link"
-                                            data-page=<?= $i ?>>
-                                            <?= $i ?>
-                                        </a>
-                                    </li>
-                                <?php endfor; ?>
-                                <li class="page-item <?php echo $currentPage + 1 > $totalPages ? "d-none" : ''; ?>">
-                                    <a
-                                        class="page-link"
-                                        data-page=<?= $currentPage + 1 ?>>
-                                        Sau
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-
-                <?php else : ?>
-                    <div style="padding: 8px; text-align: center;">
-                        <span style="text-align: center;font-size: 22px;">Chưa có đánh giá nào!</span>
-                    </div>
-                <?php endif; ?>
+                <!-- //paginate -->
+                <div class="d-flex justify-content-center">
+                    <nav>
+                        <ul class="pagination">
+                        </ul>
+                    </nav>
+                </div>
             </div>
         </div>
     </div>

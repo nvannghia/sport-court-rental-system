@@ -41,7 +41,7 @@ require_once __DIR__ . '/../layouts/header.php';
                             <h2 class="sidebar__item--heading">THỂ LOẠI SÂN</h2>
                         </li>
                         <li class="sidebar__item">
-                            <a class="sidebar__link sport_type_category" data-sport-type-id="1" href="#" data-tooltip="Inbox">
+                            <a class="sidebar__link sport_type_category focus_class" data-sport-type-id="1" href="#" data-tooltip="Inbox">
                                 <img src="/sport-court-rental-system/public/images/category/basketball.png" alt="basketball.png" class="ml-1" width="25px">
                                 <span class="text">Bóng Rổ</span>
                             </a>
@@ -155,14 +155,10 @@ require_once __DIR__ . '/../layouts/header.php';
         });
 
         const changeColorSportTypeClicked = (sportTypeId) => {
-            $('[data-sport-type-id].cate_section').css({
-                backgroundColor: '#e41a2b'
-            });
-            $('[data-sport-type-id].sidebar__link').blur();
-            $(`[data-sport-type-id="${sportTypeId}"].cate_section`).css({
-                backgroundColor: '#b51623'
-            });
-            $(`[data-sport-type-id="${sportTypeId}"].sidebar__link`).focus();
+            $('[data-sport-type-id].cate_section').css({backgroundColor: '#e41a2b'});
+            $('[data-sport-type-id].sidebar__link').removeClass('focus_class');
+            $(`[data-sport-type-id="${sportTypeId}"].cate_section`).css({backgroundColor: '#b51623'});
+            $(`[data-sport-type-id="${sportTypeId}"].sidebar__link`).addClass('focus_class');
         }
 
         const scrollToViewSportField = () => {

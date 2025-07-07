@@ -259,7 +259,9 @@ figcaption {
     }
 }
 
-.sidebar__link:focus {
+
+/* // chỉnh tiếp ở đây */
+/* .sidebar__link:focus {
     outline: 2px solid var(--accent--secondary);
     outline-offset: -2px;
     background: #e41a2b;
@@ -271,7 +273,7 @@ figcaption {
     .text {
         color: #fff;
     }
-}
+} */
 
 .sidebar__link:active {
     background-color: var(--bg--active);
@@ -311,4 +313,18 @@ aside:has(:checked) :where(figcaption, .item--heading) {
 aside:not(:has(:checked)) .sidebar__link:where(:hover, :focus-visible)[data-tooltip]::before {
     opacity: 1;
     scale: 1;
+}
+
+.focus_class {
+    outline: 2px solid var(--accent--secondary) hsl(206, 79%, 58%);
+    outline-offset: -2px;
+    background: #e41a2b;
+
+    .icon svg {
+        fill: var(--accent--primary);
+    }
+
+    .text {
+        color: #fff;
+    }
 }
