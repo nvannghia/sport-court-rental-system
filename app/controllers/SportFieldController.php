@@ -156,11 +156,11 @@ class SportFieldController extends Controller
 
     public function calculateStarPercentageTotal(array $stars)
     {
-        $star1  = $stars[0];
-        $star2  = $stars[1];
-        $star3  = $stars[2];
-        $star4  = $stars[3];
-        $star5  = $stars[4];
+        $star1  = $stars[1] ?? 0;
+        $star2  = $stars[2] ?? 0;
+        $star3  = $stars[3] ?? 0;
+        $star4  = $stars[4] ?? 0;
+        $star5  = $stars[5] ?? 0;
 
         //percentage each star
         $totalStars = $star1 + $star2 + $star3 + $star4 + $star5;
@@ -189,7 +189,7 @@ class SportFieldController extends Controller
         $roundedDown = floor($number * $factor) / $factor;
 
         return [
-            'percents' => $percents,
+            'percents'     => $percents,
             'averagePoint' => $roundedDown,
             'totalReviews' => $totalReviews
         ];
@@ -197,73 +197,34 @@ class SportFieldController extends Controller
 
     public function detail($sportFieldID)
     {
-        if (isset($sportFieldID) && is_numeric($sportFieldID)) {
+        if (!isset($sportFieldID) || !is_numeric($sportFieldID))
+            return $this->view('404');
 
-            //get sport field with pagination
-            $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-            $offset = ($currentPage - 1) * self::ITEM_REVIEW_PER_PAGE;
+        $dataSportField = $this->sportFieldServiceInterface->getSportFieldRatingsWithOwner($sportFieldID);
+        if (!$dataSportField)
+            return $this->view('404');
 
-            $orderByArray = ['created_at', 'Rating_desc', 'Rating_asc'];
-            $orderBy = isset($_GET['orderBy']) && in_array($_GET['orderBy'], $orderByArray)
-                ? $_GET['orderBy']
-                : null;
+        $fieldReivewImagesUrl = array_filter(array_column($dataSportField['sportFieldInfoWithRating'], 'ImageReview'), function ($image) {
+            return !is_null($image);
+        });
 
-            $results = $this->sportFieldServiceInterface->getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
-            $sportField = $results['sportField'];
-            $totalPages = $results['totalPages'];
+        $dataRating  = array_column($dataSportField['sportFieldInfoWithRating'], 'Rating');
+        $ratingStars = array_count_values($dataRating);
+        
+        ['percents' => $percents, 'averagePoint' => $averagePoint, 'totalReviews' => $totalReviews] = $this->calculateStarPercentageTotal($ratingStars);
 
-
-            //calculate percentage of each star and total star
-            $stars = $this->fieldReviewServiceInterface->calculateStarCountsSportFieldByID($sportFieldID);
-            //destructuring array 
-            ['percents' => $percents, 'averagePoint' => $averagePoint, 'totalReviews' => $totalReviews] = $this->calculateStarPercentageTotal($stars);
-
-            if ($sportField) {
-
-                $ownerOfSportField = $sportField->owner;
-                unset($ownerOfSportField->Password);
-
-                //filter data 'users_liked_review' to flatten array and get all images review to display
-                $sportField = $sportField->toArray();
-                $fieldReviews =  $sportField['field_reviews'];
-                $fieldReivewImagesUrl = [];
-
-                foreach ($fieldReviews as $index => $fieldReview) {
-                    //format created_at
-                    $dateString = $fieldReview['created_at'];
-                    $date = new DateTime($dateString);
-                    $formattedCreatedAt = $date->format('d/m/Y');
-
-                    //append image review to  $fieldReivewImagesUrl
-                    $imageReview = $fieldReview['ImageReview'] ?? null;
-                    if ($imageReview)
-                        $fieldReivewImagesUrl[] = $imageReview;
-
-                    //flatten array 'users_liked_review'
-                    $usersLikeReviews = $fieldReview['users_liked_review'];
-                    $usersLikeReviewID = [];
-                    foreach ($usersLikeReviews as $usersLikeReview) {
-                        $usersLikeReviewID[] = $usersLikeReview['ID'];
-                    }
-
-                    $sportField['field_reviews'][$index]['users_liked_review'] = $usersLikeReviewID;
-                    $sportField['field_reviews'][$index]['created_at'] = $formattedCreatedAt;
-                }
-
-                return $this->view('sport_field/detail', [
-                    'sportField' => $sportField,
-                    'ownerOfSportField' => $ownerOfSportField->toArray(),
-                    'averagePoint' => $averagePoint,
-                    'percents' => $percents,
-                    'totalReviews' => $totalReviews,
-                    'fieldReivewImagesUrl' => $fieldReivewImagesUrl,
-                    'totalPages' => $totalPages,
-                    'currentPage' => $currentPage,
-                ]);
-            } else {
-                return $this->view('404');
-            }
-        }
+        return $this->view(
+            'sport_field/detail',
+            [
+                'fieldReivewImagesUrl'     => $fieldReivewImagesUrl,
+                'ownerWithSportFieldID'    => $dataSportField['ownerWithSportFieldID'][0],
+                'sportFieldInfoWithRating' => $dataSportField['sportFieldInfoWithRating'],
+                'averagePoint'             => $averagePoint,
+                'percents'                 => $percents,
+                'totalReviews'             => $totalReviews,
+                'sportFieldId'             => $sportFieldID
+            ]
+        );
     }
 
     public function edit($sportFieldID)

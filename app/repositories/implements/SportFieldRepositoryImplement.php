@@ -3,6 +3,7 @@
 namespace App\Repositories\Implements;
 
 use App\Models\SportField;
+use App\Models\UserModel;
 use App\Repositories\SportFieldRepositoryInterface;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Capsule\Manager as DB;
@@ -89,52 +90,6 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
             ->fieldReviews()
             ->count();
         return $totalRecords;
-    }
-
-    public function getSportFieldByIDWithReviews($offset, $orderBy = null, $sportFieldID)
-    {
-        if (!$orderBy) {
-
-            $sportField = SportField::with(
-                [
-                    'fieldReviews' => function ($query) use ($offset) {
-                        $query->skip($offset)->take(self::ITEM_REVIEW_PER_PAGE);
-                    },
-                    'fieldReviews.user',
-                    'fieldReviews.usersLikedReview'
-                ]
-            )->find($sportFieldID);
-        } else {
-            $orderByArray = [];
-
-            if ($orderBy == 'created_at') {
-                $orderByArray[0] = $orderBy;
-                $orderByArray[1] = 'DESC';
-            } else {
-                $orderByArray = explode('_', $orderBy);
-            }
-
-            $sportField = SportField::with(
-                [
-                    'fieldReviews' => function ($query) use ($orderByArray, $offset) {
-                        $query->orderBy($orderByArray[0], $orderByArray[1])
-                            ->skip($offset)
-                            ->take(self::ITEM_REVIEW_PER_PAGE);
-                    },
-                    'fieldReviews.user',
-                    'fieldReviews.usersLikedReview'
-                ]
-            )
-                ->find($sportFieldID);
-        }
-        //for pagination
-        $totalRecordsReview = $this->getTotalReviewsOfSportField($sportFieldID);
-        $totalPages = ceil($totalRecordsReview / self::ITEM_REVIEW_PER_PAGE);
-
-        return [
-            'sportField' => $sportField,
-            'totalPages' => $totalPages,
-        ];
     }
 
     public function update($sportFieldID, array $attributes)
@@ -254,6 +209,37 @@ class SportFieldRepositoryImplement implements SportFieldRepositoryInterface
         return [
             'items'      => $data->toArray(),
             'totalPages' => $totalPages
+        ];
+    }
+
+    public function getSportFieldRatingsWithOwner($sportFieldID)
+    {
+        $ownerInfoWithSportFieldID = UserModel::from('users as OWNER')
+            ->join('sportfield AS sp', 'OWNER.ID', '=', 'sp.OwnerID')
+            ->select(
+                'sp.ID as sport_field_id',
+                'sp.Description',
+                'OWNER.FullName',
+                'OWNER.PhoneNumber',
+                'OWNER.Address'
+            )
+            ->where('sp.ID', '=', $sportFieldID)
+            ->get();
+
+        $sportFieldInfoWithRating = SportField::join('fieldreview AS fr', 'fr.SportFieldID', '=', 'sportfield.ID')
+            ->select(
+                'sportfield.FieldName',
+                'fr.Content',
+                'fr.ImageReview',
+                'fr.Rating'
+            )
+            ->orderBy('fr.Rating')
+            ->where('sportfield.id', '=', $sportFieldID)
+            ->get();
+
+        return [
+            'ownerWithSportFieldID'    => $ownerInfoWithSportFieldID->toArray(),
+            'sportFieldInfoWithRating' => $sportFieldInfoWithRating->toArray()
         ];
     }
 }

@@ -87,6 +87,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 });
             }
         }).then(async (result) => {
+
             if (result.isConfirmed) {
                 const {
                     ratingContent,
@@ -99,6 +100,14 @@ document.addEventListener('DOMContentLoaded', (event) => {
                     return false;
                 }
 
+                // waiting - loading ...
+                Swal.fire({
+                    html: '<img src="/sport-court-rental-system/public/images/soccer.gif" width="100%" height="100%"/>',
+                    background: 'rgba(255, 255, 255, 0)',
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+
                 const formData = new FormData();
                 formData.append('action', 'addFieldReview');
                 formData.append('sportFieldID', sportFieldID);
@@ -107,12 +116,10 @@ document.addEventListener('DOMContentLoaded', (event) => {
                 formData.append('imageReview', ratingImage);
 
                 const addFieldReivewUrl = `${urlFieldReview}/addFieldReivew`;
-
                 const response = await fetch(`${addFieldReivewUrl}`, {
                     method: 'POST',
                     body: formData
                 });
-
                 const data = await response.json();
 
                 if (data.statusCode === 400) {
@@ -134,9 +141,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
                         icon: 'success'
                     });
 
-                    //window reload and scroll to reviews view to see the new review
-                    localStorage.setItem('scrollTo', 'view-reviews');
-                    window.location.reload();
+                    // reload-page
+                    let pageActive = $('.active');
+                    if (pageActive) {
+                        let dataPage = pageActive.data('page');
+                        loadPage(dataPage);
+                    }
                 }
             }
         });
@@ -162,6 +172,9 @@ window.addEventListener('load', () => {
 
 // like review
 const likeReview = async (fieldReviewID) => {
+    //  the like button
+    const btnLike = document.getElementById(`btn-like-review-id-${fieldReviewID}`);
+    btnLike.disabled = true;
     // number of like
     const numberLikeDisplay = document.getElementById(`number-like-id-${fieldReviewID}`);
     let numberLike = parseInt(numberLikeDisplay.innerText);
@@ -170,20 +183,24 @@ const likeReview = async (fieldReviewID) => {
     const formData = new FormData();
     formData.append('fieldReviewID', fieldReviewID);
 
-    //change the color of button
+    //change the icon
     const iconLike = document.getElementById(`icon-like-review-id-${fieldReviewID}`);
 
-    if (iconLike.classList.contains('text-primary')) { //liked
-        iconLike.classList.remove('text-primary');
-        iconLike.classList.add('text-white');
-        //action descrease
+    if (iconLike.classList.contains('fa-solid')) { //liked
+        iconLike.classList.remove('fa-solid');
+        iconLike.classList.add('fa-regular');
+        iconLike.classList.remove('text-white');
+        // action descrease
         formData.append('action', 'descreaseReviewLike');
-        //increase like on user interface
+        // increase like on user interface
         numberLikeDisplay.innerText = --numberLike;
+        // css for the button
+        btnLike.classList.remove('btn_like');
     } else { //don't like yet
-        iconLike.classList.add('text-primary');
+        iconLike.classList.add('fa-solid');
         formData.append('action', 'increaseReviewLike');
         numberLikeDisplay.innerText = ++numberLike;
+        btnLike.classList.add('btn_like');
     }
 
     const updateLikeReviewUrl = `${urlFieldReview}/updateLike`;
@@ -200,6 +217,9 @@ const likeReview = async (fieldReviewID) => {
             title: "Đã xảy ra lỗi...",
             text: data.message,
         });
+
+    // enabled the like button
+    btnLike.disabled = false;
 }
 
 
@@ -238,6 +258,12 @@ const deleteReview = async (fieldReviewID) => {
                 //remove review at user interface
                 let reviewDeleted = document.getElementById(`review-id-${fieldReviewID}`);
                 reviewDeleted.remove();
+                // reload page currrent
+                let pageActive = $('.active');
+                if (pageActive) {
+                    let dataPage = pageActive.data('page');
+                    loadPage(dataPage);
+                }
             } else {
                 Swal.fire({
                     icon: "error",
@@ -358,6 +384,14 @@ const editReview = async (fieldReviewID) => {
                 return false;
             }
 
+            // waiting - loading ...
+            Swal.fire({
+                html: '<img src="/sport-court-rental-system/public/images/soccer.gif" width="100%" height="100%"/>',
+                background: 'rgba(255, 255, 255, 0)',
+                showConfirmButton: false,
+                allowOutsideClick: false
+            })
+
             const formData = new FormData();
             formData.append('action', 'updateFieldReview');
             formData.append('ratingStar', ratingStar);
@@ -394,17 +428,7 @@ const editReview = async (fieldReviewID) => {
 }
 
 
-//sort review by created_at, rating-desc, rating-acs
-const sortReviews = (evt) => {
-    $sortBy = evt.value;
-    const currentUrl = new URL(window.location.href);
-    const params = new URLSearchParams();
-    params.set('orderBy', $sortBy);
-    //set param
-    currentUrl.search = params.toString();
-    //reload with new URL
-    window.location.href = currentUrl.toString();
-}
+
 
 // pagination review
 document.addEventListener('DOMContentLoaded', () => {

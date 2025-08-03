@@ -3,13 +3,8 @@ Task:
  * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
 
  * PEDING TASK: 
-   Tomorrow task:
-      + Chỉnh tiếp homepage: 
-         3/ Chỉnh lại paginate css
-
       + CHECK TIẾP CÁC CHỖ:
          - đặt sân: 
-            + làm pagination cho phần bình luận, dùng lại paginate.js + filter của bình luận làm ajax nốt
             + check lại chỗ hiện ngày giờ, đang bị sai khi openingtime < closingtime, có thể lúc trước lưu data dưới db khác
             + format tiền, cả ở chỗ đặt sân
             + back button to previous page, cả ở chỗ đặt sân

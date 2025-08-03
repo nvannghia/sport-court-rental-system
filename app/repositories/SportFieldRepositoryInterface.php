@@ -10,8 +10,6 @@ interface SportFieldRepositoryInterface
 
     public function getSportFieldByOwnerIDWithFilter($ownerID, $filter);
 
-    public function getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
-
     public function getSportFieldByID($sportFieldID);
 
     public function update($sportFieldID, array $attributes);
@@ -23,4 +21,6 @@ interface SportFieldRepositoryInterface
     public function getPagination($offset, $owerID);
 
     public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area);
+
+    public function getSportFieldRatingsWithOwner($sportFieldID);
 }

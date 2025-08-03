@@ -49,18 +49,18 @@ class SportFieldServiceImplement implements SportFieldServiceInterface
         return $this->sportFieldRepositoryInterface->filterSportFieldsByConditions($offset, $sportType,  $fieldName, $zoneName);
     }
 
-    public function getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID)
-    {
-        return $this->sportFieldRepositoryInterface->getSportFieldByIDWithReviews($offset, $orderBy, $sportFieldID);
-    }
-
-    public function getPagination($offset, $owerID) 
+    public function getPagination($offset, $owerID)
     {
         return $this->sportFieldRepositoryInterface->getPagination($offset, $owerID);
     }
 
-    public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area) 
+    public function getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area)
     {
         return $this->sportFieldRepositoryInterface->getSportFieldByTypePagination($offset, $sportTypeId, $fieldName, $area);
+    }
+
+    public function getSportFieldRatingsWithOwner($sportFieldID)
+    {
+        return $this->sportFieldRepositoryInterface->getSportFieldRatingsWithOwner($sportFieldID);
     }
 }

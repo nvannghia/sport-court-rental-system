@@ -79,9 +79,6 @@
     <?php
     $openingTime    = $sportField['OpeningTime'];
     $closingTime    = $sportField['ClosingTime'];
-    // var_dump($openingTime);
-    // var_dump($closingTime);
-    // die;
     $priceDay       = $sportField['PriceDay'];
     $priceEvening   = $sportField['PriceEvening'];
     $fieldSize      = $sportField['FieldSize'];

@@ -10,26 +10,10 @@ use phpDocumentor\Reflection\Types\Boolean;
 
 class FieldReviewRepositoryImplement implements FieldReviewRepositoryInterface
 {
+    const ITEM_PER_PAGE = 2;
     public function addFieldReview(array $data): FieldReview
     {
         return FieldReview::create($data);
-    }
-
-    public function calculateStarCountsSportFieldByID($sportFieldID): array
-    {
-
-        $stars = [];
-        for ($i = 1; $i <= 5; $i++) {
-            $query = FieldReview::query();
-
-            $count = $query->where('SportFieldID', $sportFieldID)
-                ->where('Rating', $i)
-                ->count();
-
-            $stars[] = $count;
-        }
-
-        return $stars;
     }
 
 
@@ -69,7 +53,7 @@ class FieldReviewRepositoryImplement implements FieldReviewRepositoryInterface
             return false;
     }
 
-    public function getFieldReviewByID($fieldReviewID): FieldReview
+    public function getFieldReviewByID($fieldReviewID)
     {
         $fieldReview = FieldReview::find($fieldReviewID);
         if ($fieldReview)
@@ -87,8 +71,51 @@ class FieldReviewRepositoryImplement implements FieldReviewRepositoryInterface
             $fieldReview->ImageReview = isset($data['imageReview']) ? $data['imageReview'] : $fieldReview->ImageReview;
             $fieldReview->save();
             return $fieldReview->fresh();
-        }
-        else
+        } else
             return false;
+    }
+
+    public function getReviewPagination($offset, $sportFieldID, $orderBy)
+    {
+        // get review with pagination
+        $reviews = FieldReview::from('fieldreview AS FR')
+            ->leftJoin('liked AS LK', 'LK.FieldReviewID', '=', 'FR.ID')
+            ->leftJoin('users AS AUTHOR', 'AUTHOR.ID', '=', 'FR.UserID')
+            ->leftJoin('users AS USER_LIKED_REIVEW', 'USER_LIKED_REIVEW.ID', '=', 'LK.UserID')
+            ->select(
+                'FR.ID AS fieldreview_id',
+                'FR.Content AS review_content',
+                'FR.ImageReview',
+                'FR.updated_at',
+                'FR.Rating',
+                Capsule::raw('DATE_FORMAT(FR.updated_at, "%d-%m-%Y") as date_cmt'),
+                'AUTHOR.ID AS author_id',
+                'AUTHOR.FullName AS author_name',
+                'AUTHOR.Avatar AS author_avatar',
+                Capsule::raw('GROUP_CONCAT(USER_LIKED_REIVEW.ID) AS user_liked_review_ids'),
+                Capsule::raw('COUNT(USER_LIKED_REIVEW.ID) AS number_liked')
+            )
+            ->where('FR.SportFieldID', '=', $sportFieldID)
+            ->groupBy('FR.ID')
+            ->offset($offset)
+            ->limit(self::ITEM_PER_PAGE);
+            if (!empty($orderBy)) 
+                $reviews->orderBy('FR.Rating', $orderBy);
+            else 
+                $reviews->orderBy('FR.ID', "desc");
+
+            $reviews = $reviews->get();
+
+        // get total records
+        $totalRecords = FieldReview::from('fieldreview AS FR')
+            ->where('FR.SportFieldID', '=', $sportFieldID)
+            ->groupBy('FR.ID')
+            ->get()
+            ->count();
+        $totalPages   = ceil($totalRecords / self::ITEM_PER_PAGE);
+        return [
+            'items'      => $reviews->toArray(),
+            'totalPages' => $totalPages
+        ];
     }
 }

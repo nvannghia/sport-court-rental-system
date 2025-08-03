@@ -59,6 +59,7 @@ const handleLogin = (evt) => {
         const data = await response.json();
 
         if (data.statusCode === 200) {
+          localStorage.setItem('user_id', data.user.ID);
           window.location.reload();
         } else {
           Swal.showValidationMessage('Tài khoản hoặc mật khẩu không chính xác!');

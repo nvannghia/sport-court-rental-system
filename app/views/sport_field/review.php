@@ -1,3 +1,9 @@
+<style>
+    .btn_like {
+        color: #fff;
+        background-color: rgb(75, 153, 237);
+    }
+</style>
 <div class="mt-3 bg-white border shadow" style="border-radius: 0 4px 4px 0;">
     <div>
         <div>
@@ -139,11 +145,11 @@
                     </div>
                     <div class="d-flex align-items-center border-left p-3">
                         <i class="fa-solid fa-sort mr-2"></i>
-                        <select onchange="sortReviews(this)" name="cars" id="cars">
+                        <select onchange="sortReviews(this)">
                             <option disabled selected value>Sắp xếp theo</option>
-                            <option value="created_at">Mới nhất</option>
-                            <option value="Rating_asc">Thấp đến cao</option>
-                            <option value="Rating_desc">Cao đến thấp</option>
+                            <option value="">Mới nhất</option>
+                            <option value="asc">Thấp đến cao</option>
+                            <option value="desc">Cao đến thấp</option>
                         </select>
                     </div>
                 </div>
@@ -153,7 +159,7 @@
             <?php if (isset($_SESSION['userInfo'])): ?>
                 <div class="border-bottom  d-flex justify-content-center align-items-center">
                     <i class="fa-solid fa-feather-pointed mr-2" style="font-size: 26px; color: #E41A2B;"></i>
-                    <button id="type-rating" data-sportfield-id="<?= $sportField['ID']; ?>" style="background-color: #E41A2B;" class="mt-2 mb-2 btn text-white">Nhập đánh giá</button>
+                    <button id="type-rating" data-sportfield-id="<?= $sportFieldId; ?>" style="background-color: #E41A2B;" class="mt-2 mb-2 btn text-white">Nhập đánh giá</button>
                 </div>
             <?php else: ?>
                 <div class="border-bottom  d-flex justify-content-center align-items-center">
@@ -165,14 +171,28 @@
             <!-- reviews -->
             <div id="view-reviews">
 
-                <!-- //paginate -->
-                <div class="d-flex justify-content-center">
-                    <nav>
-                        <ul class="pagination">
-                        </ul>
-                    </nav>
+                <div class="container" id="review-container">
                 </div>
+
+                <!-- PAGINATION -->
+                <nav class="d-flex justify-content-center mt-3">
+                    <ul id="pagination" class="pagination">
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 </div>
+<script>
+    var API_URL_PAGINATION = "/sport-court-rental-system/public/fieldreview/getReviewPagination?sportFieldId=<?= $sportFieldId ?>";
+    const TYPE_CONFIG_PAGINATION = "review_template";
+
+    //sort review by created_at, rating-desc, rating-acs
+    const sortReviews = (evt) => {
+        let orderBy = evt.value;
+        // change the url call pagination and pass param to url
+        API_URL_PAGINATION = `/sport-court-rental-system/public/fieldreview/getReviewPagination?sportFieldId=<?= $sportFieldId ?>&orderBy=${orderBy}`;
+        loadPage(1);
+    }
+</script>
+<script src="/sport-court-rental-system/public/js/paginate.js"></script>

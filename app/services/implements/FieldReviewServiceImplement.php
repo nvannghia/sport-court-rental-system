@@ -17,12 +17,7 @@ class FieldReviewServiceImplement implements FieldReviewServiceInterface
     {
         return $this->fieldReviewRepositoryInterface->addFieldReview($data);
     }
-
-    public function calculateStarCountsSportFieldByID($sportFieldID):array 
-    {
-        return $this->fieldReviewRepositoryInterface->calculateStarCountsSportFieldByID($sportFieldID);
-    }
-
+    
     public function updateLikeReview($action, $fieldReviewID, $userID) 
     {
         return $this->fieldReviewRepositoryInterface->updateLikeReview($action, $fieldReviewID, $userID);
@@ -41,6 +36,10 @@ class FieldReviewServiceImplement implements FieldReviewServiceInterface
     public function updateFieldReview($fieldReviewID, array $data)
     {
         return $this->fieldReviewRepositoryInterface->updateFieldReview($fieldReviewID, $data);
+    }
 
+    public function getReviewPagination($offset, $sportFieldID, $orderBy)
+    {
+        return $this->fieldReviewRepositoryInterface->getReviewPagination($offset, $sportFieldID, $orderBy);
     }
 }

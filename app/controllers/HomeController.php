@@ -23,6 +23,9 @@ class HomeController extends Controller
 
     function test()
     {
+        echo "<pre>";
+        print_r($this->sportFieldServiceInterface->getSportFieldRatingsWithOwner(47));
+        die();
     }
     public function index()
     {

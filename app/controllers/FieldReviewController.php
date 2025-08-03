@@ -13,6 +13,8 @@ class FieldReviewController extends Controller
 
     private $cloudinaryService;
 
+    const ITEM_REVIEW_PER_PAGE = 2;
+
     public function __construct(FieldReviewServiceInterface $fieldReviewServiceInterface, CloudinaryService $cloudinaryService)
     {
         $this->fieldReviewServiceInterface = $fieldReviewServiceInterface;
@@ -22,14 +24,13 @@ class FieldReviewController extends Controller
     public function addFieldReivew()
     {
         if (isset($_POST['action']) && $_POST['action'] == 'addFieldReview') {
-            $userID = isset($_SESSION['userInfo']['ID']) ? $_SESSION['userInfo']['ID']  : null;
+            $userID       = isset($_SESSION['userInfo']['ID']) ? $_SESSION['userInfo']['ID']  : null;
             $sportFieldID = isset($_POST['sportFieldID']) ? $_POST['sportFieldID'] : null;
-            $ratingStar = isset($_POST['ratingStar']) ? $_POST['ratingStar'] : null;
-            $content = isset($_POST['content']) ? $_POST['content'] : null;
+            $ratingStar   = isset($_POST['ratingStar']) ? $_POST['ratingStar'] : null;
+            $content      = isset($_POST['content']) ? $_POST['content'] : null;
 
             $isValidData = !$userID || !$sportFieldID
                 || !$ratingStar || !$content;
-
             if ($isValidData) {
                 echo json_encode([
                     'statusCode' => 400,
@@ -52,25 +53,24 @@ class FieldReviewController extends Controller
                         $imageReview = null;
                     }
                 }
-
                 $fieldReview = $this->fieldReviewServiceInterface->addFieldReview([
                     'SportFieldID' => $sportFieldID,
-                    'UserID' => $userID,
-                    "Rating" => $ratingStar,
-                    "Content" => $content,
-                    "ImageReview" => $imageReview
+                    'UserID'       => $userID,
+                    "Rating"       => $ratingStar,
+                    "Content"      => $content,
+                    "ImageReview"  => $imageReview
                 ]);
 
                 if ($fieldReview) {
                     echo json_encode([
-                        'statusCode' => 200,
-                        'message' => 'Field review added successfully',
+                        'statusCode'  => 200,
+                        'message'     => 'Field review added successfully',
                         'fieldReview' => $fieldReview
                     ]);
                 } else {
                     echo json_encode([
                         'statusCode' => 500,
-                        'message' => 'Server Internal Error!'
+                        'message'    => 'Server Internal Error!'
                     ]);
                 }
             }
@@ -211,5 +211,31 @@ class FieldReviewController extends Controller
                 'message' => 'Bad Request!'
             ]);
         }
+    }
+
+    public function getReviewPagination()
+    {
+        $sportFieldID = $_GET['sportFieldId'] ?? null;
+        $orderBy      = $_GET['orderBy'] ?? null;
+        if (empty($sportFieldID) || !is_numeric($sportFieldID)) {
+            http_response_code(422);
+            echo json_encode([
+                'statusCode' => 422,
+                'message' => 'sport field id must be integer value!'
+            ]);
+            exit();
+        }
+        $page       = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset     = ($page - 1) * self::ITEM_REVIEW_PER_PAGE;
+        $reviews    = $this->fieldReviewServiceInterface->getReviewPagination($offset, $sportFieldID, $orderBy);
+        $totalPages = !empty($reviews) ? $reviews['totalPages'] : [];
+        $reviews    = !empty($reviews) ? $reviews['items'] : [];
+        echo json_encode([
+            'items' => $reviews,
+            'pagination' => [
+                'current'    => $page,
+                'totalPages' => $totalPages
+            ]
+        ]);
     }
 }

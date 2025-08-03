@@ -145,6 +145,74 @@ const configPagination = {
             }
             return html;
         }
+    },
+    review_template: {
+        container: '#review-container',
+        scroll_to_view: '#view-reviews',
+        render: (item) => `
+            <div class="mt-3 d-flex" id="review-id-${item.fieldreview_id}">
+                <div class="user_avatar_cmt mr-2">
+                    <img class="rounded-circle" src="${item.author_avatar}" width="70px" height="70px" alt="">
+                </div>
+                <div class="cmt_block_content container rounded mr-2" style="background-color:#f0f0f0">
+                    <div class=" mt-2 d-flex justify-content-between">
+                        <div>
+                            <div class="font-weight-bold">
+                                ${item.author_name}
+                            </div>
+                            <div>
+                                ${item.Rating} <i class="fa-solid fa-star text-warning"></i>
+                            </div>
+                        </div>
+                        ${
+                            
+                            item.author_id == localStorage.getItem('user_id') 
+                        ? 
+                            `
+                            <div>
+                            <button onclick="deleteReview(${item.fieldreview_id})" style="border-color: #dc3545" class="bg-outline-danger mr-1 rounded" title="Xóa đánh giá">
+                                <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                                    <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5" />
+                                </svg>
+                            </button>
+                            <button onclick="editReview(${item.fieldreview_id})" style="border-color: #007bff" class="bg-primary rounded" title="Sửa đánh giá">
+                                <svg class="text-white" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil" viewBox="0 0 16 16">
+                                    <path d="M12.146.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1 0 .708l-10 10a.5.5 0 0 1-.168.11l-5 2a.5.5 0 0 1-.65-.65l2-5a.5.5 0 0 1 .11-.168zM11.207 2.5 13.5 4.793 14.793 3.5 12.5 1.207zm1.586 3L10.5 3.207 4 9.707V10h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.293zm-9.761 5.175-.106.106-1.528 3.821 3.821-1.528.106-.106A.5.5 0 0 1 5 12.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.468-.325" />
+                                </svg>
+                            </button>
+                            </div>
+                            ` 
+                        : 
+                            ''
+                        }
+                    </div>
+                    <div class="mt-2">${item.review_content}</div>
+                    ${item.ImageReview ? `<img class="mt-3" src="${item.ImageReview}" width="200px" alt="">` : ''}
+                    <div class="mt-3 mb-3 d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                        ${item.user_liked_review_ids != null && item.user_liked_review_ids.includes(localStorage.getItem('user_id')) 
+                            ? 
+                            `
+                            <button id="btn-like-review-id-${item.fieldreview_id}" onclick="likeReview(${item.fieldreview_id})" class="border-white rounded mr-2 btn_like"> 
+                                <i class="fa-solid fa-thumbs-up text-white" id="icon-like-review-id-${item.fieldreview_id}"></i> 
+                                LIKE
+                            </button>
+                            ` 
+                            : 
+                            `                        
+                            <button id="btn-like-review-id-${item.fieldreview_id}" class="mr-2 border-white rounded" onclick="likeReview(${item.fieldreview_id})">
+                                <i class="fa-regular fa-thumbs-up" id="icon-like-review-id-${item.fieldreview_id}"></i>
+                                LIKE
+                            </button>
+                            `
+                        }
+                        <div class="text-info" id="number-like-id-${item.fieldreview_id}">${item.number_liked}</div>
+                        </div>
+                        <i>${item.date_cmt}</i>
+                    </div>
+                </div>
+            </div>
+        `
     }
 };
 
