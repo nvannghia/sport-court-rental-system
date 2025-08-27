@@ -23,7 +23,10 @@ if (session_status() == PHP_SESSION_NONE) {
 
 <body>
     <div class="border border-info m-3">
-        <div style="text-align: center;" class="h5 mt-4 mb-4">Đặt Sân - Sân Số <?= $fieldNumber ?> (Sân <?= $sportField['FieldSize'] ?>)</div>
+        <div class="d-flex align-items-center">
+            <a href="/sport-court-rental-system/public/booking/fieldSchedule/<?=$sportField['ID']?>" class="ml-1 rounded btn btn-info" title="Quay lại trang đặt sân"> <i class="fa-solid fa-circle-arrow-left text-white"></i> </a>
+            <div style="text-align: center" class="h5 mt-4 mb-4 w-100">Đặt Sân - Sân Số <?= $fieldNumber ?> (Sân <?= $sportField['FieldSize'] ?>)</div>
+        </div>
         <hr class="ml-5 mr-5 border-secondary">
 
         <!-- //user and booking information -->
@@ -82,7 +85,7 @@ if (session_status() == PHP_SESSION_NONE) {
                             <span>
                                 <?php echo $startTime < 17 ? "Giờ thường" : "Giờ vàng" ?>
                                 -
-                                <?php echo $startTime < 17 ? $sportField["PriceDay"] : $sportField["PriceEvening"] ?>đ/1h
+                                <?php echo $startTime < 17 ? number_format($sportField["PriceDay"] , 0,',','.') : number_format($sportField["PriceEvening"] , 0,'','') ?>₫/1h
                             </span>
                         </div>
                         <div class="d-flex align-items-center mb-3" style="width:100% ;font-size: 18px;">
@@ -105,12 +108,12 @@ if (session_status() == PHP_SESSION_NONE) {
                                 :
                             </span>
                             <span class="d-flex">
-                                <div class="mr-1" id="total-money">?</div> đ
+                                <div class="mr-1" id="total-money">?</div>
                             </span>
                         </div>
                         <div class="d-flex align-items-center mb-3" style="width:100% ;font-size: 18px;">
                             <span style="min-width: 150px;">Ngày Đặt: </span>
-                            <span class="mr-2"> <?= $bookingDate ?> </span> <span> (Năm-Tháng-Ngày)</span>
+                            <span class="mr-2"> <?= $bookingDate ?> </span>
                         </div>
                         <div class="d-flex align-items-start" style="width:100% ;font-size: 18px;">
                             <span style="min-width: 150px;">Địa Chỉ Sân: </span>

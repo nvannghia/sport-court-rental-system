@@ -55,7 +55,7 @@
                     <select class="wide status-wrapper" name="status" id="status">
                         <option value>Vui lòng chọn</option>
                         <option value="1" selected>Hoạt động</option>
-                        <option value="0" >Tạm ngưng</option>
+                        <option value="0">Tạm ngưng</option>
                     </select>
                 </div>
             </div>
@@ -68,12 +68,12 @@
 
                 <div style="max-width: 150px;">
                     <label for="openingTime" class="text-white" style="min-width: 200px;">Giờ Mở Cửa</label>
-                    <input class="form-control" type="number" value="4" step="2" min="0" max="24"  id="openingTime" name="openingTime">
+                    <input class="form-control" type="number" value="4" step="2" min="0" max="24" id="openingTime" name="openingTime">
                 </div>
 
                 <div style="max-width: 150px;">
                     <label for="closingTime" class="text-white" style="min-width: 200px;">Giờ Đóng Cửa</label>
-                    <input class="form-control" type="number" value="2" step="2" min="0" max="24"   id="closingTime" name="closingTime">
+                    <input class="form-control" type="number" value="6" step="2" min="0" max="24" id="closingTime" name="closingTime">
                 </div>
 
                 <div style="max-width: 150px;">
@@ -112,3 +112,30 @@
 
     </form>
 </div>
+
+<script>
+    $(document).ready(function() {
+
+        // Opening time input 
+        let openingTimeInput = $('#openingTime');
+
+        const loadingValueClosingTime = () => {
+            // opening time
+            let openingTimeValue = openingTimeInput.val();
+            if (!$.isNumeric(openingTimeValue)) {
+                alert ("Invalid opening time !");
+                return;
+            }
+
+            // set closing time = opening time + 2 hours.
+            let valueClosingTime = parseInt( openingTimeValue) + 2;
+            $('#closingTime').val( valueClosingTime );
+            $('#closingTime').attr('min', valueClosingTime);
+        }
+
+        // On change input opening time
+        openingTimeInput.on('change', () => {
+            loadingValueClosingTime();
+        })
+    });
+</script>

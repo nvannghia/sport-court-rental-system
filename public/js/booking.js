@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded", function() {
         endTimeSelect.style.border = "none";
         //set value for element
         hours.innerText = endTimeSelect.value;
-        totalMoney.innerText = pricePerHour.value * endTimeSelect.value + ".000";
+        totalMoney.innerText = (pricePerHour.value * endTimeSelect.value).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
     })
 
 

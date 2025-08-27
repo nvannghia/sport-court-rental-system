@@ -17,6 +17,7 @@ tinymce.init({
     images_upload_url: '../../app/utils/upload.php', // Điều chỉnh đường dẫn đến endpoint xử lý upload.php
     automatic_uploads: true,
     file_picker_types: 'image',
+    relative_urls: false,
     file_picker_callback: function(callback, value, meta) {
         if (meta.filetype === 'image') {
             const input = document.createElement('input');
@@ -34,7 +35,7 @@ tinymce.init({
                         try {
                             const json = JSON.parse(xhr.responseText);
                             if (json.location) {
-                                callback('../../app/utils/'+json.location, { alt: file.name });
+                                callback(json.location, { alt: file.name });
                             } else {
                                 alert('Failed to upload image: Invalid response from server');
                             }

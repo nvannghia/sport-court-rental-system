@@ -73,6 +73,9 @@ class BookingController extends Controller
         $fieldNumber = isset($_GET['fieldNumber']) ? $_GET['fieldNumber'] : null;
         $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : null;
 
+        //format booking date for user experience more frienly
+        $bookingDate = date('d/m/Y', strtotime($bookingDate));
+
 
         $isValidInfo = isset($bookingDate) && isset($fieldNumber) && isset($startTime);
 

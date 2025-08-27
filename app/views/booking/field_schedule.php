@@ -118,7 +118,7 @@
                             <?php for ($i = 0; $i < 7; $i++) : ?>
                                 <td>
                                     <a href="/sport-court-rental-system/public/booking/bookingDetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
-                                        <?= $pricePerHour ?> đ
+                                        <?= number_format($pricePerHour, 0, ',', '.') . ' ₫' ?>
                                     </a>
                                 </td>
                             <?php endfor; ?>
@@ -133,7 +133,7 @@
                             <?php for ($i = 0; $i < 7; $i++) : ?>
                                 <td>
                                     <a href="/sport-court-rental-system/public/booking/bookingDetail/<?= $sportFieldID ?>" style="cursor: pointer; padding:15px 40px" class="bg-white rounded">
-                                        <?= $pricePerHour ?> đ
+                                        <?= number_format($pricePerHour, 0, ',', '.') . ' ₫' ?>
                                     </a>
                                 </td>
                             <?php endfor; ?>
