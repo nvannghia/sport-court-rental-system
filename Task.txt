@@ -7,10 +7,6 @@ Task:
          - đặt sân: 
             + làm thêm chức năng nhắc nhở qua email
 
-         - Thanh toan MoMo đang lỗi:
-            + check lại thanh toán -> có thể là format tiền ở chỗ chi tiết nó đang bị sai
-
-
  CÁC TASK CHƯA GẤP   
   - Nếu sân đang tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
   - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
