@@ -99,8 +99,6 @@ class StatisticalController extends Controller
                     // format date booking, date rental
                     $date = new DateTime($bookingValue['created_at']);
                     $formattedDateCreatedAt = $date->format('d/m/Y');
-                    $date = new DateTime($bookingValue['BookingDate']);
-                    $formattedBookingDate = $date->format('d/m/Y');
 
                     //format invoice payment date, total amount
                     if (isset($bookingValue['invoice'])) {
@@ -134,7 +132,6 @@ class StatisticalController extends Controller
 
                     $rentalHours = "$startTime - $endTime";
                     //replace date booking, date rental, rental hours, paymentdate for each booking
-                    $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;
                     $bookings[$bookingKey]['created_at'] = $formattedDateCreatedAt;
                     $bookings[$bookingKey]['TotalAmount'] = $totalAmount;
                     $bookings[$bookingKey]['RentalHours'] = $rentalHours;

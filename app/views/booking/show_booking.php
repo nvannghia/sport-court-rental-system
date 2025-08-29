@@ -61,10 +61,7 @@ require_once __DIR__ . '/../layouts/header.php';
                                 method="POST" 
                                 target="_blank" 
                                 enctype="application/x-www-form-urlencoded" 
-                                action="
-                                /sport-court-rental-system/app/utils/MomoPaymentService.php
-                                ?totalAmount=' . urlencode($booking['TotalAmount']) . '&bookingID=' . urlencode($booking['ID']) . '
-                                "
+                                action="/sport-court-rental-system/app/utils/MomoPaymentService.php?totalAmount=' . urlencode($booking['TotalAmount']) . '&bookingID=' . urlencode($booking['ID']) . '"
                                 >
                                     <button name="momo" style="background-color: #D82D8B ;" class="btn text-white">Thanh Toán MoMo</button>
                                 </form>'

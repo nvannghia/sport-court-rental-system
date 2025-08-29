@@ -81,8 +81,8 @@ require_once __DIR__ . '/../layouts/header.php';
                         <td scope="row"> <?= $sportFieldKey + 1 ?> </td>
                         <td> <?= $sportField['sport_type']['TypeName'] ?> </td>
                         <td> <?= $sportField['FieldName'] ?> </td>
-                        <td> <?= $sportField['PriceDay'] ?> </td>
-                        <td> <?= $sportField['PriceEvening'] ?> </td>
+                        <td> <?= number_format($sportField["PriceDay"] , 0,',','.') ?> đ  </td>
+                        <td> <?= number_format($sportField['PriceEvening'] , 0,',','.') ?> đ </td>
                         <td> <?= $sportField['NumberOfFields'] ?> </td>
                         <?php if (isset($sportField['countUnpaidBookings'])): ?>
                             <td>

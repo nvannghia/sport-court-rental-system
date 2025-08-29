@@ -7,8 +7,8 @@ Task:
          - đặt sân: 
             + làm thêm chức năng nhắc nhở qua email
 
-         - Thống kê: 
-            + Đang lỗi khi nhấn vào thống kê
+         - Thanh toan MoMo đang lỗi:
+            + check lại thanh toán -> có thể là format tiền ở chỗ chi tiết nó đang bị sai
 
 
  CÁC TASK CHƯA GẤP   

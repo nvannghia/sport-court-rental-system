@@ -36,18 +36,14 @@ class BookingController extends Controller
                 $date = new DateTime($bookingValue['created_at']);
                 $formattedDateCreatedAt = $date->format('d/m/Y');
 
-                $date = new DateTime($bookingValue['BookingDate']);
-                $formattedBookingDate = $date->format('d/m/Y');
-
-                $startTime = $bookingValue['StartTime'];
-                $rentalDuration = $bookingValue['EndTime']; //rental: 1,1.5,2 hours
-                $priceDay = $bookingValue['sport_field']['PriceDay'];
-                $priceEvening = $bookingValue['sport_field']['PriceEvening'];
-                $pricePerHour = $startTime < 17 ? $priceDay : $priceEvening;
-                $totalAmount = $rentalDuration * $pricePerHour;
+                $startTime      = $bookingValue['StartTime'];
+                $rentalDuration = $bookingValue['EndTime'];  //rental: 1,1.5,2 hours
+                $priceDay       = $bookingValue['sport_field']['PriceDay'];
+                $priceEvening   = $bookingValue['sport_field']['PriceEvening'];
+                $pricePerHour   = $startTime < 17 ? $priceDay : $priceEvening;
+                $totalAmount    = $rentalDuration * $pricePerHour;
                 //replace date booking, date rental, total amount for each booking
-                $bookings[$bookingKey]['BookingDate'] = $formattedBookingDate;
-                $bookings[$bookingKey]['created_at'] = $formattedDateCreatedAt;
+                $bookings[$bookingKey]['created_at']  = $formattedDateCreatedAt;
                 $bookings[$bookingKey]['TotalAmount'] = $totalAmount;
             }
 
@@ -68,10 +64,10 @@ class BookingController extends Controller
 
     public function bookingDetail($sportFieldID)
     {
-        $sportField = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
+        $sportField  = $this->sportFieldServiceInterface->getSportFieldByID($sportFieldID);
         $bookingDate = isset($_GET['bookingDate']) ? $_GET['bookingDate'] : null;
         $fieldNumber = isset($_GET['fieldNumber']) ? $_GET['fieldNumber'] : null;
-        $startTime = isset($_GET['startTime']) ? $_GET['startTime'] : null;
+        $startTime   = isset($_GET['startTime']) ? $_GET['startTime'] : null;
 
         //format booking date for user experience more frienly
         $bookingDate = date('d/m/Y', strtotime($bookingDate));
@@ -94,15 +90,15 @@ class BookingController extends Controller
     public function createBooking()
     {
         if ($_SERVER["REQUEST_METHOD"] == "POST" && $_POST['action'] === "createBooking") {
-            $sportFieldID = isset($_POST['sportFieldID']) ? $_POST['sportFieldID'] : '';
-            $fieldNumber = isset($_POST['fieldNumber']) ? $_POST['fieldNumber'] : '';
-            $customerName = isset($_POST['customerName']) ? $_POST['customerName'] : '';
+            $sportFieldID  = isset($_POST['sportFieldID']) ? $_POST['sportFieldID'] : '';
+            $fieldNumber   = isset($_POST['fieldNumber']) ? $_POST['fieldNumber'] : '';
+            $customerName  = isset($_POST['customerName']) ? $_POST['customerName'] : '';
             $customerPhone = isset($_POST['customerPhone']) ? $_POST['customerPhone'] : '';
             $customerEmail = isset($_POST['customerEmail']) ? $_POST['customerEmail'] : '';
-            $startTime = isset($_POST['startTime']) ? $_POST['startTime'] : '';
-            $endTime = isset($_POST['endTime']) ? $_POST['endTime'] : '';
-            $bookingDate = isset($_POST['bookingDate']) ? $_POST['bookingDate'] : '';
-            $userID = $_SESSION['userInfo']['ID'];
+            $startTime     = isset($_POST['startTime']) ? $_POST['startTime'] : '';
+            $endTime       = isset($_POST['endTime']) ? $_POST['endTime'] : '';
+            $bookingDate   = isset($_POST['bookingDate']) ? $_POST['bookingDate'] : '';
+            $userID        = $_SESSION['userInfo']['ID'];
 
             // Kiểm tra empty và in ra thông báo nếu có trường nào rỗng
             $isValidInfo = !empty($sportFieldID)

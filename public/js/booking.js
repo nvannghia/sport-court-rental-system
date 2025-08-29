@@ -330,7 +330,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div style="text-align:left">
                     [<i class="fa-solid fa-money-check-dollar"></i>]
                     <b style="width:100px">Tiền sân: </b> 
-                    <span class="ml-3"> ${bookingObject.TotalAmount}.000 đ </span>
+                    <span class="ml-3"> ${bookingObject.TotalAmount.toLocaleString('vi-VN')} đ </span>
                 </div>
                 <hr>
                 <div style="text-align:left">

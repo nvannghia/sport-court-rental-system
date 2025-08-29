@@ -50,7 +50,7 @@ $accessKey = 'klm05TvNBzhg7h7j';
 $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
 
 $orderInfo = "Thanh toán qua MoMo ATM";
-$amount = $totalAmount."000";
+$amount = $totalAmount;
 
 $orderId = time() . "";
 $redirectUrl = "http://localhost/sport-court-rental-system/public/invoice/processPayment?bookingID=$bookingID";
@@ -60,28 +60,36 @@ $extraData = "";
 
 $requestId = time() . "";
 $requestType = "payWithATM";
-$extraData = ($_POST["extraData"] ? $_POST["extraData"] : "");
+$extraData = isset($_POST["extraData"]) ? $_POST["extraData"] : "";
 //before sign HMAC SHA256 signature
 $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
 $signature = hash_hmac("sha256", $rawHash, $secretKey);
 $data = array(
-    'amount' => $amount,
+    'amount'      => $amount,
     'partnerCode' => $partnerCode,
     'partnerName' => "Test",
-    "storeId" => "MomoTestStore",
-    'requestId' => $requestId,
-    'orderId' => $orderId,
-    'orderInfo' => $orderInfo,
+    "storeId"     => "MomoTestStore",
+    'requestId'   => $requestId,
+    'orderId'     => $orderId,
+    'orderInfo'   => $orderInfo,
     'redirectUrl' => $redirectUrl,
-    'ipnUrl' => $ipnUrl,
-    'lang' => 'vi',
-    'extraData' => $extraData,
+    'ipnUrl'      => $ipnUrl,
+    'lang'        => 'vi',
+    'extraData'   => $extraData,
     'requestType' => $requestType,
-    'signature' => $signature,
+    'signature'   => $signature,
 );
 
 $result = execPostRequest($endpoint, json_encode($data));
 $jsonResult = json_decode($result, true);  // decode json
 
 //Just a example, please check more in there
-header('Location: ' . $jsonResult['payUrl']);
+if (isset($jsonResult['payUrl'])) {
+    header('Location: ' . $jsonResult['payUrl']);
+    exit;
+} else {
+    echo "Lỗi: Không nhận được 'payUrl' từ MoMo API.<br>";
+    echo "Phản hồi từ API:<br>";
+    echo "<pre>" . print_r($jsonResult, true) . "</pre>";
+}
+

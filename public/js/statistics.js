@@ -121,7 +121,7 @@ const showInvoice = async (bookingID) => {
                     [<i class="fa-solid fa-sack-dollar"></i>]
                     <b>Tổng tiền sân: </b> 
                     <span class="ml-3"> 
-                    ${invoiceData.TotalAmount} đ
+                    ${invoiceData.TotalAmount.toLocaleString('vi-VN')} đ
                     </span>
                 </div>
                 <hr>
