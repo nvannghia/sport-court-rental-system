@@ -1,0 +1,110 @@
+.notify-container {
+  position: relative;
+  height: 50px;
+}
+
+.notify-number {
+  position: absolute;
+  top: 35%;
+  left: 20%;
+  transform: translate(50%, -50%);
+  background: red;
+  color: white;
+  border-radius: 50%;
+  padding: 3px 6px;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.bell-shake {
+  display: inline-block;
+  animation: shake 1s ease-in-out infinite;
+}
+
+@keyframes shake {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  20% {
+    transform: rotate(-15deg);
+  }
+
+  40% {
+    transform: rotate(15deg);
+  }
+
+  60% {
+    transform: rotate(-10deg);
+  }
+
+  80% {
+    transform: rotate(10deg);
+  }
+
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+.notify-dropdown {
+  position: absolute;
+  top: 50px;
+  right: -114px;
+  background: #fff;
+  width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+  border-radius: 8px;
+  z-index: 100;
+
+  /* hiệu ứng ẩn/hiện */
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.notify-dropdown.active {
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.notify-arrow {
+  display: none;
+  position: absolute;
+  top: 44px;
+  right: 6px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid #fff;
+  filter: drop-shadow(0 -1px 1px rgba(0,0,0,0.1));
+}
+
+.notify-dropdown.active + .notify-arrow,
+.notify-arrow.active {
+  display: block;
+}
+
+.notify-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.notify-item:hover {
+  background: #f2f2f2;
+}
+
+input[type="checkbox"] {
+  appearance: auto !important;  /* hoặc -webkit-appearance:auto nếu Safari */
+  opacity: 1 !important;
+  display: inline-block !important;
+  width: auto;
+  height: auto;
+}

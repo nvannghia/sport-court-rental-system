@@ -7,6 +7,7 @@ use App\Repositories\Implements\BookingRepositoryImplement;
 use App\Repositories\Implements\FieldOwnerRepositoryImplement;
 use App\Repositories\Implements\FieldReviewRepositoryImplement;
 use App\Repositories\Implements\InvoiceRepositoryImplement;
+use App\Repositories\Implements\NotificationRepositoryImplement;
 use App\Repositories\Implements\SportFieldRepositoryImplement;
 use App\Repositories\Implements\SportTypeRepositoryImplement;
 use App\Repositories\Implements\StatisticsRepositoryImplement;
@@ -14,12 +15,14 @@ use DI\ContainerBuilder;
 use App\Repositories\UserRepositoryInterface as UserRepositoryInterface;
 use App\Repositories\Implements\UserRepositoryImplement as UserRepositoryImplement;
 use App\Repositories\InvoiceRepositoryInterface;
+use App\Repositories\NotificationRepositoryInterface;
 use App\Repositories\SportFieldRepositoryInterface;
 use App\Repositories\SportTypeRepositoryInterface;
 use App\Repositories\StatisticsRepositoryInterface;
 use App\Services\Implements\BookingServiceImplement;
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\FieldReviewServiceImplement;
+use App\Services\Implements\NotificationServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\StatisticsServiceImplement;
@@ -39,25 +42,28 @@ $containerBuilder->addDefinitions([
     CloudinaryService::class => DI\create(CloudinaryService::class),
 
     FieldOwnerRepositoryInterface::class => \DI\create(FieldOwnerRepositoryImplement::class),
-    FieldOwnerServiceImplement::class => \DI\autowire(),
+    FieldOwnerServiceImplement::class    => \DI\autowire(),
 
     SportTypeRepositoryInterface::class => \DI\create(SportTypeRepositoryImplement::class),
-    SportTypeServiceImplement::class => \DI\autowire(),
+    SportTypeServiceImplement::class    => \DI\autowire(),
 
     SportFieldRepositoryInterface::class => \DI\create(SportFieldRepositoryImplement::class),
-    SportFieldServiceImplement::class => \DI\autowire(),
+    SportFieldServiceImplement::class    => \DI\autowire(),
 
     FieldReviewRepositoryInterface::class => \DI\create(FieldReviewRepositoryImplement::class),
-    FieldReviewServiceImplement::class => \DI\autowire(),
+    FieldReviewServiceImplement::class    => \DI\autowire(),
 
     BookingRepositoryInterface::class => \DI\create(BookingRepositoryImplement::class),
-    BookingServiceImplement::class => \DI\autowire(),
+    BookingServiceImplement::class    => \DI\autowire(),
 
     InvoiceRepositoryInterface::class => \DI\create(InvoiceRepositoryImplement::class),
-    BookingServiceImplement::class => \DI\autowire(),
+    BookingServiceImplement::class    => \DI\autowire(),
 
     StatisticsRepositoryInterface::class => \DI\create(StatisticsRepositoryImplement::class),
-    StatisticsServiceImplement::class => \DI\autowire(),
+    StatisticsServiceImplement::class    => \DI\autowire(),
+
+    NotificationRepositoryInterface::class => \DI\create(NotificationRepositoryImplement::class),
+    NotificationServiceImplement::class    => \DI\autowire(),
 ]);
 
 $container = $containerBuilder->build();

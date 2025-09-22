@@ -75,8 +75,46 @@
                             </a>
                         </li>
                     <?php else : ?>
-                        <li class="nav-item" style="margin-right: 25px;">
+                        <li class="mr-4 mb-2 notify-container d-flex align-items-center">
+                            <i id="notifyBell" class="fa-solid fa-bell text-white fa-2xl <?= $unreadNotificationCount > 0 ? 'bell-shake' : '' ?>" style="display: block;"></i>
+                            <div class="notify-number border rounded-circle text-white <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?>" id="notify-number"><?= $unreadNotificationCount ?></div>
 
+                            <div class="notify-arrow"></div>
+                            <div class="notify-dropdown" id="notifyDropdown">
+                                <div class="mt-2 mr-2" style="text-align: right">
+                                    <input 
+                                        id           = "markRead"
+                                        name         = "markRead"
+                                        type         = "checkbox"
+                                        class        = "read_notification"
+                                        data-action  = "mark_all_as_read"
+                                        data-noti-id = "<?= json_encode($allNotiIds) ?>"
+                                    >
+                                    <label for="markRead">Đọc tất cả</label>
+                                </div>
+                                <hr class="m-0">
+                                <?php foreach ($userNotifications as $noti): ?>
+                                    <div>
+                                        <div class="notify-item" style="background-color: <?= $noti['status'] == 0 ? '#e0e0e0' : ''?>">
+                                            <div>
+                                                👍 <b><?= $noti['user_trigger_name'] ?></b> <?= $noti['content'] ?>
+                                            </div>
+
+                                            <?php if ($noti['status'] == 0): ?>
+                                                <div class="d-flex align-items-center parent_read_one_noti">
+                                                    <input data-noti-id="<?= json_encode([$noti['ID']]) ?>" type="checkbox" id="" name="" class="read_notification">
+                                                    <label for="read" class="m-0 ml-1">Đã đọc</label>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                                <div class="text-center w-100 p-2" style="cursor: pointer;">
+                                    Xem thông báo trước đó <i class="fa-solid fa-angle-down"></i>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="nav-item" style="margin-right: 25px;">
                             <div class="dropdown">
                                 <button style="background-color: #E41A2B; min-width: 220px" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-user text-white" style="min-width: 15%;"></i>
@@ -125,3 +163,80 @@
         </nav>
     </div>
 </header>
+
+<script>
+    const bell          = document.getElementById("notifyBell");
+    const notify_number = document.getElementById("notify-number");
+    const dropdown      = document.getElementById("notifyDropdown");
+
+    bell.addEventListener("click", function(e) {
+        dropdown.classList.toggle("active");
+        document.querySelector(".notify-arrow").classList.toggle("active");
+        e.stopPropagation(); // tránh click lan ra ngoài
+    });
+
+    // Chặn click bên trong dropdown (checkbox, label, item) không làm ẩn dropdown
+    dropdown.addEventListener("click", function(e) {
+        e.stopPropagation();
+    });
+
+    // Ẩn dropdown khi click ra ngoài
+    document.addEventListener("click", function() {
+        dropdown.classList.remove("active");
+        arrow.classList.remove("active");
+
+
+    });
+
+    // read notification
+    $(".read_notification").on("change", async function() {
+        if ($(this).is(":checked")) {
+            let noti_id = $(this).data("noti-id");
+            let action  = $(this).data("action")
+
+            if (!noti_id) {
+                alert("Action failed!");
+                return;
+            }
+            let formData = new FormData();
+            formData.append('noti_ids', noti_id);
+            const response = await fetch('/sport-court-rental-system/public/notification/markNotificationAsRead', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+            if (data.statusCode !== 200) {
+                await Swal.fire({
+                    icon: "error",
+                    title: "Đã xảy ra lỗi...",
+                    text: data.message,
+                });
+                return;
+            }
+
+            // ACTION - read all notification
+            if (action && action == "mark_all_as_read") {
+                notify_number.classList.add('d-none');
+                $('.parent_read_one_noti').remove();
+                $('.notify-item').css('background-color', '');
+                $(this).parent().remove();
+                return;
+            }
+
+
+            // ACTION - minus one noti each action 'read' on bell
+            let old_number_noti = parseInt(notify_number.innerText);
+            if ((old_number_noti - 1) <= 0) {
+                notify_number.classList.add('d-none');
+            }
+            notify_number.innerText = old_number_noti - 1;
+
+            // remove the background color style for notify_item unread noti
+            $(this).parent().parent().css('background-color', '');
+            // remove checkbox 'Đã đọc'
+            $(this).parent().remove();
+        }
+    });
+</script>
+</script>

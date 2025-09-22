@@ -3,6 +3,7 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
+use App\Services\NotificationServiceInterface;
 use App\Services\SportFieldServiceInterface;
 use App\Services\SportTypeServiceInterface;
 use App\Utils\CaptchaUtils;
@@ -13,26 +14,41 @@ class HomeController extends Controller
 
     private $sportFieldServiceInterface;
 
+    private $notificationServiceInterface;
+
     private const ITEM_PER_PAGE = 6;
 
-    public function __construct(SportTypeServiceInterface $sportTypeServiceInterface, SportFieldServiceInterface $sportFieldServiceInterface)
-    {
-        $this->sportTypeServiceInterface = $sportTypeServiceInterface;
-        $this->sportFieldServiceInterface = $sportFieldServiceInterface;
+    public function __construct(
+        SportTypeServiceInterface $sportTypeServiceInterface,
+        SportFieldServiceInterface $sportFieldServiceInterface,
+        NotificationServiceInterface $notificationServiceInterface
+    ) {
+        $this->sportTypeServiceInterface    = $sportTypeServiceInterface;
+        $this->sportFieldServiceInterface   = $sportFieldServiceInterface;
+        $this->notificationServiceInterface = $notificationServiceInterface;
     }
 
-    function test()
-    {
-        echo "<pre>";
-        print_r($this->sportFieldServiceInterface->getSportFieldRatingsWithOwner(47));
-        die();
-    }
     public function index()
     {
-        //get sportType and quantity of each type.
-        $sportTypes = $this->sportTypeServiceInterface->getAllSportTypesWithCount()->toArray();
+        $userId = $_SESSION['userInfo']['ID'] ?? null;
+        // get user notifications
+        if ($userId) {
+            $userNotifications       = $this->notificationServiceInterface->getUserNotifications($userId)->toArray();
+            $unreadNotificationCount = array_reduce($userNotifications, function ($numberUnreadNotification, $noti) {
+                if ($noti['status'] == 0) 
+                    ++$numberUnreadNotification;
+                return $numberUnreadNotification;
+            }, 0);
+            $allNotiIds = array_column($userNotifications, 'ID');
+        }
+        
+        // get sportType and quantity of each type.
+        $sportTypes        = $this->sportTypeServiceInterface->getAllSportTypesWithCount()->toArray();
         return $this->view('home/index', [
-            'sportTypes' => $sportTypes
+            'sportTypes'              => $sportTypes,
+            'userNotifications'       => $userNotifications ?? [],
+            'unreadNotificationCount' => $unreadNotificationCount ?? [],
+            'allNotiIds'              => $allNotiIds ?? []
         ]);
     }
 

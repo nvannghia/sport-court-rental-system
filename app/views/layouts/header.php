@@ -48,6 +48,12 @@
     <!-- jQery -->
     <script src="/sport-court-rental-system/public/js/jquery-3.4.1.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- notification css -->
+    <link href="/sport-court-rental-system/public/css/notification.css" rel="stylesheet" />
+    <!-- pusher realtime -->
+    <script src="https://js.pusher.com/8.4.0/pusher.min.js"></script>
+    <!-- pusher.config.js -->
+    <script src="/sport-court-rental-system/public/js/pusher.js"></script>
 
     <style>
         .swiper {

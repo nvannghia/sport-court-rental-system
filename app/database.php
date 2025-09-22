@@ -20,8 +20,9 @@ $capsule->addConnection([
     'charset' => 'utf8',
     'collation' => 'utf8_unicode_ci',
     'prefix'    => '',
+    'timezone'  => '+07:00'
 ]);
-
+date_default_timezone_set('Asia/Ho_Chi_Minh');
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 ?>

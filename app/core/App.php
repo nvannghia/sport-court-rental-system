@@ -4,6 +4,7 @@ use App\Services\Implements\BookingServiceImplement;
 use App\Services\Implements\FieldOwnerServiceImplement;
 use App\Services\Implements\FieldReviewServiceImplement;
 use App\Services\Implements\InvoiceServiceImplement;
+use App\Services\Implements\NotificationServiceImplement;
 use App\Services\Implements\SportFieldServiceImplement;
 use App\Services\Implements\SportTypeServiceImplement;
 use App\Services\Implements\StatisticsServiceImplement;
@@ -27,6 +28,7 @@ class App
         'HomeController' => [
             SportTypeServiceImplement::class,
             SportFieldServiceImplement::class,
+            NotificationServiceImplement::class
         ],
         'UserController' => [
             UserServiceImplement::class,
@@ -63,6 +65,9 @@ class App
             BookingServiceImplement::class,
             StatisticsServiceImplement::class,
             FieldOwnerServiceImplement::class,
+        ],
+        'NotificationController' => [
+            NotificationServiceImplement::class
         ]
     ];
 
@@ -76,6 +81,7 @@ class App
         'booking' => 'BookingController',
         'invoice' => 'InvoiceController',
         'statistical' => 'StatisticalController',
+        'notification' => 'NotificationController',
     ];
 
     /*

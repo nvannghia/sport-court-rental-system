@@ -149,7 +149,9 @@ const configPagination = {
     review_template: {
         container: '#review-container',
         scroll_to_view: '#view-reviews',
-        render: (item) => `
+        user_id: localStorage.getItem('user_id'),
+        render: function (item) {
+            return `
             <div class="mt-3 d-flex" id="review-id-${item.fieldreview_id}">
                 <div class="user_avatar_cmt mr-2">
                     <img class="rounded-circle" src="${item.author_avatar}" width="70px" height="70px" alt="">
@@ -164,11 +166,9 @@ const configPagination = {
                                 ${item.Rating} <i class="fa-solid fa-star text-warning"></i>
                             </div>
                         </div>
-                        ${
-                            
-                            item.author_id == localStorage.getItem('user_id') 
-                        ? 
-                            `
+                        ${item.author_id == this.user_id
+                ?
+                `
                             <div>
                             <button onclick="deleteReview(${item.fieldreview_id})" style="border-color: #dc3545" class="bg-outline-danger mr-1 rounded" title="Xóa đánh giá">
                                 <svg class="text-danger" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
@@ -181,38 +181,39 @@ const configPagination = {
                                 </svg>
                             </button>
                             </div>
-                            ` 
-                        : 
-                            ''
-                        }
+                            `
+                :
+                ''
+            }
                     </div>
                     <div class="mt-2">${item.review_content}</div>
                     ${item.ImageReview ? `<img class="mt-3" src="${item.ImageReview}" width="200px" alt="">` : ''}
                     <div class="mt-3 mb-3 d-flex align-items-center justify-content-between">
-                        <div class="d-flex align-items-center">
-                        ${item.user_liked_review_ids != null && item.user_liked_review_ids.includes(localStorage.getItem('user_id')) 
-                            ? 
-                            `
-                            <button id="btn-like-review-id-${item.fieldreview_id}" onclick="likeReview(${item.fieldreview_id})" class="border-white rounded mr-2 btn_like"> 
-                                <i class="fa-solid fa-thumbs-up text-white" id="icon-like-review-id-${item.fieldreview_id}"></i> 
-                                LIKE
-                            </button>
-                            ` 
-                            : 
-                            `                        
-                            <button id="btn-like-review-id-${item.fieldreview_id}" class="mr-2 border-white rounded" onclick="likeReview(${item.fieldreview_id})">
-                                <i class="fa-regular fa-thumbs-up" id="icon-like-review-id-${item.fieldreview_id}"></i>
-                                LIKE
-                            </button>
-                            `
-                        }
-                        <div class="text-info" id="number-like-id-${item.fieldreview_id}">${item.number_liked}</div>
+                        <div class="d-flex align-items-center" style="${(this.user_id == null || item.author_id == this.user_id) ? 'display: none !important' : ''}">
+                            ${item.user_liked_review_ids != null && item.user_liked_review_ids.includes(this.user_id)
+                ?
+                `
+                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" onclick="likeReview(event, ${item.fieldreview_id})" class="border-white rounded mr-2 btn_like"> 
+                                    <i class="fa-solid fa-thumbs-up text-white" id="icon-like-review-id-${item.fieldreview_id}"></i> 
+                                    LIKE
+                                </button>
+                                `
+                :
+                `                        
+                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" class="mr-2 border-white rounded" onclick="likeReview(event, ${item.fieldreview_id})">
+                                    <i class="fa-regular fa-thumbs-up" id="icon-like-review-id-${item.fieldreview_id}"></i>
+                                    LIKE
+                                </button>
+                                `
+            }
+                            <div class="text-info" id="number-like-id-${item.fieldreview_id}">${item.number_liked}</div>
                         </div>
-                        <i>${item.date_cmt}</i>
+                        <i style="font-size: 14px; flex:1; text-align: right">${item.date_cmt}</i>
                     </div>
                 </div>
             </div>
         `
+        }
     }
 };
 

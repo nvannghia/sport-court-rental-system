@@ -1,5 +1,4 @@
-const urlFieldReview = '/sport-court-rental-system/public/fieldreview';
-
+const sport-court-rental-system/public/home/urlFieldReview = '/sport-court-rental-system/public/fieldreview';
 
 //add review
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -171,7 +170,7 @@ window.addEventListener('load', () => {
 
 
 // like review
-const likeReview = async (fieldReviewID) => {
+const likeReview = async (event, fieldReviewID) => {
     //  the like button
     const btnLike = document.getElementById(`btn-like-review-id-${fieldReviewID}`);
     btnLike.disabled = true;
@@ -201,6 +200,12 @@ const likeReview = async (fieldReviewID) => {
         formData.append('action', 'increaseReviewLike');
         numberLikeDisplay.innerText = ++numberLike;
         btnLike.classList.add('btn_like');
+
+        // -- User recieve this notification
+        const btn = document.getElementById(`btn-like-review-id-${fieldReviewID}`);
+        const userIdRecieveNoti = btn.dataset.authorId;
+        // -- Pusher notifications
+        notifications("Đã thích bình luận của bạn", userIdRecieveNoti, "like");
     }
 
     const updateLikeReviewUrl = `${urlFieldReview}/updateLike`;
