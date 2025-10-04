@@ -3,11 +3,8 @@ Task:
  * LÀM TIẾP PHẦN USER PROFILE, UPDATE UI:
 
  * PEDING TASK: 
-      + notification:
-         - ĐÃ XONG NOTIFICATION LOAD Ở TRANG CHỦ -> TIẾN HÀNH LÀM REAL TIME PUSHER CHO BELL
-         - load tượng trưng tầm khoảng 10 notifications unread cho user, sau đó cho thêm mục XEM TẤT CẢ -> ấn thì hiện bảng bự to để user xem hết
+      + notification: 
             + các T.H có thể làm thông báo: 
-                        like bình luận: đang làm like bình luận, chỉnh code lại cho các kênh hợp lí hơn. check hàm likeReivew ở file field-review.js
                         thanh toán thành công (báo cho chủ sân đã customer đã thanh toán),
                         thông báo có sân được đặt,
                         với super admin thì có thể là: thông báo khi có DN mới đăng ký,
@@ -21,7 +18,7 @@ Task:
             + làm thêm chức năng nhắc nhở qua email
 
  CÁC TASK CHƯA GẤP   
-  - Nếu sân đang tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
+  - Nếu sân đang `tạm ngưng thì không cho hiện cho KH, đôí với chủ sân thì nên cho thêm thông tin sân đang tạm ngưng
   - cho chat realtime (tìm hiểu PUSHER) thay vì có thông tin sdt chủ sân, tránh owner dùng trick để kô bị charge phí website
   - Giới hạn việc tạo sân của các owner business
 

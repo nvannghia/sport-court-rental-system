@@ -75,46 +75,48 @@
                             </a>
                         </li>
                     <?php else : ?>
-                        <li class="mr-4 mb-2 notify-container d-flex align-items-center">
+                        <li class="mr-4 mb-2 notify-container d-flex align-items-center" id="notify_container">
                             <i id="notifyBell" class="fa-solid fa-bell text-white fa-2xl <?= $unreadNotificationCount > 0 ? 'bell-shake' : '' ?>" style="display: block;"></i>
-                            <div class="notify-number border rounded-circle text-white <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?>" id="notify-number"><?= $unreadNotificationCount ?></div>
+                            <div style="width: 27px; height: 27px " class="d-flex align-items-center justify-content-center notify-number border rounded-circle text-white <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?>" id="notify-number"><?= $unreadNotificationCount >= 10 ? "10+" : $unreadNotificationCount ?></div>
 
                             <div class="notify-arrow"></div>
-                            <div class="notify-dropdown" id="notifyDropdown">
+                            <div class="notify-dropdown" id="notifyDropdown" style="width: 300px">
                                 <div class="mt-2 mr-2" style="text-align: right">
-                                    <input 
-                                        id           = "markRead"
-                                        name         = "markRead"
-                                        type         = "checkbox"
-                                        class        = "read_notification"
-                                        data-action  = "mark_all_as_read"
-                                        data-noti-id = "<?= json_encode($allNotiIds) ?>"
-                                    >
+                                    <input
+                                        id="markRead"
+                                        name="markRead"
+                                        type="checkbox"
+                                        class="read_notification"
+                                        data-action="mark_all_as_read"
+                                        data-noti-id="<?= json_encode($allNotiIds) ?>">
                                     <label for="markRead">Đọc tất cả</label>
                                 </div>
                                 <hr class="m-0">
-                                <?php foreach ($userNotifications as $noti): ?>
-                                    <div>
-                                        <div class="notify-item" style="background-color: <?= $noti['status'] == 0 ? '#e0e0e0' : ''?>">
-                                            <div>
-                                                👍 <b><?= $noti['user_trigger_name'] ?></b> <?= $noti['content'] ?>
-                                            </div>
-
-                                            <?php if ($noti['status'] == 0): ?>
-                                                <div class="d-flex align-items-center parent_read_one_noti">
-                                                    <input data-noti-id="<?= json_encode([$noti['ID']]) ?>" type="checkbox" id="" name="" class="read_notification">
-                                                    <label for="read" class="m-0 ml-1">Đã đọc</label>
+                                <div id="notify_wrapper">
+                                    <?php foreach ($userNotifications as $noti): ?>
+                                        <div>
+                                            <div class="notify-item" style="background-color: <?= $noti['status'] == 0 ? '#e7f3ff' : '' ?>">
+                                                <div>
+                                                    👍 <b><?= $noti['user_trigger_name'] ?></b> <?= $noti['content'] ?>
                                                 </div>
-                                            <?php endif; ?>
+
+                                                <?php if ($noti['status'] == 0): ?>
+                                                    <div class="d-flex align-items-center justify-content-end parent_read_one_noti">
+                                                        <input data-noti-id="<?= json_encode([$noti['ID']]) ?>" type="checkbox" id="" name="" class="read_notification">
+                                                        <label for="read" class="m-0 ml-1">Đã đọc</label>
+                                                    </div>
+                                                <?php endif; ?>
+                                            </div>
                                         </div>
-                                    </div>
-                                <?php endforeach; ?>
-                                <div class="text-center w-100 p-2" style="cursor: pointer;">
-                                    Xem thông báo trước đó <i class="fa-solid fa-angle-down"></i>
+                                    <?php endforeach; ?>
                                 </div>
+                                <div id="sentinel"></div>
+                                <!-- <div class="text-center w-100 p-2" style="cursor: pointer;">
+                                    Xem thông báo trước đó <i class="fa-solid fa-angle-down"></i>
+                                </div> -->
                             </div>
                         </li>
-                        <li class="nav-item" style="margin-right: 25px;">
+                        <li class="ml-2 nav-item" style="margin-right: 25px;">
                             <div class="dropdown">
                                 <button style="background-color: #E41A2B; min-width: 220px" class="btn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-user text-white" style="min-width: 15%;"></i>
@@ -165,9 +167,9 @@
 </header>
 
 <script>
-    const bell          = document.getElementById("notifyBell");
-    const notify_number = document.getElementById("notify-number");
-    const dropdown      = document.getElementById("notifyDropdown");
+    let bell = document.getElementById("notifyBell");
+    let notify_number = document.getElementById("notify-number");
+    let dropdown = document.getElementById("notifyDropdown");
 
     bell.addEventListener("click", function(e) {
         dropdown.classList.toggle("active");
@@ -188,11 +190,11 @@
 
     });
 
-    // read notification
-    $(".read_notification").on("change", async function() {
+    // read notification - event delegation
+    $("#notify_container").off('change', '.read_notification').on("change", '.read_notification', async function() {
         if ($(this).is(":checked")) {
             let noti_id = $(this).data("noti-id");
-            let action  = $(this).data("action")
+            let action = $(this).data("action")
 
             if (!noti_id) {
                 alert("Action failed!");
@@ -224,7 +226,6 @@
                 return;
             }
 
-
             // ACTION - minus one noti each action 'read' on bell
             let old_number_noti = parseInt(notify_number.innerText);
             if ((old_number_noti - 1) <= 0) {
@@ -238,5 +239,52 @@
             $(this).parent().remove();
         }
     });
-</script>
+
+
+    let page = 1;
+
+    async function loadMoreNotification() {
+        let response = await fetch(`/sport-court-rental-system/public/notification/loadMoreNotification?page=${page}`);
+        response = await response.json();
+
+        let user_notifications = response.data;
+        user_notifications = user_notifications.map((notify) => `
+            <div>
+                <div class="notify-item" style="background-color: ${notify.status == 0 ? '#e7f3ff' : ''}">
+                    <div>
+                        👍 <b> ${notify.user_trigger_name} </b> ${notify.content}
+                    </div>
+
+                ${notify.status == 0
+                ?
+                `
+                    <div class="d-flex align-items-center parent_read_one_noti justify-content-end">
+                        <input data-noti-id="${notify.ID}" type="checkbox" id="" name="" class="read_notification">
+                        <label for="read" class="m-0 ml-1">Đã đọc</label>
+                    </div>
+                `
+                : ''
+            }
+                </div>
+            </div>
+        `).join('');
+        // append notify to list
+        $('#notify_wrapper').prepend(user_notifications);
+
+        page++;
+    }
+
+    let sentinel = document.querySelector("#sentinel");
+
+    let observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting) {
+            loadMoreNotification();
+        }
+    }, {
+        root: null, // viewport
+        rootMargin: "0px",
+        threshold: 0.5 // 50% của sentinel xuất hiện mới trigger
+    });
+
+    observer.observe(sentinel);
 </script>

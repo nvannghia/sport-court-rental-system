@@ -7,8 +7,6 @@ use App\Services\NotificationServiceInterface;
 
 class NotificationServiceImplement implements NotificationServiceInterface
 {
-
-
     private $notificationRepositoryInterface;
 
     public function __construct(NotificationRepositoryInterface $notificationRepositoryInterface)
@@ -21,9 +19,9 @@ class NotificationServiceImplement implements NotificationServiceInterface
         return $this->notificationRepositoryInterface->firstOrNew($arrayInsert);
     }
 
-    public function getUserNotifications($userReceiverId)
+    public function getUserNotifications($userReceiverId, $offset = null)
     {
-        return $this->notificationRepositoryInterface->getUserNotifications($userReceiverId);
+        return $this->notificationRepositoryInterface->getUserNotifications($userReceiverId, $offset);
     }
 
     public function markNotificationAsRead($notiIds)

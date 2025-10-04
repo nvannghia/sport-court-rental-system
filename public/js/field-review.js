@@ -1,4 +1,4 @@
-const sport-court-rental-system/public/home/urlFieldReview = '/sport-court-rental-system/public/fieldreview';
+const urlFieldReview = '/sport-court-rental-system/public/fieldreview';
 
 //add review
 document.addEventListener('DOMContentLoaded', (event) => {
@@ -170,7 +170,7 @@ window.addEventListener('load', () => {
 
 
 // like review
-const likeReview = async (event, fieldReviewID) => {
+const likeReview = async (fieldReviewID) => {
     //  the like button
     const btnLike = document.getElementById(`btn-like-review-id-${fieldReviewID}`);
     btnLike.disabled = true;

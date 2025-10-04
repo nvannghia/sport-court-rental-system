@@ -22,13 +22,10 @@ class App
 
     protected $container;
 
-
-
     protected $controllersWithDependencies = [
         'HomeController' => [
             SportTypeServiceImplement::class,
-            SportFieldServiceImplement::class,
-            NotificationServiceImplement::class
+            SportFieldServiceImplement::class
         ],
         'UserController' => [
             UserServiceImplement::class,
@@ -72,15 +69,15 @@ class App
     ];
 
     protected $controllerMapping = [
-        'home' => 'HomeController',
-        'user' => 'UserController',
-        'fieldowner' => 'FieldOwnerController',
-        'sportfield' => 'SportFieldController',
-        'sporttype' => 'SportTypeController',
-        'fieldreview' => 'FieldReviewController',
-        'booking' => 'BookingController',
-        'invoice' => 'InvoiceController',
-        'statistical' => 'StatisticalController',
+        'home'         => 'HomeController',
+        'user'         => 'UserController',
+        'fieldowner'   => 'FieldOwnerController',
+        'sportfield'   => 'SportFieldController',
+        'sporttype'    => 'SportTypeController',
+        'fieldreview'  => 'FieldReviewController',
+        'booking'      => 'BookingController',
+        'invoice'      => 'InvoiceController',
+        'statistical'  => 'StatisticalController',
         'notification' => 'NotificationController',
     ];
 

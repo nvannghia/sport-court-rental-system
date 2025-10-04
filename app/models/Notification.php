@@ -13,7 +13,8 @@ class Notification extends Eloquent
         'user_trigger_id',
         "user_receiver_id",
         "content",
-        "action"
+        "action",
+        "status"
     ];
 
     protected function serializeDate(\DateTimeInterface $date)

@@ -6,7 +6,7 @@ interface NotificationRepositoryInterface
 {
     public function firstOrNew(array $arrayInsert);
 
-    public function getUserNotifications($userReceiverId);
+    public function getUserNotifications($userReceiverId, $offset);
 
     public function markNotificationAsRead($notiIds);
 }

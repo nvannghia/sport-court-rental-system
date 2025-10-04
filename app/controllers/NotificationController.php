@@ -1,13 +1,16 @@
 <?php
-
-use App\Models\Notification;
-use App\Models\SportType;
+session_start();
 use App\Services\NotificationServiceInterface;
-use App\Services\SportTypeServiceInterface;
+
+use function Symfony\Component\Clock\now;
 
 class NotificationController extends Controller
 {
     private $notificationServiceInterface;
+
+    private const NOTIFY_STATUS = ["UNREAD" => 0, "READ" => 1];
+
+    private const ITEM_NOTIFY_PER_LOAD = 10;
 
     public function __construct(NotificationServiceInterface $notificationServiceInterface)
     {
@@ -30,12 +33,12 @@ class NotificationController extends Controller
             ]
         );
 
-        $isSuccess = false;
         if ($notification->exists) {
-            $isSuccess = $notification->touch();
-        } else {
-            $isSuccess = $notification->save();
+            $notification->updated_at = now();
         }
+        // gán status chung cho cả 2 trường hợp
+        $notification->status = self::NOTIFY_STATUS["UNREAD"];
+        $isSuccess = $notification->save();
 
         $jsonData = $isSuccess
             ? ['statusCode' => 201, 'message' => 'Notification Created Successfully']
@@ -55,5 +58,48 @@ class NotificationController extends Controller
             : ['statusCode' => 500, 'message' => 'Server Internal Error'];
 
         echo json_encode($jsonData);
+    }
+
+    public function getLatestNotificationsByUser()
+    {
+        $userId = $_GET['user_receiver_id'] ?? null;
+        if (!$userId) {
+            echo "Login first!";
+            return;
+        }
+
+        $userNotifications = $this->notificationServiceInterface->getUserNotifications($userId)->toArray();
+        $unreadNotificationCount = array_reduce($userNotifications, function ($numberUnreadNotification, $noti) {
+            if ($noti['status'] == 0)
+                ++$numberUnreadNotification;
+            return $numberUnreadNotification;
+        }, 0);
+        echo json_encode([
+            'statusCode'              => 200,
+            'data'                    => $userNotifications,
+            'unreadNotificationCount' => $unreadNotificationCount
+        ]);
+    }
+
+    public function loadMoreNotification()
+    {
+        $page   = isset($_GET['page']) ? (int) $_GET['page'] : 1;
+        $offset = ($page - 1) * self::ITEM_NOTIFY_PER_LOAD;
+        $userId = $_SESSION['userInfo']['ID'];
+        
+        if (empty($userId) || !is_numeric($page)) {
+            echo json_encode([
+                'statusCode' => 500,
+                'message' => 'Invalid data request!'
+            ]); 
+            return;
+
+        }
+            
+        $data = $this->notificationServiceInterface->getUserNotifications($userId, $offset)->toArray();
+        echo json_encode([
+            'status' => 200,
+            'data' => $data
+        ]);
     }
 }

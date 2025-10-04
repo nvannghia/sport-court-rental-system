@@ -193,14 +193,14 @@ const configPagination = {
                             ${item.user_liked_review_ids != null && item.user_liked_review_ids.includes(this.user_id)
                 ?
                 `
-                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" onclick="likeReview(event, ${item.fieldreview_id})" class="border-white rounded mr-2 btn_like"> 
+                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" onclick="likeReview(${item.fieldreview_id})" class="border-white rounded mr-2 btn_like"> 
                                     <i class="fa-solid fa-thumbs-up text-white" id="icon-like-review-id-${item.fieldreview_id}"></i> 
                                     LIKE
                                 </button>
                                 `
                 :
                 `                        
-                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" class="mr-2 border-white rounded" onclick="likeReview(event, ${item.fieldreview_id})">
+                                <button data-author-id='${item.author_id}' id="btn-like-review-id-${item.fieldreview_id}" class="mr-2 border-white rounded" onclick="likeReview(${item.fieldreview_id})">
                                     <i class="fa-regular fa-thumbs-up" id="icon-like-review-id-${item.fieldreview_id}"></i>
                                     LIKE
                                 </button>

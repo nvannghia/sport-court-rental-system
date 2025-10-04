@@ -14,42 +14,21 @@ class HomeController extends Controller
 
     private $sportFieldServiceInterface;
 
-    private $notificationServiceInterface;
-
     private const ITEM_PER_PAGE = 6;
 
     public function __construct(
         SportTypeServiceInterface $sportTypeServiceInterface,
         SportFieldServiceInterface $sportFieldServiceInterface,
-        NotificationServiceInterface $notificationServiceInterface
     ) {
         $this->sportTypeServiceInterface    = $sportTypeServiceInterface;
         $this->sportFieldServiceInterface   = $sportFieldServiceInterface;
-        $this->notificationServiceInterface = $notificationServiceInterface;
     }
 
     public function index()
     {
-        $userId = $_SESSION['userInfo']['ID'] ?? null;
-        // get user notifications
-        if ($userId) {
-            $userNotifications       = $this->notificationServiceInterface->getUserNotifications($userId)->toArray();
-            $unreadNotificationCount = array_reduce($userNotifications, function ($numberUnreadNotification, $noti) {
-                if ($noti['status'] == 0) 
-                    ++$numberUnreadNotification;
-                return $numberUnreadNotification;
-            }, 0);
-            $allNotiIds = array_column($userNotifications, 'ID');
-        }
-        
         // get sportType and quantity of each type.
         $sportTypes        = $this->sportTypeServiceInterface->getAllSportTypesWithCount()->toArray();
-        return $this->view('home/index', [
-            'sportTypes'              => $sportTypes,
-            'userNotifications'       => $userNotifications ?? [],
-            'unreadNotificationCount' => $unreadNotificationCount ?? [],
-            'allNotiIds'              => $allNotiIds ?? []
-        ]);
+        return $this->view('home/index', ['sportTypes' => $sportTypes]);
     }
 
     public function getPaginatedSportFieldsForHomepage()
