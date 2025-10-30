@@ -40,6 +40,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
         // append notify to list
         $('#notify_wrapper').empty().prepend(user_notifications);
         // bell config
+        $('.mark_all_wrapper').removeClass("d-none");
         notify_number.classList.remove('d-none');
         notify_number.innerText = unread_notification_count;
         bell.classList.add("bell-shake");

@@ -6,6 +6,7 @@ use Cloudinary\Cloudinary;
 use Cloudinary\Configuration\Configuration;
 use Cloudinary\Api\Upload\UploadApi;
 use Exception;
+use Dotenv\Dotenv;
 
 class CloudinaryService
 {
@@ -16,7 +17,7 @@ class CloudinaryService
         $configuration =  Configuration::instance([
             'cloud' => [
                 'cloud_name' => 'dnwemzbtm',
-                'api_key' => '375881354516285',
+                'api_key'    => '375881354516285',
                 'api_secret' => 'uwXBgStwPU_XoC0WyPm0QfdKrCY'
             ],
             'url' => [

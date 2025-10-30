@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model as Eloquent;
 
 class UserModel extends Eloquent
 {
-    protected $hidden     = ['pivot'];                                                                      // exclude data of pivot table when fetch relationship
+    protected $hidden     = ['pivot']; // exclude data of pivot table when fetch relationship
     protected $primaryKey = "ID";
     protected $table      = "users";
     protected $fillable   = [

@@ -17,10 +17,10 @@ require_once __DIR__ . '/../layouts/header.php';
 </style>
 
 
-<section>
+<section id="field-container" class="d-none">
     <div class="d-flex-custom ">
         <!-- SRART Menu bar  -->
-        <aside class="vertical-sidebar"> <input type="checkbox" role="switch" id="checkbox-input" class="checkbox-input" checked />
+        <aside class="vertical-sidebar"> <input type="checkbox" role="switch" id="checkbox-input" style="display:none !important" class="checkbox-input" checked />
             <nav class="nav_container">
                 <header>
                     <div class="sidebar__toggle-container"> <label tabindex="0" for="checkbox-input" id="label-for-checkbox-input" class="nav__toggle"> <span class="toggle--icons" aria-hidden="true"> <svg width="24" height="24" viewBox="0 0 24 24" class="toggle-svg-icon toggle--open">
@@ -126,8 +126,6 @@ require_once __DIR__ . '/../layouts/header.php';
                 <ul id="pagination" class="pagination">
                 </ul>
             </nav>
-
-
         </div>
     </div>
 </section>
@@ -149,6 +147,9 @@ require_once __DIR__ . '/../layouts/header.php';
             API_URL_PAGINATION = "/sport-court-rental-system/public/home/getPaginatedSportFieldsForHomepage";
             API_URL_PAGINATION += `?sportTypeId=${sportTypeId}`;
 
+
+            //display sport field container 
+            $('#field-container').removeClass('d-none');
             changeColorSportTypeClicked(sportTypeId);
             loadPage(1);
             scrollToViewSportField();
@@ -196,6 +197,8 @@ require_once __DIR__ . '/../layouts/header.php';
                 loadPage(1);
                 changeColorSportTypeClicked(sportTypeId);
                 scrollToViewSportField();
+                //display sport field container
+                $('#field-container').removeClass('d-none');
             }
 
         });

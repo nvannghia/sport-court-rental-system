@@ -20,11 +20,11 @@ $userPhoneNumber   = $_SESSION['userInfo']['PhoneNumber'];
 $userAddress       = $_SESSION['userInfo']['Address'];
 
 if ($userRole === 'OWNER') {
-    $businessName      = $_SESSION['userInfo']['field_owner']['BusinessName'];
-    $businessStatus    = $_SESSION['userInfo']['field_owner']['Status'];
-    $businessAddress   = $_SESSION['userInfo']['field_owner']['BusinessAddress'];
-    $businessPhone     = $_SESSION['userInfo']['field_owner']['PhoneNumber'];
-    $businessCreatedAt = $_SESSION['userInfo']['field_owner']['created_at'];
+    $businessName      = $_SESSION['userInfo']['field_owner']['BusinessName'] ?? null;
+    $businessStatus    = $_SESSION['userInfo']['field_owner']['Status'] ?? null;
+    $businessAddress   = $_SESSION['userInfo']['field_owner']['BusinessAddress'] ?? null;
+    $businessPhone     = $_SESSION['userInfo']['field_owner']['PhoneNumber'] ?? null;
+    $businessCreatedAt = $_SESSION['userInfo']['field_owner']['created_at'] ?? null;
 }
 
 require_once __DIR__ . '/../layouts/header.php';

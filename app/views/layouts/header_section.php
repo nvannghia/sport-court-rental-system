@@ -77,23 +77,34 @@
                     <?php else : ?>
                         <li class="mr-4 mb-2 notify-container d-flex align-items-center" id="notify_container">
                             <i id="notifyBell" class="fa-solid fa-bell text-white fa-2xl <?= $unreadNotificationCount > 0 ? 'bell-shake' : '' ?>" style="display: block;"></i>
-                            <div style="width: 27px; height: 27px " class="d-flex align-items-center justify-content-center notify-number border rounded-circle text-white <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?>" id="notify-number"><?= $unreadNotificationCount >= 10 ? "10+" : $unreadNotificationCount ?></div>
+                            <div style="width: 27px; height: 27px; display:flex" 
+                                class="
+                                    align-items-center 
+                                    justify-content-center 
+                                    notify-number 
+                                    border 
+                                    rounded-circle 
+                                    text-white 
+                                    <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?> 
+                                "
+                                id="notify-number"><?= $unreadNotificationCount >= 10 ? "10+" : $unreadNotificationCount ?></div>
 
                             <div class="notify-arrow"></div>
                             <div class="notify-dropdown" id="notifyDropdown" style="width: 300px">
-                                <div class="mt-2 mr-2" style="text-align: right">
-                                    <input
-                                        id="markRead"
-                                        name="markRead"
-                                        type="checkbox"
-                                        class="read_notification"
-                                        data-action="mark_all_as_read"
-                                        data-noti-id="<?= json_encode($allNotiIds) ?>">
-                                    <label for="markRead">Đọc tất cả</label>
-                                </div>
+
+                                    <div class="mark_all_wrapper mt-2 mr-2 <?= $unreadNotificationCount <= 0 ? 'd-none' : '' ?>" style="text-align: right">
+                                        <input
+                                            id="markRead"
+                                            name="markRead"
+                                            type="checkbox"
+                                            class="read_notification"
+                                            data-action="mark_all_as_read"
+                                            data-noti-id="<?= json_encode($allNotiIds) ?>">
+                                        <label for="markRead">Đọc tất cả</label>
+                                    </div>
                                 <hr class="m-0">
                                 <div id="notify_wrapper">
-                                    <?php foreach ($userNotifications as $noti): ?>
+                                    <?php foreach ($userNotifications as $key => $noti):  ?>
                                         <div>
                                             <div class="notify-item" style="background-color: <?= $noti['status'] == 0 ? '#e7f3ff' : '' ?>">
                                                 <div>
@@ -241,7 +252,7 @@
     });
 
 
-    let page = 1;
+    let page = 2;
 
     async function loadMoreNotification() {
         let response = await fetch(`/sport-court-rental-system/public/notification/loadMoreNotification?page=${page}`);
@@ -278,6 +289,10 @@
 
     let observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) {
+            // if now greater than 10 notify-item -> load more notification
+            var count_notify_item = $('.notify-item').length;
+            if (count_notify_item < 10) return;
+
             loadMoreNotification();
         }
     }, {

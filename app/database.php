@@ -4,8 +4,8 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 $config = $GLOBALS['config'];
 
 $dbDriver = $config['database']['driver'];
-$dbHost = $config['database']['host'];
-$dbName = $config['database']['database_name'];
+$dbHost   = $config['database']['host'];
+$dbName   = $config['database']['database_name'];
 $username = $config['database']['username'];
 $password = $config['database']['password'];
 

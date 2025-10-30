@@ -34,14 +34,6 @@ class StatisticalController extends Controller
         $this->fieldOwnerServiceInterface = $fieldOwnerServiceInterface;
     }
 
-
-    function test()
-    {
-        echo "<pre>";
-        print_r($this->bookingServiceInterface->getBookingBySportFieldIDWithFilter(100, 13, "PAID")->toArray());
-        echo "</pre>";
-    }
-
     public function fetchOwnerWithSportFields()
     {
         $ownerID = $_SESSION['userInfo']['ID'] ?? null;

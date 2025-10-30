@@ -50,7 +50,7 @@ const approvePayment = async (evt, bookingID, totalAmount) => {
     evt.preventDefault();
     const formData = new FormData();
     formData.append('bookingID', bookingID);
-    formData.append('amount', `${totalAmount}000`);
+    formData.append('amount', `${totalAmount}`);
     formData.append('paymentOption', 'in-person');
 
     const approvePaymentUrl = `${invoiceUrl}/payInvoice`;
